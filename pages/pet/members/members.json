@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "成员管理",
+  "usingComponents": {
+    "pet-avatar": "/components/pet-avatar/index",
+    "invite-card": "/components/invite-card/index"
+  }
+}

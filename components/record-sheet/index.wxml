@@ -1,0 +1,155 @@
+<bottom-sheet show="{{show}}" bind:close="close" maxHeight="{{1400}}">
+  <view class="rs" catchtap="noop">
+    <!-- ============ 记健康 / 编辑健康 ============ -->
+    <block wx:if="{{kind === 'health'}}">
+      <view class="rs-head">
+        <view>
+          <view class="rs-title">{{renew ? renewTitle : (editing ? '编辑记录' : '记健康')}}</view>
+          <!-- 续记：一句话交代「谁的什么到期了」，用户不用回想自己点的是哪一格 -->
+          <view class="rs-sub" wx:if="{{renew}}">{{petLabel}} 的 {{renewSubName}} 到期了</view>
+          <view class="rs-sub" wx:elif="{{!editing && petLabel}}">记给 {{petLabel}}</view>
+        </view>
+      </view>
+
+      <view class="rs-seg">
+        <view class="rs-seg-item {{hType === 'vaccine' ? 'rs-seg-on' : ''}}" data-t="vaccine" bindtap="onTypeSeg">疫苗</view>
+        <view class="rs-seg-item {{hType === 'dewormIn' ? 'rs-seg-on' : ''}}" data-t="dewormIn" bindtap="onTypeSeg">体内驱虫</view>
+        <view class="rs-seg-item {{hType === 'dewormOut' ? 'rs-seg-on' : ''}}" data-t="dewormOut" bindtap="onTypeSeg">体外驱虫</view>
+        <view class="rs-seg-item {{hType === 'checkup' ? 'rs-seg-on' : ''}}" data-t="checkup" bindtap="onTypeSeg">体检</view>
+      </view>
+
+      <picker mode="date" value="{{date}}" end="{{today}}" bindchange="{{editing ? 'onDateEdit' : 'onDate'}}">
+        <view class="rs-row">
+          <view class="rs-label">{{dateLabel}} <text class="rs-req" wx:if="{{hType === 'vaccine'}}">*</text></view>
+          <view class="rs-value">{{date || '选择日期'}}</view>
+          <view class="rs-today" wx:if="{{date === today && !editing}}">今天</view>
+        </view>
+      </picker>
+
+      <view class="rs-field">
+        <view class="rs-label">名称 <text class="rs-opt">选一个常用的，或直接手填</text></view>
+        <input class="rs-input" value="{{name}}" placeholder="{{namePlaceholder}}" bindinput="onName" />
+        <view class="rs-chips" wx:if="{{showNameChips && hType === 'vaccine'}}">
+          <view class="chip {{name === item ? 'on' : ''}}" wx:for="{{nameChips}}" wx:key="*this" data-v="{{item}}" bindtap="onNameChip">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="rs-field" wx:if="{{hType === 'vaccine'}}">
+        <view class="rs-label">第几针 <text class="rs-opt">选填</text></view>
+        <view class="rs-chips">
+          <view class="chip {{dose === item ? 'on' : ''}}" wx:for="{{doseOptions}}" wx:key="*this" data-v="{{item}}" bindtap="onDose">{{item}}</view>
+        </view>
+      </view>
+
+      <view class="rs-field">
+        <view class="rs-label">花费 <text class="rs-opt">选填，填了会自动记一笔花销</text></view>
+        <view class="rs-bignum">
+          <text class="rs-yen">¥</text>
+          <input class="rs-bignum-input" type="digit" value="{{cost}}" placeholder="0.00" bindinput="onCost" />
+        </view>
+      </view>
+
+      <picker mode="date" value="{{nextDate}}" start="{{date}}" bindchange="onNextDate">
+        <view class="rs-row">
+          <view class="rs-label">{{nextLabel}}</view>
+          <view class="rs-value">{{nextDate || '不填则不提醒'}}</view>
+          <view class="rs-today" wx:if="{{nextDate && !editing}}">自动预填</view>
+        </view>
+      </picker>
+
+      <view class="rs-row">
+        <view class="rs-label">到期提醒我</view>
+        <switch checked="{{remind}}" bindchange="onRemind" color="#FF7A2F" />
+      </view>
+
+      <view class="rs-field">
+        <view class="rs-label">备注 <text class="rs-opt">选填</text></view>
+        <textarea class="rs-textarea" value="{{note}}" placeholder="比如医院名称、医生叮嘱" bindinput="onNote" auto-height maxlength="100"></textarea>
+      </view>
+    </block>
+
+    <!-- ============ 记体重 / 编辑体重 ============ -->
+    <block wx:elif="{{kind === 'weight'}}">
+      <view class="rs-head">
+        <view>
+          <view class="rs-title">{{editing ? '编辑体重' : '记体重'}}</view>
+          <view class="rs-sub" wx:if="{{lastWeight != null}}">上次 {{lastWeight}} {{weightUnit}}</view>
+        </view>
+      </view>
+
+      <picker mode="date" value="{{date}}" end="{{today}}" bindchange="{{editing ? 'onDateEdit' : 'onDate'}}">
+        <view class="rs-row">
+          <view class="rs-label">称重日期 <text class="rs-req">*</text></view>
+          <view class="rs-value">{{date || '选择日期'}}</view>
+          <view class="rs-today" wx:if="{{date === today && !editing}}">今天</view>
+        </view>
+      </picker>
+      <view class="rs-field">
+        <view class="rs-label">体重 <text class="rs-req">*</text> <text class="rs-opt">一位小数</text></view>
+        <view class="rs-bignum">
+          <input class="rs-bignum-input" type="digit" value="{{value}}" placeholder="4.3" bindinput="onValue" />
+          <text class="rs-unit">{{weightUnit}}</text>
+        </view>
+      </view>
+
+      <view class="rs-field">
+        <view class="rs-label">备注 <text class="rs-opt">选填</text></view>
+        <input class="rs-input" value="{{note}}" placeholder="比如「饭后称的」" bindinput="onNote" />
+      </view>
+      <view class="rs-foot-hint" wx:if="{{!editing}}">保存后会自动算和上次相比的变化</view>
+    </block>
+
+    <!-- ============ 记花销 / 编辑花销 ============ -->
+    <block wx:else>
+      <view class="rs-head">
+        <view>
+          <view class="rs-title">{{editing ? '编辑账单' : '记一笔'}}</view>
+        </view>
+      </view>
+
+      <view class="rs-field">
+        <view class="rs-label">金额 <text class="rs-req">*</text></view>
+        <view class="rs-bignum">
+          <text class="rs-yen">¥</text>
+          <input class="rs-bignum-input" type="digit" value="{{amount}}" placeholder="68.00" bindinput="onAmount" />
+        </view>
+      </view>
+
+      <view class="rs-field">
+        <view class="rs-label">分类 <text class="rs-req">*</text></view>
+        <view class="rs-cats">
+          <view class="rs-cat {{category === item.key ? 'rs-cat-on' : ''}}" wx:for="{{cats}}" wx:key="key" data-k="{{item.key}}" bindtap="onCat">
+            <text class="rs-cat-dot" style="background: {{item.color}};"></text>
+            <text>{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+
+      <picker mode="date" value="{{date}}" end="{{today}}" bindchange="onDateEdit">
+        <view class="rs-row">
+          <view class="rs-label">消费日期 <text class="rs-req">*</text></view>
+          <view class="rs-value">{{date || '选择日期'}}</view>
+          <view class="rs-today" wx:if="{{date === today}}">今天</view>
+        </view>
+      </picker>
+
+      <picker range="{{petOptions}}" range-key="name" value="{{petIndex}}" bindchange="onPetPick">
+        <view class="rs-row">
+          <view class="rs-label">归属宠物</view>
+          <view class="rs-value">{{petIndex >= 0 ? petOptions[petIndex].name : '请选择'}}</view>
+        </view>
+      </picker>
+
+      <view class="rs-field">
+        <view class="rs-label">备注 <text class="rs-opt">选填</text></view>
+        <input class="rs-input" value="{{note}}" placeholder="比如品牌、规格" bindinput="onNote" />
+      </view>
+    </block>
+
+    <!-- 续记：说清「会新增一条 + 旧记录保留」，否则用户会以为这是在改旧记录 -->
+    <view class="rs-renew-hint" wx:if="{{renew}}">会新增一条{{renewUnit}}记录，原来那条保留在足迹里</view>
+    <button class="btn-primary rs-save" loading="{{saving}}" bindtap="onSave">{{editing ? '保存修改' : '保存'}}</button>
+    <view class="rs-foot-hint" wx:if="{{!editing}}">保存后留在当前页，不会跳转</view>
+    <button class="btn-text-danger rs-del" wx:if="{{editing}}" bindtap="onDelete">删除这条记录</button>
+  </view>
+</bottom-sheet>

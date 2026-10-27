@@ -1,0 +1,399 @@
+<view class="page-pad safe-bottom">
+  <skeleton type="card" rows="3" wx:if="{{loading}}" />
+
+  <!-- ===== 无权限：账号不在白名单 ===== -->
+  <block wx:if="{{probeDone && isAdmin === false}}">
+    <view class="card ops-login">
+      <view class="ops-login-t">没有运营权限</view>
+      <view class="ops-login-s">
+        当前微信账号不在运营白名单里。把你自己的 openid 填进
+        <text class="ops-code-inline">csAdmin</text> 云函数的环境变量
+        <text class="ops-code-inline">CS_ADMIN_OPENIDS</text> 后重新部署即可。
+      </view>
+      <view class="ops-openid" wx:if="{{myOpenid}}" bindtap="onCopyOpenid">
+        <text class="ops-openid-k">我的 openid</text>
+        <text class="ops-openid-v" user-select="{{true}}">{{myOpenid}}</text>
+        <view class="ops-copy" catchtap="onCopyOpenid">复制</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ===== 未登录：口令 ===== -->
+  <block wx:if="{{probeDone && isAdmin !== false && !authed && !loading}}">
+    <view class="card ops-login">
+      <view class="ops-login-t">客服运营后台</view>
+      <view class="ops-login-s">输入运营口令进入。口令只在本次生效，退出即清除。</view>
+      <!-- 诊断：白名单没生效时把原因和 openid 直接摆出来，别让人猜为什么还要输口令 -->
+      <block wx:if="{{!adminLocked}}">
+        <view class="ops-login-hint"
+          >白名单未生效：<text class="ops-code-inline">csAdmin</text> 没读到
+          <text class="ops-code-inline">CS_ADMIN_OPENIDS</text>，所以口令仍是必填。改完环境变量要<text
+            style="font-weight:600">重新部署</text>才生效。</view
+        >
+        <!-- 直接把 openid 摆出来 + 复制：不用先登录、不用翻日志
+             整行可点（热区大），文字本身可长按选中，复制失败也不会卡住 -->
+        <view class="ops-openid" wx:if="{{myOpenid}}" bindtap="onCopyOpenid">
+          <text class="ops-openid-k">我的 openid</text>
+          <text class="ops-openid-v" user-select="{{true}}">{{myOpenid}}</text>
+          <view class="ops-copy" catchtap="onCopyOpenid">复制</view>
+        </view>
+        <view class="ops-openid-tip" wx:if="{{myOpenid}}">点一下整行即可复制；也可以长按上面那串选中复制</view>
+      </block>
+      <input
+        class="ops-input"
+        password
+        placeholder="运营口令"
+        value="{{token}}"
+        bindinput="onTokenInput"
+        confirm-type="go"
+        bindconfirm="onLogin"
+      />
+      <button class="btn-primary" bindtap="onLogin">进入</button>
+      <view class="ops-err" wx:if="{{err}}">{{err}}</view>
+    </view>
+  </block>
+
+  <!-- ===== 已登录 ===== -->
+  <block wx:if="{{isAdmin !== false && authed && !loading}}">
+    <view class="ops-seg">
+      <view class="ops-seg-item {{seg === 'chat' ? 'on' : ''}}" data-seg="chat" bindtap="onSeg">会话</view>
+      <view class="ops-seg-item {{seg === 'data' ? 'on' : ''}}" data-seg="data" bindtap="onSeg">数据</view>
+      <view class="ops-seg-item {{seg === 'mod' ? 'on' : ''}}" data-seg="mod" bindtap="onSeg">审核</view>
+      <view class="ops-seg-item {{seg === 'set' ? 'on' : ''}}" data-seg="set" bindtap="onSeg">设置</view>
+    </view>
+
+    <!-- 未锁定时提醒：任何知道口令的人都能进，建议配白名单 -->
+    <view class="ops-warn" wx:if="{{!adminLocked}}">
+      还没锁账号白名单。把你的 openid 填进 csAdmin 的 CS_ADMIN_OPENIDS 后重新部署。
+      <text class="ops-warn-o">{{myOpenid}}</text>
+      <view class="ops-copy sm" bindtap="onCopyOpenid">复制</view>
+    </view>
+
+    <!-- 会话 -->
+    <view class="card ops-card" wx:if="{{seg === 'chat'}}">
+      <!-- 会话列表 -->
+      <block wx:if="{{!curOpenid}}">
+        <view class="ops-h">会话</view>
+        <view class="ops-tip">
+          微信客服工作台关掉后，用户消息只推到云函数，这里是唯一能看到内容并回复的地方。
+          <text class="ops-tip-em">列表每 5 秒自动刷新，不用手动点。</text>
+        </view>
+        <view class="ops-sess" wx:for="{{sessions}}" wx:key="openid" data-oid="{{item.openid}}" bindtap="openChat">
+          <image class="ops-av" wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
+          <view class="ops-av ph" wx:else>{{item.initial}}</view>
+          <view class="ops-sess-l">
+            <view class="ops-sess-t">
+              <text class="ops-sess-who">{{item.nameText}}</text>
+              <text class="ops-sess-src">{{item.srcText}}</text>
+              <text class="ops-sess-dot" wx:if="{{item.unread > 0}}">{{item.unread}}</text>
+            </view>
+            <view class="ops-sess-m">{{item.lastMsg}}</view>
+            <!-- 昵称是用户自己在「我的」页填的；没填就退回宠物名 / openid 尾号，二者都摆出来便于核对 -->
+            <view class="ops-sess-id">{{item.idText}}</view>
+          </view>
+          <view class="ops-sess-r">{{item.timeText}}</view>
+        </view>
+        <view class="ops-empty" wx:if="{{!sessions.length}}">还没有人发消息过来</view>
+        <view class="btn-soft ops-btn" wx:if="{{!chatLoading}}" bindtap="onRefreshSessions">刷新</view>
+        <!-- 「没人发消息」和「消息没进来」在界面上一样，后台必须有自检入口 -->
+        <view class="ops-check-btn" wx:if="{{!checking}}" bindtap="onSelfcheck">消息收不到？点这里自检</view>
+        <view class="ops-check-btn" wx:else>正在自检…</view>
+
+        <view class="ops-check" wx:if="{{checks.length}}">
+          <view class="ops-check-row" wx:for="{{checks}}" wx:key="col">
+            <text class="ops-check-k">{{item.label}}</text>
+            <text class="ops-check-v {{item.ok ? '' : 'bad'}}">{{item.state}}</text>
+          </view>
+          <view class="ops-check-vd">{{checkVerdict}}</view>
+        </view>
+        <view class="ops-check" wx:elif="{{checkVerdict}}">
+          <view class="ops-check-vd">{{checkVerdict}}</view>
+        </view>
+        <view class="ops-logout" bindtap="onLogout">退出</view>
+      </block>
+
+      <!-- 消息流 -->
+      <block wx:if="{{curOpenid}}">
+        <!-- ⚠️ 返回要单独占一行：跟头像挤在一起时，视觉上「返回」像个来源标签而不是操作按钮 -->
+        <view class="ops-chat-head">
+          <view class="ops-chat-top">
+            <view class="ops-chat-back" bindtap="backToList">‹ 返回会话列表</view>
+          </view>
+          <view class="ops-chat-id">
+            <image class="ops-av sm" wx:if="{{peer.avatar}}" src="{{peer.avatar}}" mode="aspectFill" />
+            <!-- ⚠️ WXML 表达式里不能调用方法（.slice 会编译报错 unexpected token），
+                 一律在 JS 里算好再渲染 -->
+            <view class="ops-av sm ph" wx:else>{{peer.initial}}</view>
+            <view class="ops-chat-nm">
+              <text class="ops-chat-title">{{peer.nameText}}</text>
+              <text class="ops-chat-sub">{{peer.idText}}</text>
+            </view>
+          </view>
+        </view>
+        <!-- scroll-view + scroll-into-view：轮询到新消息时自动滚到底 -->
+        <scroll-view class="ops-msgs" scroll-y scroll-into-view="{{scrollTo}}" scroll-with-animation>
+          <view
+            class="ops-msg {{item.dir === 'out' ? 'out' : 'in'}}"
+            wx:for="{{messages}}"
+            wx:key="mid"
+            id="{{item.mid}}"
+          >
+            <view class="ops-bubble">{{item.content}}</view>
+            <view class="ops-msg-t">{{item.timeText}}</view>
+          </view>
+          <view class="ops-empty" wx:if="{{!messages.length}}">还没有消息</view>
+        </scroll-view>
+        <view class="ops-send">
+          <input
+            class="ops-send-input"
+            value="{{inputText}}"
+            bindinput="onInputText"
+            placeholder="回复…"
+            confirm-type="send"
+            bindconfirm="onSend"
+          />
+          <button
+            class="ops-send-btn"
+            bindtap="onSend"
+            hover-class="ops-send-btn-press"
+            hover-stop-propagation
+            style="display:flex;align-items:center;justify-content:center;width:auto;min-width:0;max-width:none;flex:none;margin:0;padding:0 32rpx;height:72rpx;border:none;background:var(--orange);color:#fff;line-height:normal;font-size:28rpx;font-weight:700;"
+          >{{sending ? '发送中' : '发送'}}</button>
+        </view>
+        <view class="ops-tip">
+          只能在用户 48 小时内发过消息时回复 —— 超出窗口微信接口不允许主动发送，
+          发送按钮会直接告诉你原因。
+        </view>
+      </block>
+    </view>
+
+    <!-- 数据（二级：大盘 | 用户 | 触点），复用内容审核页签的 ops-ms 二级切换样式 -->
+    <view class="card ops-card" wx:if="{{seg === 'data'}}">
+      <view class="ops-ms">
+        <view class="ops-ms-item {{dseg === 'board' ? 'on' : ''}}" data-d="board" bindtap="onDseg" hover-class="ops-ms-press">大盘</view>
+        <view class="ops-ms-item {{dseg === 'users' ? 'on' : ''}}" data-d="users" bindtap="onDseg" hover-class="ops-ms-press">用户</view>
+        <view class="ops-ms-item {{dseg === 'touch' ? 'on' : ''}}" data-d="touch" bindtap="onDseg" hover-class="ops-ms-press">触点</view>
+      </view>
+
+      <!-- 大盘：今日实时 KPI + 近 14 天表格横条 -->
+      <block wx:if="{{dseg === 'board'}}">
+        <view class="ops-empty" wx:if="{{statErr}}">{{statErr}}</view>
+        <block wx:if="{{today && !statErr}}">
+          <view class="ops-kpi">
+            <view class="ops-kpi-t">
+              今日实时
+              <text class="ops-kpi-live" wx:if="{{today.live}}">截止 {{today.asOf}}</text>
+            </view>
+            <view class="ops-kpi-g">
+              <view class="ops-kpi-i"><text class="ops-kpi-n">{{today.dau}}</text><text class="ops-kpi-l">活跃</text></view>
+              <view class="ops-kpi-i"><text class="ops-kpi-n">{{today.newUsers}}</text><text class="ops-kpi-l">新用户</text></view>
+              <view class="ops-kpi-i"><text class="ops-kpi-n">{{today.sessions}}</text><text class="ops-kpi-l">使用次数</text></view>
+              <view class="ops-kpi-i"><text class="ops-kpi-n">{{today.petsCreated}}</text><text class="ops-kpi-l">建档</text></view>
+            </view>
+            <view class="ops-kpi-s">填资料 {{today.profileUpdated}} · 记录 {{today.recordsAdded}} · 发帖 {{today.postsAdded}} · 冷启动 {{today.launches}} 次</view>
+          </view>
+
+          <view class="ops-h ops-h-2">近 14 天</view>
+          <view class="ops-row ops-row-h">
+            <text class="ops-c1">日期</text>
+            <text class="ops-c2">活跃</text>
+            <text class="ops-c2">新用户</text>
+            <text class="ops-c2">建档</text>
+          </view>
+          <view class="ops-stat-row {{item.live ? 'live' : ''}}" wx:for="{{statRows}}" wx:key="key">
+            <view class="ops-row">
+              <text class="ops-c1">{{item.dateText}}</text>
+              <text class="ops-c2 t-num">{{item.dau}}</text>
+              <text class="ops-c2 t-num">{{item.newUsers}}</text>
+              <text class="ops-c2 t-num">{{item.pets}}</text>
+            </view>
+            <view class="ops-dbar"><view class="ops-dbar-in" style="width: {{item.dauBar}}%;"></view></view>
+          </view>
+          <view class="ops-tip">
+            活跃 = 当天打开过的用户数；横条 = 当天活跃的相对高低。
+            历史数据每天 01:10 由 statDaily 云函数落库；今天这行是实时统计（截止标注时刻），与明日落库值可能略有出入，以落库为准。
+          </view>
+        </block>
+        <view class="btn-soft ops-btn" bindtap="onRefreshStats">{{statsLoading ? '刷新中…' : '刷新'}}</view>
+        <view class="ops-logout" bindtap="onLogout">退出</view>
+      </block>
+
+      <!-- 用户明细：点行展开逐次打开记录 -->
+      <block wx:if="{{dseg === 'users'}}">
+        <view class="ops-empty" wx:if="{{usersErr}}">{{usersErr}}</view>
+        <view class="ops-empty" wx:elif="{{!usersList.length && !usersLoading}}">还没有用户数据</view>
+        <view class="ops-user" wx:for="{{usersList}}" wx:key="openid" data-oid="{{item.openid}}" bindtap="onUserTap">
+          <view class="ops-user-main">
+            <image class="ops-av" wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
+            <view class="ops-av ph" wx:else>{{item.initial}}</view>
+            <view class="ops-user-b">
+              <view class="ops-user-t">{{item.nickname || '未设昵称'}} <text class="ops-user-tail">{{item.tail}}</text></view>
+              <view class="ops-user-s">最近 {{item.lastText}} · 累计 {{item.sessions}} 次</view>
+            </view>
+            <view class="ops-user-nums">
+              <text>今日 {{item.todayOpens}}</text>
+              <text>建档 {{item.pets}}</text>
+              <text>记录 {{item.records}}</text>
+            </view>
+          </view>
+          <view class="ops-visits" wx:if="{{visitsOpenid === item.openid}}">
+            <view class="ops-visits-h">打开记录（最近 50 次使用）</view>
+            <view class="ops-visits-row" wx:for="{{visits}}" wx:for-item="v" wx:key="i">
+              <text class="ops-visits-t">{{v.t}}</text>
+              <text class="ops-visits-sc">{{v.scene}}</text>
+              <text class="ops-visits-n" wx:if="{{v.launches > 1}}">×{{v.launches}}</text>
+            </view>
+            <view class="ops-empty" wx:if="{{!visits.length}}">还没有打开记录</view>
+            <view class="ops-visits-tip">再点一下这一行收起</view>
+          </view>
+        </view>
+        <view class="btn-soft ops-btn" bindtap="onRefreshUsers">{{usersLoading ? '刷新中…' : '刷新'}}</view>
+        <view class="ops-logout" bindtap="onLogout">退出</view>
+      </block>
+
+      <!-- 触点：原「触点数据」页签整体平移进来，逻辑不变 -->
+      <block wx:if="{{dseg === 'touch'}}">
+        <view class="ops-h">各触点数据（累计）</view>
+        <view class="ops-row ops-row-h">
+          <text class="ops-c1">触点</text>
+          <text class="ops-c2">打开</text>
+          <text class="ops-c2">会话</text>
+          <text class="ops-c2">素材</text>
+        </view>
+        <view class="ops-row" wx:for="{{stats}}" wx:key="source">
+          <text class="ops-c1">{{item.label || item.source}}</text>
+          <text class="ops-c2 t-num">{{item.opened}}</text>
+          <text class="ops-c2 t-num">{{item.sent}}</text>
+          <text class="ops-c2 t-num">{{item.code}}</text>
+        </view>
+        <view class="ops-tip">
+          打开 = contact_opened；会话 = msg_sent；素材 = group_code_sent。
+          ⚠️ 后续动作发生在小程序外，这里观测不到 —— 需每周人工记录各渠道承接量，
+          和上表对照，才能算出真实转化。
+        </view>
+        <view class="btn-soft ops-btn" bindtap="onReload">刷新</view>
+        <view class="ops-logout" bindtap="onLogout">退出</view>
+      </block>
+    </view>
+
+    <!-- 内容审核（PRD《内容安全与风控》第 10 节）
+         沿用本页现有卡片/列表样式，不新开设计 -->
+    <view class="card ops-card" wx:if="{{seg === 'mod'}}">
+      <view class="ops-ms">
+        <view class="ops-ms-item {{mseg === 'reports' ? 'on' : ''}}" data-m="reports" bindtap="onMSeg" hover-class="ops-ms-press">举报 {{modReports.length}}</view>
+        <view class="ops-ms-item {{mseg === 'appeals' ? 'on' : ''}}" data-m="appeals" bindtap="onMSeg" hover-class="ops-ms-press">申诉 {{modAppeals.length}}</view>
+      </view>
+
+      <!-- 举报：缩略图 + 作者 + 宠物 + 原因 + 举报人数 + 三个处置按钮 -->
+      <block wx:if="{{mseg === 'reports'}}">
+        <view class="ops-empty" wx:if="{{!modReports.length}}">没有待处理的举报</view>
+        <view class="ops-mod" wx:for="{{modReports}}" wx:key="postId">
+          <image class="ops-mod-th" src="{{item.evidence[0]}}" mode="aspectFill" wx:if="{{item.evidence.length}}" />
+          <view class="ops-mod-b">
+            <view class="ops-mod-t">{{item.authorName}} · {{item.petName || '未命名'}}</view>
+            <view class="ops-mod-s">{{item.reasonText}} · {{item.count}} 人举报</view>
+          </view>
+          <view class="ops-mod-acts">
+            <view class="ops-mod-btn" data-id="{{item.postId}}" data-act="delete" bindtap="onHandleReport" hover-class="ops-mod-btn-press">删除</view>
+            <view class="ops-mod-btn danger" data-id="{{item.postId}}" data-act="ban" bindtap="onHandleReport" hover-class="ops-mod-btn-press">删除并封禁</view>
+            <view class="ops-mod-btn ghost" data-id="{{item.postId}}" data-act="reject" bindtap="onHandleReport" hover-class="ops-mod-btn-press">驳回举报</view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 申诉：通过 = 恢复 + 把这张图写进白名单（后续不再复检） -->
+      <block wx:else>
+        <view class="ops-empty" wx:if="{{!modAppeals.length}}">没有待处理的申诉</view>
+        <view class="ops-mod" wx:for="{{modAppeals}}" wx:key="postId">
+          <image class="ops-mod-th" src="{{item.thumbs[0]}}" mode="aspectFill" wx:if="{{item.thumbs.length}}" />
+          <view class="ops-mod-b">
+            <view class="ops-mod-t">{{item.authorName}}</view>
+            <view class="ops-mod-s" wx:if="{{item.appealNote}}">“{{item.appealNote}}”</view>
+            <view class="ops-mod-s" wx:else>（没填说明）</view>
+          </view>
+          <view class="ops-mod-acts">
+            <view class="ops-mod-btn" data-id="{{item.postId}}" data-p="1" bindtap="onResolveAppeal" hover-class="ops-mod-btn-press">通过并加白名单</view>
+            <view class="ops-mod-btn ghost" data-id="{{item.postId}}" data-p="0" bindtap="onResolveAppeal" hover-class="ops-mod-btn-press">维持下架</view>
+          </view>
+        </view>
+      </block>
+
+      <view class="ops-tip">
+        删除 = 只删这条；删除并封禁 = 连带把他全部历史内容下架 + 禁止再发布（解封要再来这里操作）。
+        ⚠️ 这里只展示缩略图，原图在 blocked 满 7 天后由定时任务自动清除。
+      </view>
+
+      <!-- 接口自检：区分「接口通」和「接口挂了在静默放行」—— 两者现象完全一样 -->
+      <view class="btn-soft ops-btn" bindtap="onSecSelfTest" hover-class="ops-mod-btn-press">
+        {{secTesting ? '自检中…' : '内容安全接口自检'}}
+      </view>
+      <view class="ops-selftest" wx:if="{{secTestLines.length}}">
+        <view class="ops-selftest-l" wx:for="{{secTestLines}}" wx:key="*this">{{item}}</view>
+      </view>
+
+      <view class="btn-soft ops-btn" bindtap="onReloadMod">刷新</view>
+      <view class="ops-logout" bindtap="onLogout">退出</view>
+    </view>
+
+    <!-- 设置：欢迎语 / 非工作时间 / 素材 三节纵排（都是低频配置，不配占一级页签） -->
+    <view class="card ops-card" wx:if="{{seg === 'set'}}">
+      <view class="ops-h">进入会话时的欢迎语</view>
+      <textarea
+        class="ops-area"
+        value="{{welcome}}"
+        bindinput="onWelcomeInput"
+        maxlength="200"
+        auto-height
+        placeholder="你好，我是店长…"
+      />
+      <view class="ops-tip">
+        在用户刚进入会话的 1 分钟窗口内发出，24 小时内同一用户只发一次。
+        无额度或发送失败时静默降级，不会报错给用户。
+      </view>
+      <view class="btn-soft ops-btn" bindtap="onSaveWelcome">{{saving ? '保存中…' : '保存'}}</view>
+
+      <view class="ops-h ops-h-2">工作时段（北京时间）</view>
+      <view class="ops-hours">
+        <input class="ops-input-sm" type="number" value="{{hours.start}}" bindinput="onHoursStart" />
+        <text class="ops-hours-d">: 00 —</text>
+        <input class="ops-input-sm" type="number" value="{{hours.end}}" bindinput="onHoursEnd" />
+        <text class="ops-hours-d">: 00</text>
+      </view>
+      <view class="ops-h ops-h-2">非工作时间的自动应答</view>
+      <textarea
+        class="ops-area"
+        value="{{hours.text}}"
+        bindinput="onHoursTextInput"
+        maxlength="200"
+        auto-height
+        placeholder="这会儿我不在线，看到就回你…"
+      />
+      <view class="ops-tip">
+        非工作时段收到消息时先回这一条，24 小时内同一用户只发一次；
+        之后再走正常的关键词自动回复。
+      </view>
+      <view class="btn-soft ops-btn" bindtap="onSaveHours">{{saving ? '保存中…' : '保存'}}</view>
+
+      <view class="ops-h ops-h-2">素材图片（存在云存储，换图不用发版）</view>
+      <view class="ops-tip">
+        素材图有时效，过期后需重新生成并在这里上传。
+      </view>
+      <view class="ops-code" wx:for="{{['A','B','C']}}" wx:key="*this">
+        <view class="ops-code-h">素材 {{item}}</view>
+        <view class="ops-code-s">{{groupCode[item] ? '已配置' : '未配置'}}</view>
+        <button
+          class="ops-pick {{groupCode[item] ? '' : 'hot'}}"
+          data-g="{{item}}"
+          bindtap="onPickCode"
+          hover-class="ops-pick-press"
+          hover-stop-propagation
+          style="display:flex;align-items:center;justify-content:center;width:auto;min-width:0;max-width:none;flex:none;margin:0;padding:0 28rpx;height:64rpx;border:none;background:var(--orange-soft);line-height:normal;font-size:26rpx;color:var(--orange-deep);font-weight:700;"
+        >{{uploading === item ? '上传中…' : '换图'}}</button>
+      </view>
+      <view class="ops-tip" wx:if="{{groupMap}}">
+        当前分配：我的页/健康页/提醒 → A，生日周年 → B，长图 → C
+      </view>
+      <view class="ops-logout" bindtap="onLogout">退出</view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,294 @@
+/* 简化名片 */
+/* ===== 固定头：状态栏 + 导航行 + 宠物名片 + 类型 tabs（不随内容滚动） =====
+   ⚠️ 用 fixed 而不是 sticky：页级 sticky 在本基础库/真机实测不生效（两次返工结论）
+   ⚠️ 背景必须实色，列表从它下面滚过时不能透出来 */
+.hp-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: var(--cream);
+}
+/* 导航行：标题居中（绝对定位相对整行，避让胶囊的 margin 加在 share 图标所在行上，
+   否则标题会跟着偏左 —— 同时光页 .tl-petsw 的处理） */
+.hp-nav { position: relative; }
+.hp-nav-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: var(--ink);
+}
+.hp-nav-row {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-left: 24rpx;
+}
+/* 分享图标：样式同时光页 .tl-share-ic（浅橙圆角方块 + 分享 PNG） */
+.hp-share-ic {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background: var(--orange-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.hp-share-img { width: 34rpx; height: 34rpx; display: block; }
+.hp-share-press { background: #FFD9BC; }
+/* 名片 + tabs 在固定头里的左右内边距（原来靠 .page-pad，头部独立后自带） */
+.hp-head-body { padding: 16rpx 32rpx 0; }
+/* 列表区：左右内边距接过头部的职责；padding-top 由 JS 量（headH，内联写入） */
+.hp-list { padding: 0 32rpx; }
+
+.hp-card {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 24rpx 28rpx;
+  box-shadow: 0 8rpx 28rpx rgba(150, 120, 90, 0.07);
+}
+.hp-name { font-size: 32rpx; font-weight: 800; }
+.hp-info { font-size: 24rpx; color: var(--ink2); margin-top: 4rpx; }
+.hp-switch {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+}
+/* 四类切换：分段控件（cream 底槽 + 选中白块浮起，对齐设计语言 .seg） */
+.h-tabs {
+  display: flex;
+  gap: 8rpx;
+  margin: 24rpx 0 8rpx;
+  background: var(--cream2);
+  border-radius: 999rpx;
+  padding: 8rpx;
+}
+.h-tab {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  border-radius: 999rpx;
+  color: var(--ink2);
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.h-tab.on {
+  background: #fff;
+  color: var(--orange-deep);
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(150, 120, 90, 0.14);
+}
+.h-tab-n { margin-left: 6rpx; font-size: 22rpx; opacity: 0.7; font-weight: 400; }
+
+/* 底部悬浮「记一条」（tab 页 viewport 在原生 tabBar 之上，bottom 无需再加安全区） */
+.hp-fab {
+  position: fixed;
+  left: 50%;
+  bottom: 28rpx;
+  transform: translateX(-50%);
+  z-index: 20;
+  height: 92rpx;
+  padding: 0 48rpx;
+  border-radius: 999rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  box-shadow: 0 12rpx 28rpx rgba(255, 122, 47, 0.32);
+}
+.hp-fab-plus { font-size: 34rpx; font-weight: 700; line-height: 1; }
+.hp-fab:active { background: var(--orange-deep); }
+/* 悬浮按钮让位：避免遮挡最后一组卡片 */
+.hp-page { padding-bottom: 160rpx; }
+/* 名片进固定头后上下留白收紧（原来靠 .page-pad 的 24rpx 顶距） */
+.hp-card { margin-bottom: 4rpx; }
+
+/* 驱虫二级（体内 / 体外） */
+.h-subseg {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+.h-subseg-item {
+  padding: 10rpx 28rpx;
+  border-radius: 999rpx;
+  background: var(--cream);
+  color: var(--ink2);
+  font-size: 24rpx;
+  border: 2rpx solid transparent;
+}
+.h-subseg-item.on {
+  background: #fff;
+  border-color: var(--orange);
+  color: var(--orange-deep);
+  font-weight: 700;
+}
+
+/* 分组空态 */
+/* 「全部」tab 的分组头（疫苗 / 驱虫 / 体检）
+   ⚠️ 这里不再用 position:sticky —— 页级 sticky 在现有基础库/真机上不吸顶（实测两次），
+      吸顶效果改由 health.js 测量分组位置 + .grp-float 的 fixed 单行条实现。
+      条目本身份组信息仍在（滚到哪段看最上面的标题即可），只是不跟随滚动 */
+.grp { margin-bottom: 4rpx; }
+.grp-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: var(--cream);
+  padding: 20rpx 0 14rpx;
+}
+.grp-head-dot { width: 16rpx; height: 16rpx; border-radius: 50%; flex: 0 0 auto; }
+.grp-head-t { font-size: 28rpx; font-weight: 700; color: var(--ink); }
+
+/* 顶部悬浮分组条（替代 sticky）：fixed 单行条，文案由 health.js 按滚动位置给
+   ⚠️ 背景必须实色，否则白卡片会从它下面透出来；
+   ⚠️ left/right 撑满屏宽 + 左右 32rpx 内边距：这样文字左边缘和 .page-pad 里的卡片对齐 */
+.grp-float {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 32rpx 14rpx;
+  background: var(--cream);
+  box-shadow: 0 6rpx 16rpx rgba(150, 120, 90, 0.06);
+}
+
+.grp-empty {
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  color: var(--ink3);
+  font-size: 26rpx;
+}
+.grp-empty-btn {
+  color: var(--orange-deep);
+  background: var(--orange-soft);
+  border-radius: 999rpx;
+  padding: 12rpx 36rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+}
+
+/* 健康卡片 */
+.hcard {
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 28rpx rgba(150, 120, 90, 0.07);
+}
+.hcard-top { display: flex; align-items: center; gap: 16rpx; }
+.hcard-ic {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  flex-shrink: 0;
+}
+.hcard-ic.vac { background: var(--s-vac-bg); }
+.hcard-ic.dew { background: var(--s-dew-bg); }
+.hcard-ic.ck { background: var(--s-ck-bg); }
+.hcard-name { font-size: 30rpx; font-weight: 700; display: flex; align-items: center; gap: 10rpx; }
+.hcard-sub { font-size: 22rpx; color: var(--ink3); margin-top: 2rpx; }
+.hcard-cost { font-size: 24rpx; font-weight: 700; color: var(--ink2); }
+.hcard-badge {
+  font-size: 22rpx;
+  font-weight: 700;
+  color: var(--orange-deep);
+  background: var(--orange-soft);
+  border-radius: 999rpx;
+  padding: 6rpx 18rpx;
+  flex-shrink: 0;
+}
+.hcard-badge.red { color: var(--red); background: #FFF4F3; }
+.hcard-kv {
+  display: flex;
+  font-size: 24rpx;
+  color: var(--ink2);
+  margin-top: 12rpx;
+}
+.hcard-kv b { margin-left: auto; color: var(--ink); font-weight: 600; }
+.hcard-foot {
+  display: flex;
+  align-items: center;
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--line);
+}
+.hcard-remind { display: flex; align-items: center; gap: 12rpx; font-size: 26rpx; }
+.hcard-auth { margin-left: auto; font-size: 22rpx; color: var(--ink3); }
+.hcard-reauth { margin-left: auto; font-size: 22rpx; color: var(--orange-deep); font-weight: 700; }
+
+/* 体重行卡样式已随体重 tab 下线移除；体重历史在时间线页与分享图展示 */
+
+.sec-share { color: var(--orange-deep); font-weight: 700; }
+.ti-pending { font-size: 20rpx; color: var(--orange-deep); margin-top: 8rpx; }
+
+/* 客服触点 4（无记录 / 异宠）：视觉规格与首页触点一致 */
+.cs-btn::after { border: none; }
+.h-ask { margin-top: 20rpx; }
+.ask-bar-in {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: var(--cream2);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+  padding: 18rpx 24rpx;
+  box-sizing: border-box;
+}
+.ab-ic {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 16rpx;
+  background: var(--orange-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.ab-ic-tx { font-size: 24rpx; line-height: 1; }
+.ab-tx { flex: 1; min-width: 0; font-size: 25rpx; color: var(--ink2); line-height: 1.35; }
+.ab-go {
+  display: flex;
+  align-items: center;
+  gap: 2rpx;
+  font-size: 23rpx;
+  color: var(--ink2);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.ab-go-ar { font-size: 22rpx; }
+.cs-btn-press .ask-bar-in { opacity: 0.85; }

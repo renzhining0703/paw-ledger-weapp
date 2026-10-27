@@ -1,0 +1,9 @@
+/* 离屏绘制：移出可视区，尺寸与设计稿一致（750×600） */
+.ic-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: 0;
+  width: 750px;
+  height: 600px;
+  pointer-events: none;
+}

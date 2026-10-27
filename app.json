@@ -1,0 +1,62 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/health/health",
+    "pages/ledger/ledger",
+    "pages/mine/mine",
+    "pages/timeline/timeline",
+    "pages/pet/list/list",
+    "pages/pet/edit/edit",
+    "pages/pet/profile/profile",
+    "pages/pet/members/members",
+    "pages/invite/accept/accept",
+    "pages/settings/settings",
+    "pages/agreement/agreement",
+    "pages/feedback/feedback",
+    "pages/about/about",
+    "pages/ops/ops"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#FDF8F2",
+    "navigationBarTitleText": "它的时光",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FDF8F2",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#9A8F80",
+    "selectedColor": "#FF7A2F",
+    "backgroundColor": "#FFFCF7",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/tabbar/tab_home.png",
+        "selectedIconPath": "assets/tabbar/tab_home_on.png"
+      },
+      {
+        "pagePath": "pages/health/health",
+        "text": "健康",
+        "iconPath": "assets/tabbar/tab_record.png",
+        "selectedIconPath": "assets/tabbar/tab_record_on.png"
+      },
+      {
+        "pagePath": "pages/timeline/timeline",
+        "text": "时光",
+        "iconPath": "assets/tabbar/tab_time.png",
+        "selectedIconPath": "assets/tabbar/tab_time_on.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "assets/tabbar/tab_mine.png",
+        "selectedIconPath": "assets/tabbar/tab_mine_on.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "__usePrivacyCheck__": true
+}

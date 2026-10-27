@@ -1,0 +1,84 @@
+/* 协议页：标题居中 + 正文两端对齐（对齐 PRD 7.1「跟系统文章一样：标题居中、条款加粗」）
+   ⚠️ 用户协议/隐私政策里会出现邮箱，这里刻意不做任何按钮/跳转/复制按钮（合规红线），
+      只允许长按选中——用户想留存可以自己复制 */
+
+.ag-page { padding-bottom: 60rpx; }
+
+.ag-head { padding: 8rpx 8rpx 24rpx; }
+.ag-title { font-size: 36rpx; font-weight: 800; text-align: center; letter-spacing: 1rpx; }
+.ag-meta { font-size: 22rpx; color: var(--ink3); text-align: center; margin-top: 12rpx; }
+
+.ag-card { padding: 32rpx 32rpx 36rpx; }
+
+/* 章节标题 */
+.ag-h {
+  font-size: 29rpx;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 36rpx 0 12rpx;
+  line-height: 1.5;
+}
+.ag-card > .ag-h:first-child { margin-top: 4rpx; }
+
+/* 正文段落：text + display:block 才能既块级排版又可长按选择 */
+.ag-p {
+  display: block;
+  font-size: 26rpx;
+  color: var(--ink2);
+  line-height: 1.85;
+  text-align: justify;
+  word-break: break-word;
+}
+.ag-p + .ag-p { margin-top: 14rpx; }
+
+/* 整段加粗：免责/权利/承诺这类必须被看见的句子（数据里标 b:1） */
+.ag-strong { color: var(--ink); font-weight: 700; }
+
+/* 一级条款 */
+.ag-li {
+  display: block;
+  font-size: 26rpx;
+  color: var(--ink2);
+  line-height: 1.85;
+  text-align: justify;
+  word-break: break-word;
+  margin-top: 10rpx;
+}
+
+/* 二级条款（① ② ③ 枚举）：缩进 + 小一号，长列举才不糊成一坨 */
+.ag-li2 {
+  display: block;
+  font-size: 25rpx;
+  color: var(--ink2);
+  line-height: 1.8;
+  text-align: justify;
+  word-break: break-word;
+  padding-left: 28rpx;
+  margin-top: 6rpx;
+}
+
+.ag-note {
+  font-size: 22rpx;
+  color: var(--ink3);
+  text-align: center;
+  margin-top: 36rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid var(--line);
+}
+
+.ag-tip { font-size: 22rpx; color: var(--ink3); text-align: center; margin-top: 24rpx; }
+
+/* 错误态 */
+.ag-err { padding: 160rpx 40rpx; text-align: center; }
+.ag-err-t { font-size: 28rpx; color: var(--ink2); }
+.ag-err-b {
+  display: inline-block;
+  margin-top: 32rpx;
+  padding: 20rpx 56rpx;
+  border-radius: 999rpx;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 28rpx;
+  font-weight: 700;
+}
+.ag-err-bp { opacity: 0.75; }

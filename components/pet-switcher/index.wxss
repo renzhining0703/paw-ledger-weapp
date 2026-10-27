@@ -1,0 +1,52 @@
+/* 列表限高可滚：再多宠物「＋添加宠物」按钮也始终在列表外面，不会被推出屏幕
+   对齐设计稿 .sw-list：gap 20rpx、上 28rpx 下 32rpx */
+.ps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin: 28rpx 0 0;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+/* 设计稿 .sw-item：白卡 + 柔投影 + 3rpx 透明描边（选中时才上色）
+   ⚠️ bottom-sheet 面板本身是白的，白卡靠投影立起来，别改成 --cream（会糊成一片） */
+.ps-item {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: #fff;
+  border: 3rpx solid transparent;
+  border-radius: 32rpx;
+  padding: 22rpx 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(150, 120, 90, 0.08);
+}
+.ps-on { border-color: var(--orange); background: #FFFDF9; }
+.ps-item-press { opacity: 0.85; }
+.ps-name { font-size: 30rpx; font-weight: 700; display: flex; align-items: center; gap: 12rpx; }
+/* PRD 5.3 改造②：共享来的宠物加「共享」角标（青色，与驱虫青同语义） */
+.ps-share {
+  font-size: 20rpx; font-weight: 400;
+  color: #1E9A80; background: #E7F7F2;
+  padding: 2rpx 12rpx; border-radius: 12rpx;
+}
+/* 设计稿 .sw-item .sub：22rpx / ink3（品种 · 年龄 · N 张 属次要信息） */
+.ps-info { font-size: 22rpx; color: var(--ink3); margin-top: 4rpx; }
+.ps-check {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  background: var(--orange);
+  color: #fff;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* 设计稿 .sw-add：92rpx 高 / 28rpx 圆角 / 30rpx 字 + 橙投影 */
+.ps-add {
+  margin-top: 32rpx;
+  height: 92rpx;
+  border-radius: 28rpx;
+  font-size: 30rpx;
+  box-shadow: 0 16rpx 36rpx rgba(255, 122, 47, 0.28);
+}

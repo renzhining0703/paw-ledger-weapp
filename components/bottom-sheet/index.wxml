@@ -1,0 +1,14 @@
+<block wx:if="{{render}}">
+  <view class="bs-mask {{closing ? 'bs-mask-out' : ''}}" catchtap="onMask" catchtouchmove="noop"></view>
+  <view class="bs-panel {{closing ? 'bs-panel-out' : ''}}" catchtap="noop" style="max-height: {{maxHpx}};">
+    <view class="bs-grabber"></view>
+    <view class="bs-head" wx:if="{{title}}">
+      <view class="flex-1">
+        <view class="bs-title">{{title}}</view>
+        <view class="bs-sub" wx:if="{{subtitle}}">{{subtitle}}</view>
+      </view>
+      <view class="bs-x" wx:if="{{closeable}}" catchtap="onMask">✕</view>
+    </view>
+    <slot></slot>
+  </view>
+</block>

@@ -1,0 +1,14 @@
+<view class="qb-mask" wx:if="{{expanded}}" catchtap="onMask" catchtouchmove="noop"></view>
+<view class="qb-panel" wx:if="{{expanded}}">
+  <view class="qb-title">随手记一件小事</view>
+  <view class="qb-sub">点一下就记好了，不用填表</view>
+  <view class="qb-grid">
+    <view class="qb-tag" wx:for="{{tags}}" wx:key="key" data-key="{{item.key}}" data-name="{{item.name}}" bindtap="onTag">
+      <image class="qb-ic" src="{{item.icon}}" mode="aspectFit"></image>
+      <text class="qb-name">{{item.name}}</text>
+    </view>
+  </view>
+</view>
+<view class="qb-fab {{expanded ? 'qb-fab-on' : ''}}" style="bottom: {{bottom}}rpx;" catchtap="toggle">
+  <view class="qb-plus {{expanded ? 'qb-plus-x' : ''}}">＋</view>
+</view>

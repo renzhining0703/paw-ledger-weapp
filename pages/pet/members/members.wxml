@@ -1,0 +1,128 @@
+<view class="members">
+  <!-- 加载失败内联错误条（不整页空白，错误可见便于定位） -->
+  <view class="members-err" wx:if="{{loadError}}">{{loadError}}</view>
+
+  <!-- 顶部宠物卡：头像 + 名字 + 共享 N/5 角标 + 品种·年龄 + 邀请进度条 -->
+  <view class="card members-pet" wx:if="{{pet}}">
+    <view class="members-pet-top">
+      <pet-avatar src="{{pet.avatar}}" species="{{pet.species}}" size="96" radius="24" tone="soft" />
+      <view class="members-pet-info">
+        <view class="members-pet-name-row">
+          <text class="t-h2">{{pet.name}}</text>
+          <text class="members-pill {{isFull ? 'members-pill--gray' : ''}}">共享 {{memberCount}}/{{maxMembers}}</text>
+        </view>
+        <view class="t-sub members-pet-sub" wx:if="{{petInfo}}">{{petInfo}}</view>
+      </view>
+    </view>
+    <view class="members-bar">
+      <view class="members-bar-track">
+        <view class="members-bar-fill {{isFull ? 'members-bar-fill--full' : ''}}" style="width: {{barPct}}%;"></view>
+      </view>
+      <text class="members-bar-label {{isFull ? 'members-bar-label--full' : ''}}">{{barLabel}}</text>
+    </view>
+  </view>
+
+  <!-- 成员列表 -->
+  <view class="members-section-title">成员 · {{memberCount}}</view>
+  <view class="card members-list" wx:if="{{members.length}}">
+    <view
+      class="members-item {{index < members.length - 1 ? 'members-item--border' : ''}}"
+      wx:for="{{members}}"
+      wx:key="_id"
+    >
+      <pet-avatar src="{{item.avatar}}" paw="{{!item.avatar}}" size="80" radius="20" />
+      <view class="members-item-info">
+        <view class="members-item-name">
+          {{item.displayName}}
+          <!-- 角色标签内容必须与 text 标签同行：text 内的换行缩进会被渲染成空白行，把文字顶到胶囊底部 -->
+          <text wx:if="{{item.role === 'owner'}}" class="members-role members-role--owner">创建者</text>
+          <text wx:else class="members-role members-role--member">成员</text>
+        </view>
+        <view class="t-sub members-item-sub">{{item.subLabel}}</view>
+      </view>
+      <view
+        wx:if="{{myRole === 'owner' && item.role !== 'owner'}}"
+        class="members-remove"
+        hover-class="members-press"
+        data-openid="{{item._openid}}"
+        data-name="{{item.nickname || '该成员'}}"
+        catchtap="onRemove"
+      >移除</view>
+    </view>
+  </view>
+  <view class="members-empty" wx:else>暂无成员</view>
+
+  <!-- 待接受邀请 -->
+  <block wx:if="{{pending.length}}">
+    <view class="members-section-title">待接受 · {{pending.length}}</view>
+    <view class="card members-pending">
+      <view
+        class="members-pending-item {{index < pending.length - 1 ? 'members-item--border' : ''}}"
+        wx:for="{{pending}}"
+        wx:key="inviteId"
+        hover-class="members-press"
+        bindtap="onPendingTap"
+        data-inviteid="{{item.inviteId}}"
+        data-label="{{item.label}}"
+        data-created="{{item.createdLabel}}"
+      >
+        <view class="members-pending-ava">🐾</view>
+        <view class="members-pending-info">
+          <view class="members-pending-id">
+            {{item.label || '邀请待接受'}}
+            <text class="members-role members-role--plain" wx:if="{{!item.label}}">未备注</text>
+          </view>
+          <view class="t-sub members-pending-time">{{item.expireLabel}}</view>
+        </view>
+        <view
+          class="members-revoke"
+          hover-class="members-press"
+          hover-stop-propagation
+          data-inviteid="{{item.inviteId}}"
+          data-label="{{item.label}}"
+          data-created="{{item.createdLabel}}"
+          catchtap="onRevoke"
+        >撤销</view>
+      </view>
+    </view>
+    <!-- 行内提示必须与标签同行：view/text 里的换行缩进会被渲染成空白行 -->
+    <view class="members-pending-hint" wx:if="{{pending.length > 1 || hasUnlabeled}}">{{pending.length > 1 ? '多条邀请长得一样，点某条写个备注就能分清发给谁' : '点这条可以写个备注，方便分清发给谁'}}</view>
+  </block>
+
+  <!-- 成员权限提示（member 视角） -->
+  <view class="members-tip" wx:if="{{myRole === 'member'}}">
+    <text class="members-tip-ic">ⓘ</text>
+    <text>成员不能移除任何人，也不能修改档案；这些只有创建者可以操作</text>
+  </view>
+
+  <!-- 通知开关（仅 member 自己；PRD 5.6 到期提醒按人推送） -->
+  <view class="members-notify" wx:if="{{myRole === 'member'}}">
+    <view class="members-notify-text">
+      <view class="t-body">接收这只宠物的提醒</view>
+      <view class="t-sub">关闭后你不再收到到期提醒，其他人不受影响</view>
+    </view>
+    <switch checked="{{myNotify}}" bindchange="onToggleNotify" color="#FF7A2F" />
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="members-foot">
+    <view class="members-tip members-tip--full" wx:if="{{isFull}}">
+      <text class="members-tip-ic">ⓘ</text>
+      <text>已经 {{maxMembers}} 个人啦，移除一位成员后才能再邀请</text>
+    </view>
+    <button
+      class="btn-primary {{isFull ? 'members-btn-disabled' : ''}}"
+      open-type="share"
+      hover-class="none"
+      disabled="{{isFull}}"
+    >{{isFull ? '已达 ' + maxMembers + ' 人上限' : '邀请家人一起记'}}</button>
+    <view class="members-foot-hint" wx:if="{{myRole === 'owner' && !isFull}}">每次邀请 7 天内有效，最多 {{maxMembers}} 人一起记</view>
+    <block wx:if="{{myRole === 'member'}}">
+      <view class="members-quit" hover-class="members-press" bindtap="onQuit">退出共享</view>
+      <view class="members-foot-hint">退出后你将看不到 {{pet.name || '它'}} 的记录，其他人不受影响</view>
+    </block>
+  </view>
+</view>
+
+<!-- 邀请分享卡离屏画布（转发时生成 5:4 卡面图） -->
+<invite-card id="inviteCard" />

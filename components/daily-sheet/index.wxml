@@ -1,0 +1,13 @@
+<!-- 记一条日常：项目选择（config.DAILY_PICK）+ 可选备注 -->
+<bottom-sheet show="{{show}}" title="记一条日常" subtitle="选个项目，备注可不填" bind:close="onClose">
+  <view class="ds-picks">
+    <view class="ds-pick {{type === item.key ? 'on' : ''}}" wx:for="{{tags}}" wx:key="key" data-k="{{item.key}}" bindtap="onType">{{item.name}}</view>
+  </view>
+
+  <view class="d-field">
+    <view class="d-field-label">备注<text class="d-field-opt">（选填）</text></view>
+    <input class="d-field-input" placeholder="{{placeholder}}" maxlength="30" value="{{note}}" bindinput="onNote" />
+  </view>
+
+  <button class="btn-primary d-save {{saving ? 'disabled' : ''}}" bindtap="onSave">{{saving ? '保存中…' : '保存'}}</button>
+</bottom-sheet>

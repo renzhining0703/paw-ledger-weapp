@@ -1,0 +1,56 @@
+.bs-mask {
+  position: fixed;
+  /* 不用 inset 简写：低版本渲染内核不支持会导致遮罩 0 尺寸、点击弹框外无效 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(44, 39, 35, 0.5);
+  z-index: 1000;
+  animation: bs-fade-in 0.24s ease both;
+}
+.bs-mask-out { animation: bs-fade-out 0.24s ease both; }
+.bs-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1001;
+  background: #fff;
+  border-radius: 48rpx 48rpx 0 0;
+  padding: 16rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  overflow-y: auto;
+  animation: bs-slide-up 0.24s ease both;
+}
+.bs-panel-out { animation: bs-slide-down 0.24s ease both; }
+.bs-grabber {
+  width: 72rpx;
+  height: 8rpx;
+  border-radius: 999rpx;
+  background: #EFE7DD;
+  margin: 8rpx auto 12rpx;
+}
+.bs-head { display: flex; align-items: flex-start; margin: 8rpx 0 20rpx; }
+.bs-title { font-size: 36rpx; font-weight: 800; color: var(--ink); }
+.bs-sub { font-size: 24rpx; color: var(--ink2); margin-top: 6rpx; }
+.bs-x {
+  /* 不依赖注入的 flex-1：直接推到最右（样式隔离下 app.wxss 工具类可能失效） */
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: var(--s-daily-bg);
+  color: var(--ink2);
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bs-body { max-height: inherit; }
+
+@keyframes bs-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bs-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bs-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes bs-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }

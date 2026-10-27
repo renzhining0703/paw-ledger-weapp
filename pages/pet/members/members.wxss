@@ -1,0 +1,156 @@
+.members {
+  min-height: 100vh;
+  padding: 24rpx 32rpx calc(48rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+/* 加载失败内联错误条 */
+.members-err {
+  margin-bottom: 24rpx;
+  padding: 20rpx 24rpx;
+  background: #FCECEC;
+  color: #A32D2D;
+  font-size: 24rpx;
+  border-radius: 20rpx;
+  word-break: break-all;
+}
+.members-press { opacity: 0.5; }
+
+/* ===== 顶部宠物卡 ===== */
+.members-pet { padding: 28rpx; }
+.members-pet-top { display: flex; align-items: center; gap: 20rpx; }
+.members-pet-info { flex: 1; min-width: 0; }
+.members-pet-name-row { display: flex; align-items: center; gap: 12rpx; }
+.members-pet-sub { font-size: 24rpx; margin-top: 4rpx; }
+
+/* 共享 N/5 角标（青色；满员置灰） */
+.members-pill {
+  font-size: 22rpx; font-weight: 400;
+  color: #1E9A80; background: #E7F7F2;
+  padding: 4rpx 14rpx; border-radius: 14rpx;
+  flex-shrink: 0;
+}
+.members-pill--gray { color: var(--ink3); background: #F1EEE8; }
+
+/* 邀请进度条（未满绿色 / 满员橙色） */
+.members-bar {
+  display: flex; align-items: center; gap: 20rpx;
+  margin-top: 24rpx;
+}
+.members-bar-track {
+  flex: 1; height: 12rpx; border-radius: 999rpx;
+  background: #EFEAE2; overflow: hidden;
+}
+.members-bar-fill {
+  height: 100%; border-radius: 999rpx;
+  background: #1E9A80;
+  transition: width 0.3s ease;
+}
+.members-bar-fill--full { background: var(--orange); }
+.members-bar-label { font-size: 22rpx; color: var(--ink3); flex-shrink: 0; }
+.members-bar-label--full { color: var(--orange-deep); }
+
+/* ===== 分组标题 ===== */
+.members-section-title {
+  font-size: 24rpx; color: var(--ink3);
+  margin: 36rpx 4rpx 16rpx;
+}
+
+/* ===== 成员列表 ===== */
+.members-list { padding: 8rpx 0; }
+.members-item {
+  display: flex; align-items: center; gap: 20rpx;
+  padding: 24rpx;
+}
+.members-item--border { border-bottom: 1rpx solid var(--line); }
+.members-item-info { flex: 1; min-width: 0; }
+.members-item-name {
+  font-size: 30rpx; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 12rpx;
+  line-height: 1.3;
+}
+/* 角色小胶囊：字号/行高/内边距全收紧，避免被撑成大方块 */
+.members-role {
+  font-size: 18rpx; line-height: 1.2;
+  padding: 4rpx 12rpx; border-radius: 999rpx;
+  font-weight: 400; flex-shrink: 0;
+  white-space: nowrap;
+}
+.members-role--owner { background: #FFF1E5; color: #E8833A; }
+.members-role--member { background: #E7F7F2; color: #1E9A80; }
+.members-role--plain { background: #F1EEE8; color: var(--ink3); }
+.members-item-sub { font-size: 22rpx; margin-top: 6rpx; }
+/* 移除（粉色胶囊，仅 owner 视角） */
+.members-remove {
+  flex-shrink: 0;
+  font-size: 26rpx; color: var(--red);
+  background: #FCECEC;
+  padding: 10rpx 28rpx; border-radius: 999rpx;
+}
+
+.members-empty {
+  text-align: center; color: var(--ink3); font-size: 26rpx;
+  padding: 60rpx 0;
+}
+
+/* ===== 待接受邀请 ===== */
+.members-pending { padding: 8rpx 0; }
+.members-pending-item {
+  display: flex; align-items: center; gap: 20rpx;
+  padding: 24rpx;
+}
+/* 虚线爪印占位头像 */
+.members-pending-ava {
+  width: 80rpx; height: 80rpx; border-radius: 50%;
+  border: 2rpx dashed var(--line-strong, #D8D0C4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36rpx; flex-shrink: 0;
+  box-sizing: border-box;
+}
+.members-pending-info { flex: 1; min-width: 0; }
+.members-pending-id {
+  font-size: 28rpx; color: var(--ink); font-weight: 700;
+  display: flex; align-items: center; gap: 12rpx; line-height: 1.3;
+}
+/* 待接受区的操作说明：多条邀请长一样，提示用户写备注 */
+.members-pending-hint { font-size: 22rpx; color: var(--ink3); margin: 12rpx 4rpx 0; }
+.members-pending-time { font-size: 22rpx; margin-top: 4rpx; }
+/* 撤销（灰色胶囊） */
+.members-revoke {
+  flex-shrink: 0;
+  font-size: 26rpx; color: var(--ink2);
+  background: #F1EEE8;
+  padding: 10rpx 28rpx; border-radius: 999rpx;
+}
+
+/* ===== 提示条（青色软底） ===== */
+.members-tip {
+  display: flex; align-items: flex-start; gap: 10rpx;
+  margin-top: 24rpx; padding: 20rpx 24rpx;
+  background: #E7F7F2; border-radius: 20rpx;
+  font-size: 24rpx; color: #1E9A80; line-height: 1.6;
+}
+.members-tip--full { margin-top: 0; margin-bottom: 24rpx; }
+.members-tip-ic { flex-shrink: 0; }
+
+/* ===== 通知开关 ===== */
+.members-notify {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 32rpx 0 0; padding: 24rpx;
+  background: var(--cream2); border-radius: 24rpx;
+}
+.members-notify-text { flex: 1; }
+.members-notify-text .t-sub { margin-top: 4rpx; }
+
+/* ===== 底部操作 ===== */
+.members-foot {
+  margin-top: 48rpx;
+  display: flex; flex-direction: column; align-items: center; gap: 24rpx;
+}
+.members-foot .btn-primary { width: 100%; }
+.members-foot .btn-primary[disabled] { opacity: 0.4; color: var(--ink2); background: #E8E2D8; }
+.members-foot-hint { font-size: 22rpx; color: var(--ink3); }
+.members-quit {
+  font-size: 28rpx; font-weight: 600; color: var(--red);
+  padding: 8rpx 48rpx;
+}
+.members-quit:active { opacity: 0.5; }

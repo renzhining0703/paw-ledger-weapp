@@ -1,0 +1,45 @@
+<!--
+  首次启动 · 协议同意弹窗（设计稿 v1.4b 重设计：品牌锚点 + 左对齐要点 + 主次按钮竖排）
+
+  ⚠️ 为什么不复用通用 ui-dialog：本版式有品牌 Logo、要点列表（部分加粗）、
+     「主按钮在上 / 次按钮在下」的竖排结构，跟 ui-dialog 的「标题 + 纯文本 + 横排双按钮」
+     完全对不上。硬塞进 ui-dialog 会把它改成只为协议服务，而设置页的清理缓存确认还在用它。
+  ⚠️ 遮罩不可点关闭、catchtouchmove 防穿透：协议弹窗必须显式选择，滑动误触不能关
+-->
+<block wx:if="{{show}}">
+  <view class="ag-mask" catchtouchmove="noop"></view>
+  <view class="ag-dlg" catchtap="noop" catchtouchmove="noop">
+    <!-- 品牌锚点：让它第一眼是「它的时光」在跟你说话，而不是一个系统授权框 -->
+    <view class="ag-logo">
+      <image class="ag-logo-ic" src="/assets/icons-svg/ic-paw-brand.svg" mode="aspectFit"></image>
+    </view>
+
+    <view class="ag-t">欢迎使用「它的时光」</view>
+    <view class="ag-s">开始记录前，先了解这几点</view>
+
+    <!-- 三条隐私要点（设计稿：橙色小圆点 + 左对齐，关键词加粗）
+         ⚠️ 一行里混排普通/加粗要用多个 text 拼，且插值必须与标签同行（换行会渲染成空白） -->
+    <view class="ag-list">
+      <view class="ag-i" wx:for="{{points}}" wx:key="pre">
+        <view class="ag-i-dot"></view>
+        <view class="ag-i-tx">{{item.pre}}<text class="ag-i-b" wx:if="{{item.b}}">{{item.b}}</text>{{item.suf}}</view>
+      </view>
+    </view>
+
+    <!-- 条款行：两个协议名可点，点了不关弹层（返回后还能接着点「同意并继续」）
+         ⚠️ 这是合规硬要求：不能只给纯文本，用户必须能在同意前读到全文 -->
+    <view class="ag-line">我已阅读并同意 <text class="ag-link" data-url="{{linkUser.url}}" catchtap="onLink">{{linkUser.text}}</text> 与 <text class="ag-link" data-url="{{linkPrivacy.url}}" catchtap="onLink">{{linkPrivacy.text}}</text></view>
+
+    <view class="ag-btn" hover-class="ag-btn-p" hover-stay-time="60" catchtap="onAgree">同意并继续</view>
+    <view class="ag-no" hover-class="ag-no-p" hover-stay-time="60" catchtap="onReject">不同意</view>
+  </view>
+</block>
+
+<!-- 拒绝后的占位层：退出成功与否都不影响用户仍有路可走 -->
+<view wx:if="{{blocked}}" class="ag-gate">
+  <image class="ag-gate-logo" src="/assets/logo/它的时光-Logo-方案A-256.png" mode="aspectFit"></image>
+  <view class="ag-gate-t">需要同意协议才能使用</view>
+  <view class="ag-gate-d">「它的时光」需要你同意《用户协议》与《隐私政策》后，才能开始记录。</view>
+  <view class="ag-gate-btn" bindtap="onReopen" hover-class="ag-gate-btnp" hover-stay-time="60">重新阅读并同意</view>
+  <view class="ag-gate-tip">不想继续使用，可直接关闭小程序</view>
+</view>

@@ -1,0 +1,51 @@
+<bottom-sheet show="{{show}}" bind:close="close" maxHeight="{{1400}}">
+  <view class="sp">
+    <!-- 生成中 -->
+    <view class="sp-loading" wx:if="{{step === 'loading'}}">
+      <view class="sp-sk sp-sk-anim"></view>
+      <view class="sp-loading-t">正在生成长图…</view>
+    </view>
+
+    <!-- 生成失败 -->
+    <view class="sp-error" wx:if="{{step === 'error'}}">
+      <view class="sp-error-t">生成失败，请重试</view>
+      <!-- 真机失败原因（点一下复制回传）：没有 vConsole 也能定位 -->
+      <view class="sp-error-s" wx:if="{{errMsg}}" bindtap="onCopyErrMsg">{{errMsg}}</view>
+      <button class="btn-soft sp-retry" bindtap="onRetry">重新生成</button>
+    </view>
+
+    <!-- 预览 -->
+    <block wx:if="{{step === 'done'}}">
+      <image class="sp-img" src="{{filePath}}" mode="widthFix" show-menu-by-longpress></image>
+      <view class="sp-btns">
+        <button class="sp-btn sp-btn-ghost" bindtap="onSave">↓ 保存到相册</button>
+        <button class="sp-btn sp-btn-main" bindtap="onShare">发给朋友</button>
+      </view>
+      <view class="sp-note">长图水印只有「它的时光」，不会带任何联系方式</view>
+
+      <!-- 触点 3：长图生成成功后出现（同日 ≤1 次）
+           文案红线：只说「看看」，绝不出现「群 / 福利 / 免费领」（PRD 附 D）
+           ⚠️ 原生 button 当可见容器（尺寸全在内联 style），视觉与布局放内部 view -->
+      <button
+        wx:if="{{csShare}}"
+        class="cs-btn sp-ask"
+        open-type="contact"
+        session-from="{{csFromShare}}"
+        bindcontact="onContact"
+        data-src="share_done"
+        hover-class="cs-btn-press"
+        hover-stop-propagation
+        style="display:block;width:100%;min-width:0;max-width:none;margin:20rpx 0 0;padding:0;border:none;background:transparent;line-height:normal;text-align:left;"
+      >
+        <view class="ask-bar-in">
+          <view class="ab-ic"><text class="ab-ic-tx">💬</text></view>
+          <view class="ab-tx">看看大家都在记什么</view>
+          <view class="ab-go"><text class="ab-go-ar">›</text></view>
+        </view>
+      </button>
+    </block>
+
+    <!-- 离屏 canvas（绘制用） -->
+    <canvas type="2d" id="shareCanvas" class="sp-canvas"></canvas>
+  </view>
+</bottom-sheet>

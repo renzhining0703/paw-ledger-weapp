@@ -1,0 +1,241 @@
+/* 问候区（裸排在米底上，不包卡片 —— 和首页头部同一套语言）
+   ⚠️ padding-left 必须补 28rpx：page-pad 是 32rpx、卡片内边距也是 28rpx，
+      补上之后头像左边缘 = 卡片内文字左边缘（32+28=60），裸排和下面第一张卡才对得齐 */
+.m-hi {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 12rpx 0 28rpx 28rpx;
+}
+.m-hi-press { opacity: 0.7; }
+.m-hi-t { font-size: 40rpx; font-weight: 800; letter-spacing: 1rpx; line-height: 1.25; }
+.m-hi-s { font-size: 24rpx; color: var(--ink2); margin-top: 8rpx; }
+.m-hi-hint { font-size: 24rpx; color: var(--orange-deep); font-weight: 600; margin-top: 8rpx; }
+
+/* 头像 + 右下角铅笔徽章（编辑入口收敛在这里，不再单独放一个白圆钮） */
+.m-ava { position: relative; width: 112rpx; height: 112rpx; flex: 0 0 auto; }
+.m-ava-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 40rpx;
+  height: 40rpx;
+  box-sizing: border-box;
+  border-radius: 50%;
+  /* 描边用页面底色（裸排在米底上），用白色会多出一个白圈 */
+  border: 4rpx solid var(--cream);
+  /* 底色用浅橙（v1.5 用户反馈：纯橙在头像照片上太重），笔尖线稿是深棕，浅底上正好 */
+  background: var(--orange-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.m-ava-pen { width: 20rpx; height: 20rpx; }
+
+/* 同步异常警示条：只在真有问题时出现（正常态不占位置）
+   ⚠️ 用红色系，不用橙色 —— 橙色在本项目是「主色/可操作」，红色才是「有事要处理」 */
+.m-warn {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-top: 24rpx;
+  padding: 22rpx 26rpx;
+  background: #FFF4F3;
+  border: 1rpx solid #FBD9D6;
+  border-radius: 28rpx;
+}
+.m-warn-ic { font-size: 30rpx; flex: 0 0 auto; }
+.m-warn-tx { flex: 1; min-width: 0; }
+.m-warn-t { font-size: 27rpx; font-weight: 700; color: #C0392B; }
+.m-warn-s { font-size: 22rpx; color: #B57C74; margin-top: 4rpx; }
+.m-warn-ar { font-size: 32rpx; color: #C0392B; flex: 0 0 auto; line-height: 1; }
+.m-warn-press { opacity: 0.85; }
+
+/* 分组列表卡：本页唯一一块白色表面，行与行靠 1rpx 分隔线分（不是各自一张卡） */
+.m-group { margin-top: 8rpx; padding: 8rpx 28rpx; }
+.m-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 30rpx 0;
+  min-height: 52rpx;
+  box-sizing: content-box;
+}
+/* 按压反馈：view 不支持 :active，必须靠 hover-class */
+.m-item-press { opacity: 0.6; }
+/* button 内部的行：padding 与 .m-item 完全一致（button 本身已内联清零 padding） */
+.m-item-flush { padding: 30rpx 0; }
+.m-sep { height: 1rpx; background: var(--line); }
+
+/* 图标容器统一 48rpx：emoji 行（🐾 🔔 💬）与线稿 svg 行（设置）左边缘才对得齐 */
+.m-item-ic {
+  width: 48rpx;
+  flex: 0 0 auto;
+  font-size: 34rpx;
+  line-height: 1.2;
+  text-align: center;
+}
+/* svg 图标走 image，尺寸必须显式写（image 默认 320×240）；34rpx = 设计稿 17pt，与 emoji 字形同高 */
+.m-item-ic-img {
+  width: 48rpx;
+  height: 34rpx;
+  flex: 0 0 auto;
+}
+/* 文字列必须能占满剩余宽度：grow 1 + min-width 0 */
+.m-item-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.m-item-t { font-size: 30rpx; font-weight: 600; }
+.m-item-sub { font-size: 22rpx; color: var(--ink3); margin-top: 6rpx; line-height: 1.35; }
+.m-item-r { margin-left: auto; font-size: 26rpx; color: var(--ink3); }
+/* 右侧数值（提醒授权次数）：等宽数字 + 主色；余额归零时改警示红，让「该补了」一眼可见 */
+.m-item-val { flex: 0 0 auto; font-size: 26rpx; font-weight: 700; color: var(--orange-deep); }
+.m-item-val.zero { color: var(--red); }
+/* 右侧箭头：设计稿是线稿 svg（字符 › 太细且位置偏上，跟设置页对不齐）
+   ⚠️ 跟在一段数字后面时要抵消 .m-item 的 20rpx 间距（设计稿箭头紧贴数字，约 4pt） */
+.m-arw {
+  width: 30rpx;
+  height: 30rpx;
+  flex: 0 0 auto;
+  margin-left: -12rpx;
+}
+/* 只有箭头、没有右侧文字的行（设置 / 客服 / 客服运营）：靠 auto 推到最右 */
+.m-arw-end { margin-left: auto; }
+
+/* 行内动作按钮（提醒授权）：不再是通栏大按钮，和右侧数值并列 */
+.m-item-btn {
+  flex: 0 0 auto;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 24rpx;
+  font-weight: 700;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+}
+.m-item-btn.hot { background: var(--orange); color: #fff; box-shadow: 0 6rpx 16rpx rgba(255, 122, 47, 0.28); }
+.m-item-btn-press { opacity: 0.8; transform: scale(0.97); }
+
+/* 推荐给养宠好友（v1.1f）
+   ⚠️ 原生 button 的宽度/布局会被 UA 样式压住：class 里的 width:100% 不生效（宽高只能靠内联 style 锁），
+   且 flex 写在 button 上会把卡片收成内容宽、文字列挤成竖排。所以 button 只做「可见的点击容器」
+   （透明背景、无边框、无内边距），视觉与 flex 布局全部交给内部 .m-share-in
+   ⚠️ 试过「view 卡片 + opacity:0 的绝对定位 button 当热区」——真机上点击完全没反应，已废弃 */
+.m-share { transition: transform 0.12s ease, opacity 0.12s ease; }
+.m-share::after { border: none; }
+.m-share-press .m-share-in { opacity: 0.9; transform: scale(0.99); }
+.m-share-in {
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  display: flex;
+  align-items: center;
+  gap: 22rpx;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24rpx 26rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(135deg, #FFF6EC, #FFE7CF);
+}
+/* 分享图标：SVG 走 base64 内联，不新增图片资源（stroke #E06A1B，与设计稿一致） */
+.m-share-ic {
+  width: 68rpx;
+  height: 68rpx;
+  flex-shrink: 0;
+  border-radius: 22rpx;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iMTcuNSIgY3k9IjUuNSIgcj0iMi42IiBzdHJva2U9IiNFMDZBMUIiIHN0cm9rZS13aWR0aD0iMS43Ii8+PGNpcmNsZSBjeD0iNi41IiBjeT0iMTIiIHI9IjIuNiIgc3Ryb2tlPSIjRTA2QTFCIiBzdHJva2Utd2lkdGg9IjEuNyIvPjxjaXJjbGUgY3g9IjE3LjUiIGN5PSIxOC41IiByPSIyLjYiIHN0cm9rZT0iI0UwNkExQiIgc3Ryb2tlLXdpZHRoPSIxLjciLz48cGF0aCBkPSJNMTUuMSA2LjkgOC45IDEwLjhNOC45IDEzLjJsNi4yIDMuOSIgc3Ryb2tlPSIjRTA2QTFCIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+");
+  background-size: 36rpx 36rpx;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 4rpx 12rpx rgba(200, 120, 50, 0.14);
+}
+/* 文字列必须能占满剩余宽度：basis 0 + grow 1 + min-width 0 */
+.m-share-tx { flex: 1 1 0%; min-width: 0; }
+.m-share-t { font-size: 27rpx; font-weight: 800; color: #B1531A; line-height: 1.25; }
+.m-share-s { font-size: 23rpx; color: #A9805B; margin-top: 4rpx; line-height: 1.35; }
+.m-share-btn {
+  flex: none;
+  font-size: 24rpx;
+  font-weight: 800;
+  color: #fff;
+  background: var(--orange);
+  padding: 14rpx 26rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 8rpx 20rpx rgba(255, 122, 47, 0.24);
+  white-space: nowrap;
+}
+
+.m-version { text-align: center; font-size: 24rpx; color: var(--ink3); padding: 48rpx 0; }
+
+/* 头像昵称弹层 */
+.m-avatar-btn { background: transparent; padding: 0; margin: 24rpx auto 0; display: flex; flex-direction: column; align-items: center; line-height: normal; border: none; }
+.m-avatar-btn::after { border: none; }
+.m-avatar-change { font-size: 26rpx; color: var(--orange-deep); margin-top: 16rpx; font-weight: 700; }
+.m-field { margin-top: 32rpx; }
+.m-field-label { font-size: 26rpx; color: var(--ink2); }
+.m-field-input {
+  background: var(--cream);
+  border-radius: 24rpx;
+  padding: 26rpx 28rpx;
+  font-size: 30rpx;
+  margin-top: 12rpx;
+}
+.m-profile-skip { text-align: center; font-size: 26rpx; color: var(--ink3); padding: 24rpx 0 8rpx; }
+/* 保存按钮与昵称输入框的间距：弹层内容本身没有行距，btn-primary 直接贴着 .m-field（v1.5 用户反馈） */
+.m-save { margin-top: 32rpx; }
+
+/* 埋点自检 */
+.m-track { max-height: 60vh; }
+.m-track-row { display: flex; padding: 16rpx 4rpx; border-bottom: 1rpx solid var(--line); }
+.m-track-ev { font-size: 26rpx; font-weight: 600; }
+.m-track-ev.hot { color: var(--orange-deep); }
+.m-track-time { margin-left: auto; font-size: 22rpx; color: var(--ink3); }
+.m-track-empty { text-align: center; color: var(--ink3); font-size: 26rpx; padding: 48rpx 0; }
+/* 客服运营后台入口（仅白名单账号可见） */
+.m-track-ops { margin-top: 28rpx; }
+/* 我的 openid（加第二个客服时要把这串发给运营） */
+.m-openid {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 20rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 16rpx;
+  background: #f6f7f9;
+}
+.m-openid-k { flex: none; font-size: 22rpx; color: #8a8f99; }
+.m-openid-v {
+  flex: 1;
+  min-width: 0;
+  font-size: 22rpx;
+  color: #3d4149;
+  word-break: break-all;
+}
+.m-openid-copy {
+  flex: none;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #e08a3c;
+  padding: 6rpx 12rpx;
+}
+.m-track-tip {
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  color: #8a8f99;
+  line-height: 1.6;
+}
+
+/* 运营权限诊断文字：平时也显示，用来定位「入口为什么没出来」；点击可复制 */
+.m-track-debug {
+  margin-top: 20rpx;
+  padding: 14rpx 18rpx;
+  border-radius: 12rpx;
+  background: #f6f7f9;
+  color: #8a8f99;
+  font-size: 22rpx;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+/* 客服触点 · 我的页
+   结构：button 可见容器（尺寸全在内联 style）→ 内部 view 直接复用 .m-item 行样式
+   ⚠️ 不要试图用 class 收窄原生 button 的宽度，压不住 UA 默认尺寸，必须内联 style */
+.m-cs-btn::after { border: none; }
+/* 按压态用后代选择器（button 是容器，内部没有兄弟节点可用） */
+.m-cs-btn-press .m-item { opacity: 0.6; }

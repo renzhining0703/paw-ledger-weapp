@@ -1,0 +1,71 @@
+.pf-head {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+.pf-head-info { flex: 1; min-width: 0; }
+.pf-name-row { display: flex; align-items: center; gap: 12rpx; }
+.pf-name { font-size: 34rpx; font-weight: 700; color: var(--ink); }
+/* 共享 N/5 角标（青色；满员置灰） */
+.pf-share {
+  font-size: 22rpx; font-weight: 400;
+  color: #1E9A80; background: #E7F7F2;
+  padding: 4rpx 14rpx; border-radius: 14rpx;
+  flex-shrink: 0;
+}
+.pf-share--full { color: var(--ink3); background: #F1EEE8; }
+.pf-sub { font-size: 24rpx; color: var(--ink2); margin-top: 6rpx; }
+.pf-members-btn {
+  flex-shrink: 0;
+  font-size: 26rpx; font-weight: 600;
+  color: var(--orange-deep); background: var(--orange-soft);
+  padding: 14rpx 24rpx; border-radius: 999rpx;
+}
+.pf-press { opacity: 0.6; }
+
+/* 信息卡 */
+.pf-fields { position: relative; margin-top: 20rpx; padding: 8rpx 28rpx; }
+.pf-fields-press { opacity: 0.75; }
+.pf-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28rpx 0;
+}
+.pf-row + .pf-row { border-top: 1rpx solid var(--line); }
+.pf-label { font-size: 28rpx; color: var(--ink); }
+.pf-val { font-size: 28rpx; color: var(--ink); }
+.pf-val-row { display: flex; align-items: center; gap: 12rpx; }
+/* 「当前体重」回落到初始体重时的说明胶囊（中性灰，沿用共享页既有体系，不引入新色） */
+.pf-val-tag {
+  font-size: 20rpx; font-weight: 400;
+  padding: 4rpx 12rpx; border-radius: 999rpx;
+  background: #F1EEE8; color: var(--ink3);
+}
+/* owner 编辑入口（设计图无独立编辑按钮，用行内小字提示可点） */
+.pf-edit-hint {
+  position: absolute; right: 28rpx; top: -14rpx;
+  font-size: 22rpx; color: var(--ink3);
+  background: var(--cream2);
+  padding: 4rpx 16rpx; border-radius: 999rpx;
+}
+
+/* 成员只读提示条（青色软底） */
+.pf-tip {
+  display: flex; align-items: flex-start; gap: 10rpx;
+  margin-top: 20rpx; padding: 20rpx 24rpx;
+  background: #E7F7F2; border-radius: 20rpx;
+  font-size: 24rpx; color: #1E9A80; line-height: 1.6;
+}
+.pf-tip-ic { flex-shrink: 0; }
+
+/* 底部操作 */
+.pf-foot {
+  margin-top: 64rpx;
+  display: flex; flex-direction: column; align-items: center; gap: 20rpx;
+}
+.pf-foot .btn-primary { width: 100%; }
+.pf-foot-hint { font-size: 22rpx; color: var(--ink3); }
+.pf-delete {
+  font-size: 28rpx; font-weight: 600; color: var(--red);
+  padding: 16rpx 48rpx;
+}
+.pf-delete:active { opacity: 0.5; }

@@ -1,0 +1,24 @@
+<bottom-sheet show="{{show}}" title="切换宠物" subtitle="{{subtitle || '共 ' + pets.length + ' 只毛孩子'}}" bind:close="onClose">
+  <scroll-view class="ps-list" scroll-y scroll-top="{{scrollTop}}" enhanced show-scrollbar="{{false}}">
+    <view
+      wx:for="{{items}}"
+      wx:key="_id"
+      class="ps-item {{item._id === currentId ? 'ps-on' : ''}}"
+      data-id="{{item._id}}"
+      bindtap="onSelect"
+      hover-class="ps-item-press"
+    >
+      <!-- small-src：88rpx 这一档用上传时生成的小图档，列表一次 5 只宠物能省掉 1MB+ 下行 -->
+      <pet-avatar size="{{88}}" radius="{{24}}" tone="soft" species="{{item.species}}" src="{{item.avatar}}" small-src="{{item.avatarSmall}}" />
+      <view class="flex-1">
+        <view class="ps-name">
+          {{item.name}}
+          <text class="ps-share" wx:if="{{item.isShared}}">共享</text>
+        </view>
+        <view class="ps-info" wx:if="{{item.info}}">{{item.info}}</view>
+      </view>
+      <view class="ps-check" wx:if="{{item._id === currentId}}">✓</view>
+    </view>
+  </scroll-view>
+  <button class="btn-primary ps-add" wx:if="{{!hideAdd}}" bindtap="onAdd">＋ 添加宠物</button>
+</bottom-sheet>

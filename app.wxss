@@ -1,0 +1,186 @@
+/**
+ * 它的时光 · 全局样式与设计令牌
+ * 规范依据：设计稿《视觉规范页》v1.0（375pt 基准，1px = 2rpx）
+ */
+page {
+  /* 色板 */
+  --cream: #FDF8F2;          /* 页面底 */
+  --cream2: #F7F1EA;         /* 页面底加深（分段控件/物种格子底色） */
+  --card: #FFFFFF;           /* 卡片 */
+  --orange: #FF7A2F;         /* 主色暖橙 */
+  --orange-deep: #F2600A;    /* 主色深态 */
+  --orange-soft: #FFF0E4;    /* 主色浅底 */
+  --teal: #2FB398;           /* 辅助青（成功/已同步） */
+  --red: #F0483E;            /* 警示红 */
+  --ink: #2C2723;            /* 墨色主文字 */
+  --ink2: #8C8177;           /* 次级文字 */
+  --ink3: #B6ACA2;           /* 弱化/占位 */
+  --line: #F1E9E1;           /* 分隔线 */
+  /* 语义色 */
+  --s-vac: #4A7DE0;          /* 疫苗蓝 */
+  --s-vac-bg: #EAF1FE;
+  --s-dew: #1E9A80;          /* 驱虫青 */
+  --s-dew-bg: #E7F7F2;
+  --s-wt: #2FA36B;           /* 体重绿 */
+  --s-wt-bg: #E7F5EE;
+  --s-bd: #D99000;           /* 生日琥珀 */
+  --s-bd-bg: #FFF3E0;
+  --s-home: #E06A1B;         /* 到家日暖橙 */
+  --s-daily: #8C8177;        /* 日常中性灰 */
+  --s-daily-bg: #F2EFEA;
+  --s-ck: #7B61FF;           /* 体检紫 */
+  --s-ck-bg: #F1EEFF;
+  --mile-bg: #FFFDF9;        /* 里程碑浅底 */
+  --mile-line: #EFE4D7;
+  /* 「✨ 自动记录」角标专用：比 --s-daily-bg 更深一档。
+     旧值 #F2EFEA 底 + #8C8177 字在 #FFFCF5 里程碑卡上对比度仅 ~3.4（低于 AA），
+     几乎看不出是个标签；这里提到 ~5.6 才立得住。仍是中性灰，不占语义色 */
+  --auto-bg: #E6DFD3;
+  --auto-fg: #5C534A;
+  --auto-line: #CFC2B0;
+
+  background: var(--cream);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  font-size: 28rpx;
+  line-height: 1.5;
+}
+
+/* ---------- 通用布局 ---------- */
+.page-pad { padding: 24rpx 32rpx 0; }
+.flex-row { display: flex; flex-direction: row; align-items: center; }
+.flex-1 { flex: 1; min-width: 0; }
+
+/* ---------- 卡片 ---------- */
+.card {
+  background: var(--card);
+  border-radius: 36rpx;
+  padding: 28rpx;
+  box-shadow: 0 8rpx 28rpx rgba(150, 120, 90, 0.07);
+  box-sizing: border-box;
+}
+
+/* ---------- 按钮 ---------- */
+.btn-primary {
+  background: var(--orange);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 700;
+  border-radius: 24rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  line-height: normal;
+}
+.btn-primary::after { border: none; }
+.btn-primary.disabled { opacity: 0.4; }
+.btn-primary:active { background: var(--orange-deep); }
+
+.btn-soft {
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 28rpx;
+  font-weight: 700;
+  border-radius: 24rpx;
+  height: 88rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  line-height: normal;
+}
+.btn-soft::after { border: none; }
+
+.btn-text-danger {
+  background: transparent;
+  border: none;
+  color: var(--red);
+  font-size: 28rpx;
+  padding: 24rpx;
+  line-height: normal;
+}
+.btn-text-danger::after { border: none; }
+
+/* ---------- 文本 ---------- */
+.t-h1 { font-size: 40rpx; font-weight: 800; }
+.t-h2 { font-size: 32rpx; font-weight: 700; }
+.t-body { font-size: 28rpx; }
+.t-sub { font-size: 24rpx; color: var(--ink2); }
+.t-mini { font-size: 24rpx; color: var(--ink3); }
+.t-num { font-family: 'DIN Alternate', 'SF Pro Display', -apple-system, sans-serif; font-variant-numeric: tabular-nums; }
+
+/* ---------- chip ---------- */
+.chip {
+  height: 56rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: #fff;
+  border: 1rpx solid var(--line);
+  font-size: 24rpx;
+  color: var(--ink2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.chip.on {
+  background: var(--orange-soft);
+  border-color: var(--orange);
+  color: var(--orange-deep);
+  font-weight: 700;
+}
+
+/* ---------- 分组标题 ---------- */
+.sec-head {
+  display: flex;
+  align-items: center;
+  margin: 32rpx 0 20rpx;
+}
+.sec-title { font-size: 32rpx; font-weight: 700; color: var(--ink); }
+.sec-more { margin-left: auto; font-size: 24rpx; color: var(--ink2); }
+
+/* ---------- 内联错误条 ---------- */
+.inline-error {
+  background: #FFF4F3;
+  color: var(--red);
+  border-radius: 24rpx;
+  padding: 22rpx 28rpx;
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  margin: 24rpx 0;
+}
+
+/* ---------- 语义色标签 ---------- */
+.tag {
+  font-size: 20rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.tag-vac { background: var(--s-vac-bg); color: var(--s-vac); }
+.tag-dew { background: var(--s-dew-bg); color: var(--s-dew); }
+.tag-wt { background: var(--s-wt-bg); color: var(--s-wt); }
+.tag-bd { background: var(--s-bd-bg); color: var(--s-bd); }
+.tag-home { background: var(--orange-soft); color: var(--s-home); }
+.tag-daily { background: var(--s-daily-bg); color: var(--s-daily); }
+.tag-ck { background: var(--s-ck-bg); color: var(--s-ck); }
+/* 图文（PRD v2.1）：暖橙 —— 语义上区分「人亲手写的记录」与「系统自动生成的记录」
+   ⚠️ 这是第 6 个语义色，别和「到家日」的橙色混淆：到家日是标签文字，图文是整类记录 */
+.tag-moment { background: #FFEADB; color: #C74A08; }
+/* 「自动记录」角标：中性灰底 + 深灰字，不占语义色
+   （紫已给体检；也不让里程碑比真实记录更抢眼） */
+.tag-auto {
+  background: var(--auto-bg);
+  color: var(--auto-fg);
+  border: 1rpx dashed var(--auto-line);
+  font-weight: 400;
+}
+
+/* 安全区占位 */
+.safe-bottom { padding-bottom: calc(24rpx + env(safe-area-inset-bottom)); }
+/* 悬浮快记球让位：避免遮挡列表最后一项 */
+.fab-space { height: 160rpx; }

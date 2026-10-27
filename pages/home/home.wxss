@@ -1,0 +1,549 @@
+/* ============ 启动加载 / 失败 ============ */
+.launch {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFF2E5 55%, #FDF8F2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* 装饰爪印（对齐设计稿：左下 / 右中，低透明度 + 旋转） */
+.launch-deco {
+  position: absolute;
+  font-size: 44rpx;
+  opacity: 0.32;
+  color: #F2A65A;
+}
+.launch-deco.d1 { left: 84rpx; bottom: 30%; transform: rotate(-20deg); }
+.launch-deco.d2 { right: 88rpx; top: 31%; transform: rotate(14deg); }
+.launch-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+/* Logo：呼吸光环（对齐设计稿 ::after breathe 2.4s） */
+.launch-logo {
+  position: relative;
+  width: 224rpx;
+  height: 224rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.launch-logo image {
+  width: 224rpx;
+  height: 224rpx;
+  border-radius: 52rpx;
+  box-shadow: 0 28rpx 64rpx rgba(255, 140, 70, 0.3);
+}
+.launch-logo-halo {
+  position: absolute;
+  top: -28rpx;
+  right: -28rpx;
+  bottom: -28rpx;
+  left: -28rpx;
+  border-radius: 80rpx;
+  border: 4rpx solid rgba(255, 122, 47, 0.18);
+  animation: halo-breathe 2.4s ease-in-out infinite;
+}
+@keyframes halo-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.85; }
+  50% { transform: scale(1.14); opacity: 0.3; }
+}
+.launch-name { font-size: 48rpx; font-weight: 800; margin-top: 32rpx; letter-spacing: 4rpx; }
+.launch-slogan { font-size: 24rpx; color: var(--ink2); margin-top: 16rpx; }
+/* 三点：跳跃动效（对齐设计稿 jump，错峰 0.16s） */
+.launch-dots { display: flex; gap: 14rpx; margin-top: 72rpx; }
+.launch-dots text {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: #FFB067;
+  animation: dot-jump 1.1s ease-in-out infinite;
+}
+.launch-dots text:nth-child(2) { animation-delay: 0.16s; }
+.launch-dots text:nth-child(3) { animation-delay: 0.32s; }
+@keyframes dot-jump {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50% { transform: translateY(-14rpx); opacity: 1; }
+}
+.launch-progress-text { font-size: 26rpx; color: var(--ink2); margin-top: 24rpx; }
+.launch-bar { width: 264rpx; height: 8rpx; border-radius: 999rpx; background: #F3E4D5; margin-top: 20rpx; overflow: hidden; }
+.launch-bar-in {
+  height: 100%;
+  width: 42%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #FFB067, #FF7A2F);
+  animation: bar-move 1.4s ease-in-out infinite;
+}
+@keyframes bar-move { 0% { transform: translateX(-100%); } 100% { transform: translateX(320%); } }
+.launch-foot { font-size: 22rpx; color: var(--ink3); padding-bottom: calc(48rpx + env(safe-area-inset-bottom)); }
+
+.launch-cloud { font-size: 120rpx; }
+.launch-err-title { font-size: 34rpx; font-weight: 800; margin-top: 24rpx; }
+.launch-err-desc { font-size: 26rpx; color: var(--ink2); margin-top: 16rpx; text-align: center; line-height: 1.8; }
+.launch-btn { margin-top: 56rpx; width: 420rpx; }
+.launch-offline { background: transparent; border: none; font-size: 28rpx; color: var(--ink2); margin-top: 24rpx; line-height: normal; }
+.launch-offline::after { border: none; }
+
+/* ============ 沉浸式头部（仅首页，PRD 6.8） ============ */
+.hero {
+  background: linear-gradient(170deg, #FFC894 0%, #FFDDC0 45%, #FDF8F2 100%);
+  padding-bottom: 4rpx;
+}
+.hero-nav { display: flex; align-items: center; padding: 0 32rpx; }
+
+/* ============ 名片卡 ============ */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx 32rpx 8rpx;
+}
+/* 名字过长时省略，不能把右侧动作组挤出去 */
+.profile .flex-1 { min-width: 0; }
+.profile-name-row { display: flex; align-items: center; gap: 12rpx; min-width: 0; }
+.profile-name {
+  font-size: 38rpx;
+  font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.profile-gender {
+  font-size: 22rpx;
+  color: #fff;
+  background: #5B8DEF;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.profile-gender.f { background: #FF7BA3; }
+.profile-gender-ic { width: 20rpx; height: 20rpx; display: block; }
+.profile-info { font-size: 24rpx; color: var(--ink2); margin-top: 6rpx; }
+/* 右上角动作组：切换宠物圆钮 + 亲友入口胶囊（对齐设计 v1.1d，间距 6pt = 12rpx） */
+.profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 0 0 auto;
+}
+.profile-switch {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4rpx 12rpx rgba(190, 140, 90, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: var(--ink2);
+  flex-shrink: 0;
+}
+/* 亲友入口两态胶囊：白 74% 底 + 暖棕字（#9A7F63 取自设计稿，不并入 ink 色阶） */
+.profile-invite {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.74);
+  flex-shrink: 0;
+}
+.profile-invite-tx {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #9A7F63;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.profile-invite-arrow { font-size: 22rpx; color: #9A7F63; line-height: 1; }
+/* 双人线性图标（15pt = 30rpx；SVG 走 base64 内联，不新增图片资源，颜色与文字同为 #9A7F63） */
+.profile-invite-ic {
+  width: 30rpx;
+  height: 30rpx;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSI+PGNpcmNsZSBjeD0iOC42IiBjeT0iOC4yIiByPSIzLjEiIHN0cm9rZT0iIzlBN0Y2MyIgc3Ryb2tlLXdpZHRoPSIxLjciLz48cGF0aCBkPSJNMy4yIDE5LjRjLjYtMy4xIDIuNy00LjcgNS40LTQuN3M0LjggMS42IDUuNCA0LjciIHN0cm9rZT0iIzlBN0Y2MyIgc3Ryb2tlLXdpZHRoPSIxLjciIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0xNi40IDUuOWEzLjEgMy4xIDAgMCAxIDAgNS4yTTE3LjkgMTQuOWMyIC43IDMuMiAyLjIgMy42IDQuNSIgc3Ryb2tlPSIjOUE3RjYzIiBzdHJva2Utd2lkdGg9IjEuNyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+/* 整卡按压态：轻微下沉 + 变暗（小程序 view 不支持 :active，一律走 hover-class） */
+.profile, .profile-stats {
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+.profile-press {
+  opacity: 0.88;
+  transform: scale(0.985) translateY(1rpx);
+}
+.profile-btn-press { opacity: 0.6; }
+.profile-stats {
+  display: flex;
+  padding: 16rpx 32rpx 28rpx;
+}
+.profile-stat { flex: 1; text-align: center; }
+.profile-stat-v { font-size: 30rpx; font-weight: 800; }
+.profile-stat-l { font-size: 22rpx; color: var(--ink2); margin-top: 4rpx; }
+
+/* ============ 提醒回捞条 ============ */
+.home-inline-error { margin: 24rpx 32rpx 0; }
+.recover {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  background: #FFF4E5;
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
+  margin: 24rpx 32rpx 0;
+}
+.recover-ic { font-size: 30rpx; }
+.recover-t { flex: 1; font-size: 26rpx; color: var(--ink); }
+.recover-btn {
+  background: var(--orange);
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 700;
+  border-radius: 999rpx;
+  padding: 8rpx 24rpx;
+}
+
+/* ============ 倒计时卡 ============ */
+.due-card { margin: 24rpx 32rpx 0; padding: 24rpx 28rpx; }
+.due-head { display: flex; align-items: center; font-size: 26rpx; font-weight: 700; }
+.due-badge {
+  margin-left: auto;
+  font-size: 20rpx;
+  color: var(--teal);
+  background: #E7F5F0;
+  border-radius: 999rpx;
+  padding: 4rpx 16rpx;
+  font-weight: 400;
+}
+.due-body { display: flex; gap: 20rpx; margin-top: 20rpx; }
+.due-cell {
+  flex: 1;
+  border-radius: 24rpx;
+  padding: 22rpx 24rpx;
+}
+.due-vac { background: var(--orange-soft); }
+.due-dew { background: #E7F5F0; }
+.due-type { font-size: 22rpx; color: var(--orange-deep); font-weight: 700; }
+.due-type.dew { color: var(--s-dew); }
+.due-main { display: flex; align-items: baseline; gap: 12rpx; margin-top: 10rpx; }
+.due-days {
+  font-size: 52rpx;
+  font-weight: 800;
+  color: var(--orange-deep);
+  font-variant-numeric: tabular-nums;
+  /* 「今天到期」4 字占 208rpx，格子内宽只有 257rpx：
+     必须禁止换行并锁定自身宽度，否则会被同行的胶囊压成竖排 */
+  white-space: nowrap;
+  flex: none;
+}
+.due-days.dew-t { color: var(--s-dew); }
+/* 逾期最多显示到第 7 天（>7 天降级为「待更新」），最长文案「逾期 7 天」52rpx 下 79px，
+   格子内容宽 128px 放得下 —— 不需要为它单独降字号，保持各格视觉统一 */
+.due-days.overdue { color: var(--red); }
+/* 逾期超 7 天降级为中性色：长期红字只会制造愧疚，反而把人推走 */
+.due-days.muted { color: var(--ink3); }
+/* 日期 + 状态胶囊的同一行：胶囊从大字旁边挪到这里，给「今天到期」让出整行 */
+.due-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8rpx;
+  margin-top: 6rpx;
+}
+.due-date { font-size: 22rpx; color: var(--ink2); flex: none; }
+.due-tag {
+  font-size: 20rpx;
+  border-radius: 999rpx;
+  padding: 2rpx 12rpx;
+  flex: none;
+  white-space: nowrap;
+}
+/* 状态胶囊：实心橙，强调「马上到期」 */
+.due-tag-soon { color: #fff; background: var(--orange); }
+.due-tag-soon.dew { background: var(--s-dew); }
+/* 行动胶囊：白底橙字。⚠️ 不能用 --orange-soft（和卡片底色同色，会变成看不见的裸文字） */
+.due-tag-renew { color: var(--orange-deep); background: #fff; font-weight: 700; }
+.due-tag-renew.dew { color: var(--s-dew); background: #fff; }
+.due-none { font-size: 26rpx; color: var(--ink3); margin-top: 16rpx; }
+
+/* ============ 快捷宫格 ============ */
+.quick-grid {
+  margin: 24rpx 32rpx 0;
+  display: flex;
+  flex-direction: column;
+  padding: 32rpx 16rpx;
+}
+.quick-row {
+  display: flex;
+}
+.quick-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 24rpx;
+  color: var(--ink);
+}
+.quick-ic {
+  width: 84rpx;
+  height: 84rpx;
+  border-radius: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+}
+.q-vac { background: var(--s-vac-bg); }
+.q-dew { background: var(--s-dew-bg); }
+.q-wt { background: #F3EFFE; }
+.q-exp { background: var(--s-bd-bg); }
+
+/* 随手记行：左标签 + 常用 3 胶囊 + 「···」（v1.5，对齐设计稿 .quick2 / .pill-g / .q2more）
+   ⚠️ 胶囊比设计稿小一档（34→32pt 高、内边距 10→8、字号 12→11.5）：
+      设计稿演示全是 2 字类型，但「其他物种」默认集含 3 字的「不舒服」、
+      用户还能选 4 字的「宠物活动」，按设计稿原尺寸这一行会横向溢出约 40px */
+.quick-daily {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 32rpx;
+  padding: 0 16rpx;
+}
+.quick-daily-label { font-size: 24rpx; color: var(--ink3); flex: 0 0 auto; }
+.quick-daily-btns { margin-left: auto; display: flex; align-items: center; gap: 12rpx; }
+.quick-daily-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  height: 64rpx;
+  padding: 0 18rpx;
+  border: 2rpx solid #E8DCCB;
+  border-radius: 999rpx;
+  background: #FFFEFA;
+  font-size: 23rpx;
+  font-weight: 600;
+  color: #3A342B;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+.quick-daily-ic { width: 28rpx; height: 28rpx; display: block; }
+.quick-daily-emoji { font-size: 26rpx; line-height: 1; }
+/* 「···」更多按钮：34pt 白底圆角方块 + 3 个灰点（设计稿 .q2more） */
+.quick-daily-more {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 22rpx;
+  background: #fff;
+  border: 2rpx solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5rpx;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+.qd-dot {
+  width: 7rpx;
+  height: 7rpx;
+  border-radius: 50%;
+  background: var(--ink2);
+}
+/* view 不支持 :active，按压反馈一律 hover-class */
+.quick-daily-press { opacity: 0.6; }
+
+/* ============ 本月花销卡 ============ */
+/* 首页整体无 page-pad，各区块自行控制左右 32rpx 边距 */
+.page > .sec-head { margin: 32rpx 32rpx 20rpx; }
+.exp-card { margin: 0 32rpx; cursor: pointer; }
+.exp-top { display: flex; align-items: flex-end; }
+.exp-total { font-size: 60rpx; font-weight: 800; font-variant-numeric: tabular-nums; }
+.exp-mom { font-size: 24rpx; margin-top: 4rpx; }
+.mom-down { color: var(--teal); }
+.mom-up { color: var(--red); }
+.exp-month { margin-left: auto; font-size: 22rpx; color: var(--ink3); }
+/* 分类横条：名 + 金额 + 占比 + 一条同色占比条（替代旧的贴底细色条 + 图例） */
+.exp-row { margin-top: 24rpx; }
+.exp-row-line { display: flex; align-items: baseline; gap: 12rpx; }
+.exp-dot { width: 16rpx; height: 16rpx; border-radius: 50%; flex: 0 0 auto; align-self: center; }
+.exp-row-name { font-size: 26rpx; color: var(--ink2); }
+.exp-row-amt { margin-left: auto; font-size: 28rpx; font-weight: 700; font-variant-numeric: tabular-nums; }
+.exp-row-pct { font-size: 22rpx; color: var(--ink3); font-variant-numeric: tabular-nums; min-width: 64rpx; text-align: right; }
+.exp-row-bar {
+  height: 12rpx;
+  border-radius: 999rpx;
+  background: var(--s-daily-bg);
+  margin-top: 12rpx;
+  overflow: hidden;
+}
+.exp-row-bar-in { height: 100%; border-radius: 999rpx; }
+.exp-empty-hint { font-size: 26rpx; color: var(--ink2); margin-top: 12rpx; }
+
+/* ============ 时间线预览 ============ */
+/* ============ 成长时间线：在一起横幅（点击进时间线页） ============ */
+.tl-banner {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin: 28rpx 32rpx 20rpx;
+  padding: 24rpx 28rpx;
+  background: linear-gradient(90deg, #FFF3E6, #FFEEDD);
+  border-radius: 24rpx;
+}
+/* 图标：白底圆角方块 + 单枚橙色爪印居中（对齐设计稿；命名 bp-* 避免与组件内 .p-* 冲突） */
+.tl-banner-ic {
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 20rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  box-shadow: 0 4rpx 12rpx rgba(220, 140, 70, 0.15);
+}
+.bpaw { position: relative; width: 40rpx; height: 36rpx; }
+.bp-pad {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22rpx;
+  height: 17rpx;
+  background: #F7934F;
+  border-radius: 10rpx 10rpx 14rpx 14rpx;
+}
+.bp-toe {
+  position: absolute;
+  width: 8rpx;
+  height: 11rpx;
+  background: #F7934F;
+  border-radius: 50%;
+}
+.bp-toe.t1 { left: 2rpx; top: 7rpx; }
+.bp-toe.t2 { left: 12rpx; top: 0; }
+.bp-toe.t3 { right: 12rpx; top: 0; }
+.bp-toe.t4 { right: 2rpx; top: 7rpx; }
+.tl-banner-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+.tl-banner-t { font-size: 28rpx; font-weight: 700; color: var(--ink); }
+.tl-banner-days {
+  font-size: 52rpx;
+  font-weight: 800;
+  /* 设计稿 .ts-tx b 的取值 #E06A1B（比主色 --orange 更深一档），不是 --orange */
+  color: #E06A1B;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1rpx;
+}
+/* 记录数（对齐设计稿 .ts-go）：11pt/22rpx、700、暖棕 #A9805B；
+   ⚠️ 数字不加粗不放大 —— 早期版本把数字做成 30rpx/800/墨色，整串看起来是「灰字 + 黑数字」，
+      与设计稿的「整串统一暖棕」不一致 */
+.tl-banner-cnt {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #A9805B;
+  white-space: nowrap;
+}
+/* 发图文入口：30pt 白底圆形橙相机（对齐设计稿 v1.3） */
+.tl-cam {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  box-shadow: 0 4rpx 12rpx rgba(200, 120, 50, 0.18);
+}
+.tl-cam-ic { width: 32rpx; height: 32rpx; display: block; }
+/* view 不支持 :active；且父级锚点条本身可点，必须 hover-stop-propagation 防连父级一起亮 */
+.tl-cam-press { background: #FFEADB; transform: scale(0.94); }
+
+.tl-preview { padding: 0 32rpx; }
+.tl-all-btn {
+  text-align: center;
+  font-size: 26rpx;
+  color: var(--ink2);
+  background: #F6EFE6;
+  border-radius: 24rpx;
+  padding: 22rpx;
+  margin-top: 8rpx;
+}
+
+/* ============ 空态 ============ */
+.empty-wrap { display: flex; flex-direction: column; align-items: center; padding: 80rpx 48rpx 40rpx; }
+.empty-illus image { width: 320rpx; height: 320rpx; }
+.empty-title { font-size: 34rpx; font-weight: 800; margin-top: 16rpx; }
+.empty-desc { font-size: 26rpx; color: var(--ink2); text-align: center; line-height: 1.8; margin-top: 16rpx; }
+.empty-btn { margin-top: 48rpx; width: 440rpx; }
+.empty-note { font-size: 22rpx; color: var(--ink3); margin-top: 24rpx; }
+.empty-cards {
+  display: flex;
+  gap: 20rpx;
+  padding: 40rpx 32rpx calc(48rpx + env(safe-area-inset-bottom));
+}
+.empty-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 24rpx 20rpx;
+}
+.empty-card-ic { font-size: 36rpx; }
+.empty-card-t { font-size: 26rpx; font-weight: 700; margin-top: 12rpx; }
+.empty-card-d { font-size: 20rpx; color: var(--ink2); margin-top: 8rpx; line-height: 1.6; }
+
+/* ============ 客服触点（R1 / R6） ============
+   设计稿 .ask-bar：浅底 + 细边 + 小圆角，克制的服务入口，不是广告位。
+   ⚠️ 结构是「button 可见容器（尺寸全在内联 style）→ 内部 .ask-bar-in 承载视觉与 flex 布局」，
+      这样点击必然命中 button，又避开了原生 button 当 flex 容器被 UA 样式收窄的坑。 */
+.cs-btn::after { border: none; }
+.ask-bar-in {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: var(--cream2);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+  padding: 18rpx 24rpx;
+  box-sizing: border-box;
+}
+.ab-ic {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 16rpx;
+  background: var(--orange-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.ab-ic-tx { font-size: 24rpx; line-height: 1; }
+.ab-tx { flex: 1; min-width: 0; font-size: 25rpx; color: var(--ink2); line-height: 1.35; }
+.ab-go {
+  display: flex;
+  align-items: center;
+  gap: 2rpx;
+  font-size: 23rpx;
+  color: var(--ink2);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.ab-go-ar { font-size: 22rpx; }
+/* 按压态用后代选择器（button 是容器，内部没有兄弟节点可挂） */
+.cs-btn-press .ask-bar-in { opacity: 0.85; }

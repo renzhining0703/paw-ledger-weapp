@@ -1,0 +1,360 @@
+<!-- ============ 启动加载视图（非独立页，≤3s，PRD 5.14） ============ -->
+<view class="launch" wx:if="{{phase === 'loading'}}">
+  <text class="launch-deco d1">🐾</text>
+  <text class="launch-deco d2">🐾</text>
+  <view class="launch-center">
+    <view class="launch-logo">
+      <view class="launch-logo-halo"></view>
+      <image src="/assets/logo/它的时光-Logo-方案A-256.png" mode="aspectFit"></image>
+    </view>
+    <view class="launch-name">它的时光</view>
+    <view class="launch-slogan">疫苗驱虫提醒 · 成长足迹 · 养宠花销</view>
+    <view class="launch-dots"><text></text><text></text><text></text></view>
+    <view class="launch-progress-text">{{loadText}}</view>
+    <view class="launch-bar"><view class="launch-bar-in"></view></view>
+  </view>
+  <view class="launch-foot">铲屎官的小助手 · 它的时光</view>
+</view>
+
+<!-- ============ 加载失败 ============ -->
+<view class="launch" wx:elif="{{phase === 'error'}}">
+  <view class="launch-center">
+    <view class="launch-cloud">☁️</view>
+    <view class="launch-err-title">数据加载失败</view>
+    <view class="launch-err-desc">
+      <view>网络好像不太稳，检查一下再试一次</view>
+      <view>记录都还在，不会丢</view>
+    </view>
+    <button class="btn-primary launch-btn" bindtap="onRetry">重新加载</button>
+    <button class="launch-offline" bindtap="onOffline">先离线使用</button>
+  </view>
+  <view class="launch-foot">铲屎官的小助手 · 它的时光</view>
+</view>
+
+<view wx:else class="page">
+  <!-- ============ 沉浸式暖橙头部（仅首页） ============ -->
+  <view class="hero">
+    <view style="height: {{ui.statusBarHeight}}px;"></view>
+    <view class="hero-nav" style="height: {{ui.navBarHeight}}px;"></view>
+
+    <!-- 建档引导空态 -->
+    <block wx:if="{{phase === 'empty'}}">
+      <view class="empty-wrap">
+        <view class="empty-illus">
+          <image src="/assets/illus-png/illus-no-pet.png" mode="aspectFit"></image>
+        </view>
+        <view class="empty-title">还没有毛孩子的档案</view>
+        <view class="empty-desc">
+          <view>创建第一只宠物档案</view>
+          <view>疫苗驱虫到期前 1 天微信自动提醒你</view>
+        </view>
+        <button class="btn-primary empty-btn" bindtap="onAddPetEmpty">＋ 添加第一只宠物</button>
+        <view class="empty-note">无需注册，打开即用</view>
+      </view>
+      <view class="empty-cards">
+        <view class="empty-card">
+          <text class="empty-card-ic">💉</text>
+          <view class="empty-card-t">疫苗驱虫</view>
+          <view class="empty-card-d">到期前微信提醒，再也不会忘</view>
+        </view>
+        <view class="empty-card">
+          <text class="empty-card-ic">📈</text>
+          <view class="empty-card-t">成长记录</view>
+          <view class="empty-card-d">体重曲线，看着长大</view>
+        </view>
+        <view class="empty-card">
+          <text class="empty-card-ic">💰</text>
+          <view class="empty-card-t">养宠花销</view>
+          <view class="empty-card-d">一个月到底花在哪些地方</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- ============ 宠物名片卡 ============ -->
+    <block wx:if="{{phase === 'ready'}}">
+      <!-- 整卡可点进档案详情：按压态用 hover-class（view 不支持 :active），比按钮更符合卡片惯例 -->
+      <view class="profile" hover-class="profile-press" bindtap="onOpenProfile">
+        <pet-avatar class="profile-ava" size="{{128}}" tone="white" species="{{pet.species}}" src="{{petView.avatar}}" />
+        <view class="flex-1">
+          <view class="profile-name-row">
+            <text class="profile-name">{{petView.name}}</text>
+            <!-- 性别徽标：iOS 上 ♀♂ 字符会命中 emoji 字体、行盒变高导致圆内下坠（真机已踩），
+                 改用 SVG 图标，不依赖字体渲染 -->
+            <view class="profile-gender {{petView.isFemale ? 'f' : ''}}" wx:if="{{petView.isMale || petView.isFemale}}">
+              <image class="profile-gender-ic" src="{{petView.isMale ? '/assets/icons-svg/ic-gender-m.svg' : '/assets/icons-svg/ic-gender-f.svg'}}" mode="aspectFit" />
+            </view>
+          </view>
+          <view class="profile-info">{{petView.info}}</view>
+        </view>
+        <!-- 右上角动作组：切换宠物（圆钮）+ 亲友入口（两态胶囊）。
+             hover-stop-propagation：按子按钮时不要把按压态冒泡给整张卡（小程序默认会冒泡） -->
+        <view class="profile-actions">
+          <view class="profile-switch" hover-class="profile-btn-press" hover-stop-propagation catchtap="onSwitcher">⇄</view>
+          <!-- v1.1d：原「编辑档案」位置改为亲友入口；两态都进成员列表页（不显示头像/昵称，新用户可能没设置） -->
+          <view class="profile-invite" hover-class="profile-btn-press" hover-stop-propagation catchtap="onFamily">
+            <block wx:if="{{petView.familyCount > 0}}">
+              <view class="profile-invite-ic"></view>
+              <text class="profile-invite-tx">{{petView.familyCount}} 位亲友</text>
+              <text class="profile-invite-arrow">›</text>
+            </block>
+            <text wx:else class="profile-invite-tx">＋ 邀请亲友</text>
+          </view>
+        </view>
+      </view>
+      <view class="profile-stats" hover-class="profile-press" bindtap="onOpenProfile">
+        <view class="profile-stat">
+          <view class="profile-stat-v">{{petView.weight}}</view>
+          <view class="profile-stat-l">当前体重</view>
+        </view>
+        <view class="profile-stat">
+          <view class="profile-stat-v t-num">{{petView.birthday}}</view>
+          <view class="profile-stat-l">生日</view>
+        </view>
+        <view class="profile-stat">
+          <view class="profile-stat-v t-num">{{petView.adoptDay}}</view>
+          <view class="profile-stat-l">到家日</view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <block wx:if="{{phase === 'ready'}}">
+    <!-- 记录区块加载失败：内联提示，名片卡不受影响 -->
+    <view class="inline-error home-inline-error" wx:if="{{dataError}}" bindtap="onDataRetry">
+      记录加载失败，点此重试 ↻
+    </view>
+    <!-- ============ 提醒回捞条（条件展示） ============ -->
+    <view class="recover" wx:if="{{remindFailed}}" bindtap="onRemindRecover">
+      <text class="recover-ic">🔔</text>
+      <text class="recover-t">上次提醒没发出去，点此补授权</text>
+      <view class="recover-btn">补授权</view>
+    </view>
+
+    <!-- ============ 倒计时卡 ============ -->
+    <view class="card due-card">
+      <view class="due-head">
+        <text>⏰ 下次到期提醒</text>
+        <view class="due-badge">✓ 提醒已开启</view>
+      </view>
+      <view class="due-body">
+        <!-- 点击分层：临期/到期/逾期 → 直接弹续记（onDueTap 内部判断），更远的 → 跳健康页 -->
+        <view class="due-cell due-vac" data-t="vaccine" bindtap="onDueTap">
+          <block wx:if="{{!due.vaccine.empty}}">
+            <view class="due-type">● 疫苗{{due.vaccine.name ? ' · ' + due.vaccine.name : ''}}</view>
+            <!-- 大字单独一行：「今天到期」4 字 208rpx，跟胶囊并排会溢出 47rpx 把字挤成两行 -->
+            <view class="due-main">
+              <text class="due-days {{due.vaccine.overdue ? 'overdue' : ''}} {{due.vaccine.longOverdue ? 'muted' : ''}}">{{due.vaccine.text}}</text>
+            </view>
+            <view class="due-foot">
+              <text class="due-date">{{due.vaccine.date}}</text>
+              <view class="due-tag due-tag-soon" wx:if="{{due.vaccine.soon}}">即将到期</view>
+              <view class="due-tag due-tag-renew" wx:if="{{due.vaccine.urgent && !due.vaccine.soon && !due.vaccine.longOverdue}}">去记录 ›</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="due-type">● 疫苗</view>
+            <view class="due-none">还没记录</view>
+          </block>
+        </view>
+        <view class="due-cell due-dew" data-t="deworm" bindtap="onDueTap">
+          <block wx:if="{{!due.deworm.empty}}">
+            <view class="due-type dew">● 驱虫{{due.deworm.name ? ' · ' + due.deworm.name : ''}}</view>
+            <view class="due-main">
+              <text class="due-days dew-t {{due.deworm.overdue ? 'overdue' : ''}} {{due.deworm.longOverdue ? 'muted' : ''}}">{{due.deworm.text}}</text>
+            </view>
+            <view class="due-foot">
+              <text class="due-date">{{due.deworm.date}}</text>
+              <view class="due-tag due-tag-soon dew" wx:if="{{due.deworm.soon}}">即将到期</view>
+              <view class="due-tag due-tag-renew dew" wx:if="{{due.deworm.urgent && !due.deworm.soon && !due.deworm.longOverdue}}">去记录 ›</view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="due-type dew">● 驱虫</view>
+            <view class="due-none">还没记录</view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- ============ 快捷记录宫格 + 随手记（v1.5：常用 3 个可自选 + 「···」全类型） ============ -->
+    <view class="card quick-grid">
+      <view class="quick-row">
+        <view class="quick-item" data-kind="weight" bindtap="onQuick">
+          <view class="quick-ic q-wt">⚖️</view>
+          <text>记体重</text>
+        </view>
+        <view class="quick-item" data-kind="vaccine" bindtap="onQuick">
+          <view class="quick-ic q-vac">💉</view>
+          <text>记疫苗</text>
+        </view>
+        <view class="quick-item" data-kind="deworm" bindtap="onQuick">
+          <view class="quick-ic q-dew">🐛</view>
+          <text>记驱虫</text>
+        </view>
+        <view class="quick-item" data-kind="expense" bindtap="onQuick">
+          <view class="quick-ic q-exp">💰</view>
+          <text>记花销</text>
+        </view>
+      </view>
+      <view class="quick-daily">
+        <text class="quick-daily-label">随手记</text>
+        <view class="quick-daily-btns">
+          <!-- 常用 3 个（用户云端配置，未配置按物种默认）；点胶囊开备注弹层预选 -->
+          <view
+            class="quick-daily-btn"
+            wx:for="{{quickTags}}"
+            wx:key="key"
+            data-tag="{{item.key}}"
+            bindtap="onDaily"
+            hover-class="quick-daily-press"
+          >
+            <image wx:if="{{item.icon}}" class="quick-daily-ic" src="{{item.icon}}" mode="aspectFit"></image>
+            <text wx:else class="quick-daily-emoji">{{item.emoji}}</text>
+            <text>{{item.name}}</text>
+          </view>
+          <!-- 「···」：全部类型 + 编辑常用（daily-picker，与时光页共用） -->
+          <view class="quick-daily-more" bindtap="onDailyMore" hover-class="quick-daily-press">
+            <view class="qd-dot"></view><view class="qd-dot"></view><view class="qd-dot"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ============ 成长时间线：在一起横幅 + 预览（点横幅或底部按钮进时间线页） ============ -->
+    <view class="tl-banner" bindtap="goTimeline">
+      <view class="tl-banner-ic">
+        <view class="bpaw"><view class="bp-pad"></view><view class="bp-toe t1"></view><view class="bp-toe t2"></view><view class="bp-toe t3"></view><view class="bp-toe t4"></view></view>
+      </view>
+      <view class="tl-banner-main">
+        <text class="tl-banner-t">和{{pet.name}}在一起</text>
+        <block wx:if="{{tlDays !== null}}">
+          <text class="tl-banner-days t-num">{{tlDays}}</text>
+          <text class="tl-banner-t">天</text>
+        </block>
+      </view>
+      <!-- 记录数：设计稿里数字与「条记录」同字号同色（不单独放大），整串走 t-num 等宽数字 -->
+      <view class="tl-banner-cnt t-num">{{tlCount}} 条记录</view>
+      <!-- 发图文入口（PRD v2.1 R1 入口 ②）：catchtap 阻断锚点条的 goTimeline -->
+      <view class="tl-cam" catchtap="onOpenPost" hover-class="tl-cam-press" hover-stop-propagation>
+        <image class="tl-cam-ic" src="/assets/icons-png/icon-camera.png" mode="aspectFit" />
+      </view>
+    </view>
+    <view class="tl-preview">
+      <timeline-item wx:for="{{timeline}}" wx:key="_id" item="{{item}}" last="{{index === timeline.length - 1}}" compact="{{true}}" bind:edit="onTimelineEdit"></timeline-item>
+      <view class="tl-all-btn" bindtap="goTimeline">查看全部足迹 ›</view>
+    </view>
+
+    <!-- 触点 2：生日 / 到家周年当天出现（每人每周 ≤1 次，频次由 csMile 控制）
+         文案红线：只说「聊聊」，绝不出现「群 / 福利 / 免费领」（PRD 附 D）
+         ⚠️ 原生 button 当可见容器，尺寸全在内联 style；视觉与 flex 布局全放内部 view -->
+    <button
+      wx:if="{{csMile}}"
+      class="ask-bar ask-ms cs-btn"
+      open-type="contact"
+      session-from="{{csFromMile}}"
+      bindcontact="onContact"
+      data-src="milestone_birthday"
+      hover-class="cs-btn-press"
+      hover-stop-propagation
+      style="display:block;width:100%;min-width:0;max-width:none;margin:20rpx 0 0;padding:0;border:none;background:transparent;line-height:normal;text-align:left;"
+    >
+      <view class="ask-bar-in">
+        <view class="ab-ic"><text class="ab-ic-tx">💬</text></view>
+        <view class="ab-tx">今天也是它的日子，想聊聊吗</view>
+        <view class="ab-go">聊聊 <text class="ab-go-ar">›</text></view>
+      </view>
+    </button>
+
+    <!-- 触点 5：从「到期提醒」点进来时出现（随提醒出现，无频次限制）
+         文案红线：只说「问」，绝不出现「群 / 福利 / 免费领」（PRD 附 D） -->
+    <button
+      wx:if="{{csRemind}}"
+      class="ask-bar cs-btn"
+      open-type="contact"
+      session-from="{{csFromRemind}}"
+      bindcontact="onContact"
+      data-src="remind_landing"
+      hover-class="cs-btn-press"
+      hover-stop-propagation
+      style="display:block;width:100%;min-width:0;max-width:none;margin:20rpx 0 0;padding:0;border:none;background:transparent;line-height:normal;text-align:left;"
+    >
+      <view class="ask-bar-in">
+        <view class="ab-ic"><text class="ab-ic-tx">💬</text></view>
+        <view class="ab-tx">顺带联系客服</view>
+        <view class="ab-go"><text class="ab-go-ar">›</text></view>
+      </view>
+    </button>
+
+    <!-- ============ 本月花销卡 ============ -->
+    <view class="sec-head">
+      <view class="sec-title">本月花销</view>
+      <view class="sec-more" bindtap="goLedger">去记账 ›</view>
+    </view>
+    <view class="card exp-card" bindtap="goLedger">
+      <block wx:if="{{expense.hasData}}">
+        <view class="exp-top">
+          <view>
+            <view class="exp-total">¥{{expense.totalText}}</view>
+            <view class="exp-mom" wx:if="{{expense.hasPrev}}">
+              <text wx:if="{{expense.momDown}}" class="mom-down">较上月 ↓ {{expense.momText}}</text>
+              <text wx:elif="{{expense.momUp}}" class="mom-up">较上月 ↑ {{expense.momText}}</text>
+              <text wx:else>与上月持平</text>
+            </view>
+          </view>
+          <view class="exp-month">{{expense.monthLabel}}</view>
+        </view>
+        <!-- 分类横条：名 + 金额 + 占比（最多 3 行，按金额降序） -->
+        <view class="exp-row" wx:for="{{expense.rows}}" wx:key="key">
+          <view class="exp-row-line">
+            <text class="exp-dot" style="background: {{item.color}};"></text>
+            <text class="exp-row-name">{{item.name}}</text>
+            <text class="exp-row-amt">¥{{item.amountText}}</text>
+            <text class="exp-row-pct">{{item.pctText}}</text>
+          </view>
+          <view class="exp-row-bar">
+            <view class="exp-row-bar-in" style="width: {{item.w}}%; background: {{item.color}};"></view>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="exp-total">¥0.00</view>
+        <view class="exp-empty-hint">这个月还没给 {{pet.name || '它'}} 记过花销，点这里记一笔</view>
+      </block>
+    </view>
+
+    <view class="safe-bottom"></view>
+
+    <!-- 全局组件：切换宠物 / 录入弹层 -->
+    <pet-switcher show="{{showSwitcher}}" pets="{{pets}}" currentId="{{pet._id}}" bind:close="onSwitchClose" bind:select="onSwitchSelect" bind:add="onSwitchAdd"></pet-switcher>
+    <record-sheet id="recordSheet" bind:saved="onSheetSaved"></record-sheet>
+
+    <!-- 随手记备注弹框（常用 3 个预选，备注可选；组件内可切换项目） -->
+    <daily-sheet show="{{showDaily}}" tag-key="{{dailyTag}}" pet-id="{{pet._id}}" bind:close="onDailyClose" bind:saved="onDailySaved"></daily-sheet>
+
+    <!-- 全部日常类型 + 编辑常用（「···」入口；与时光页共用同一份 quickDaily 配置） -->
+    <daily-picker
+      show="{{showDailyPicker}}"
+      pet-name="{{pet.name}}"
+      bind:close="onDailyPickerClose"
+      bind:pick="onDailyPickerPick"
+      bind:configured="onDailyConfigured"
+    ></daily-picker>
+
+    <!-- 发图文（PRD v2.1 R1 入口 ②：时间线锚点条右侧相机） -->
+    <post-sheet
+      show="{{showPost}}"
+      pet-id="{{pet._id}}"
+      pet-name="{{postPetName}}"
+      max="{{postMax}}"
+      via="{{postVia}}"
+      bind:close="onPostClose"
+      bind:saved="onPostSaved"
+    >    </post-sheet>
+
+  </block>
+
+  <!-- 首次启动协议门禁（未同意时弹窗；拒绝后显示全屏占位层）
+       ⚠️ 必须挂在所有 phase 分支之外：放在 ready 分支里的话，
+          loading / error 态下根本不渲染（协议该在「冷启动第一眼」就出现，不是等数据回来） -->
+  <agreement-gate />
+</view>

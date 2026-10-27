@@ -1,0 +1,9 @@
+{
+  "name": "petData",
+  "version": "1.0.0",
+  "description": "宠物数据统一读写入口：membership 校验 + 数据操作 + 成员关系管理",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

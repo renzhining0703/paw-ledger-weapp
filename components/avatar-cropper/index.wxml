@@ -1,0 +1,26 @@
+<!-- 根节点：touchmove 必须 catch（防背景滚动穿透）；start/end/cancel 用 bind ——
+     实测本环境（基础库 3.8.10）下根节点 catch 接管触摸会干扰子节点 tap 合成
+     （touchstart/touchend 都正常到达、catchtap 从不触发），点击判定已改为 onTouchEnd 手动识别 -->
+<view class="ac-root" wx:if="{{render}}"
+  bindtouchstart="onTouchStart" catchtouchmove="onTouchMove" bindtouchend="onTouchEnd" bindtouchcancel="onTouchCancel">
+  <!-- 图片层：整屏可拖动，取景框内即最终头像
+       wx:if disp：规整完成前不渲染 —— src 是 http://tmp/...（已不支持），先渲一帧只会
+       每次都打出一条红色告警，污染日志判断（真正要看的 [avatar-cropper] 排障日志会被淹没） -->
+  <image wx:if="{{disp}}" class="ac-img {{closing ? 'ac-out' : ''}}" src="{{disp}}"
+    style="width: {{iw}}px; height: {{ih}}px; transform: translate({{img.left}}px, {{img.top}}px) scale({{k}});" />
+
+  <!-- 取景框：圆形遮罩，靠超大 box-shadow 压暗框外 -->
+  <view class="ac-frame {{closing ? 'ac-out' : ''}}" style="left: {{frame.x}}px; top: {{frame.y}}px; width: {{frame.s}}px; height: {{frame.s}}px;"></view>
+
+  <!-- 顶部提示 -->
+  <view class="ac-tip {{closing ? 'ac-out' : ''}}" style="top: {{frame.y - 64}}px;">拖动照片调整位置 · 双指可缩放</view>
+
+  <!-- 底部操作条：z-index 高于取景框，避免被压暗（data-act 供事件诊断日志识别目标） -->
+  <view class="ac-bar {{closing ? 'ac-out' : ''}}">
+    <view class="ac-btn ghost" hover-class="ac-hover" hover-stay-time="80" data-act="cancel" catchtap="onCancel">取消</view>
+    <view class="ac-btn primary" hover-class="ac-hover" hover-stay-time="80" data-act="confirm" catchtap="onConfirm">{{busy ? '处理中…' : '使用'}}</view>
+  </view>
+
+  <!-- 离屏画布：仅在「使用」时按取景框导出正方形图 -->
+  <canvas type="2d" id="cropCanvas" class="ac-canvas" style="width: {{frame.s}}px; height: {{frame.s}}px;"></canvas>
+</view>

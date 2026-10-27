@@ -1,0 +1,180 @@
+/* ============ 首次启动 · 协议同意弹窗（设计稿 v1.4b，1pt = 2rpx） ============
+   ⚠️ 遮罩 fixed 且显式写四边（WXSS 禁用 inset 简写，老基础库不认）
+   ⚠️ 卡片用 left/top + transform 居中：hover-class 若改 transform 会整体覆盖位移，
+      所以卡片本身不加 hover，按压反馈只加在内部按钮上 */
+.ag-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(44, 39, 35, 0.46);
+  z-index: 940;
+}
+
+.ag-dlg {
+  position: fixed;
+  left: 50%;
+  top: 44%;
+  transform: translate(-50%, -50%);
+  z-index: 941;
+  width: 604rpx;
+  box-sizing: border-box;
+  padding: 48rpx 44rpx 28rpx;
+  background: #fff;
+  border-radius: 44rpx;
+  box-shadow: 0 36rpx 88rpx rgba(60, 45, 30, 0.26);
+}
+
+/* 品牌锚点：104rpx 浅橙圆角块 + 60rpx 主色爪印 */
+.ag-logo {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 32rpx;
+  background: var(--orange-soft);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ag-logo-ic { width: 60rpx; height: 60rpx; display: block; }
+
+.ag-t {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--ink);
+  text-align: center;
+  margin-top: 24rpx;
+}
+.ag-s {
+  font-size: 24rpx;
+  color: var(--ink3);
+  text-align: center;
+  margin-top: 10rpx;
+}
+
+/* 三条要点：左对齐 + 橙色小圆点（与居中对齐的标题/条款行形成层次） */
+.ag-list {
+  margin-top: 28rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+}
+.ag-i { display: flex; align-items: flex-start; gap: 16rpx; }
+.ag-i-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: var(--orange);
+  flex: 0 0 auto;
+  margin-top: 14rpx;
+}
+.ag-i-tx {
+  flex: 1;
+  min-width: 0;
+  font-size: 25rpx;
+  color: var(--ink2);
+  line-height: 1.55;
+}
+.ag-i-b { color: var(--ink); font-weight: 700; }
+
+/* 条款行：上方细分隔线，协议名可点 */
+.ag-line {
+  margin-top: 30rpx;
+  padding-top: 26rpx;
+  border-top: 1rpx solid var(--line);
+  font-size: 25rpx;
+  color: var(--ink2);
+  text-align: center;
+  line-height: 1.5;
+}
+.ag-link { color: var(--orange-deep); font-weight: 700; }
+
+/* 主次按钮竖排：主按钮在上（设计稿明确），「不同意」弱化成可点文字 */
+.ag-btn {
+  height: 92rpx;
+  border-radius: 28rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28rpx;
+  box-shadow: 0 16rpx 36rpx rgba(255, 122, 47, 0.28);
+}
+.ag-btn-p { background: var(--orange-deep); transform: scale(0.99); }
+
+.ag-no {
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: var(--ink3);
+  font-weight: 600;
+}
+/* view 不支持 :active，按压反馈一律 hover-class */
+.ag-no-p { opacity: 0.6; }
+
+/* 拒绝后的全屏占位层 */
+.ag-gate {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 950;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 64rpx 120rpx;
+  box-sizing: border-box;
+}
+
+.ag-gate-logo {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 36rpx;
+  box-shadow: 0 16rpx 40rpx rgba(220, 140, 70, 0.22);
+}
+
+.ag-gate-t {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: var(--ink);
+  margin-top: 40rpx;
+}
+
+.ag-gate-d {
+  font-size: 26rpx;
+  color: var(--ink2);
+  line-height: 1.75;
+  text-align: center;
+  margin-top: 20rpx;
+}
+
+.ag-gate-btn {
+  margin-top: 56rpx;
+  width: 100%;
+  height: 96rpx;
+  border-radius: 24rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 24rpx rgba(255, 122, 47, 0.22);
+}
+.ag-gate-btnp { opacity: 0.88; transform: scale(0.99); }
+
+.ag-gate-tip {
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 28rpx;
+}

@@ -1,0 +1,408 @@
+/* 运营后台（R8）：隐藏页，样式从简，能用就行 */
+
+.ops-login { padding: 40rpx 32rpx; }
+.ops-login-t { font-size: 34rpx; font-weight: 800; }
+.ops-login-s { font-size: 24rpx; color: var(--ink2); margin-top: 12rpx; line-height: 1.6; }
+
+.ops-input {
+  background: var(--cream);
+  border-radius: 24rpx;
+  padding: 26rpx 28rpx;
+  font-size: 30rpx;
+  margin-top: 28rpx;
+}
+
+.ops-card { margin-top: 24rpx; padding: 32rpx 28rpx; }
+.ops-h { font-size: 30rpx; font-weight: 700; }
+.ops-h-2 { margin-top: 32rpx; }
+
+/* 分段切换 */
+.ops-seg {
+  display: flex;
+  gap: 8rpx;
+  background: var(--cream2);
+  border-radius: 24rpx;
+  padding: 8rpx;
+}
+.ops-seg-item {
+  flex: 1;
+  text-align: center;
+  font-size: 25rpx;
+  color: var(--ink2);
+  padding: 18rpx 0;
+  border-radius: 20rpx;
+}
+.ops-seg-item.on {
+  background: var(--card);
+  color: var(--orange-deep);
+  font-weight: 700;
+}
+
+/* 数据行 */
+.ops-row {
+  display: flex;
+  align-items: center;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid var(--line);
+  font-size: 26rpx;
+}
+.ops-row:last-child { border-bottom: none; }
+.ops-row-h { color: var(--ink3); font-size: 23rpx; }
+.ops-c1 { flex: 1; min-width: 0; }
+.ops-c2 { width: 100rpx; text-align: right; color: var(--ink2); }
+
+.ops-hours { display: flex; align-items: center; gap: 12rpx; margin-top: 24rpx; }
+.ops-input-sm {
+  width: 100rpx;
+  background: var(--cream);
+  border-radius: 16rpx;
+  padding: 14rpx 18rpx;
+  font-size: 28rpx;
+  text-align: center;
+}
+.ops-hours-d { font-size: 26rpx; color: var(--ink2); }
+
+.ops-area {
+  background: var(--cream);
+  border-radius: 24rpx;
+  padding: 24rpx 26rpx;
+  font-size: 28rpx;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 24rpx;
+  min-height: 160rpx;
+}
+
+.ops-tip {
+  font-size: 22rpx;
+  color: var(--ink3);
+  line-height: 1.7;
+  margin-top: 24rpx;
+}
+.ops-err { font-size: 24rpx; color: var(--red); margin-top: 20rpx; }
+.ops-btn { margin-top: 28rpx; }
+.ops-logout { text-align: center; font-size: 24rpx; color: var(--ink3); padding: 28rpx 0 4rpx; }
+
+/* 无权限 / 白名单提示 */
+.ops-login-hint {
+  margin-top: 18rpx;
+  padding: 14rpx 18rpx;
+  border-radius: 12rpx;
+  background: var(--cream2);
+  color: var(--ink3);
+  font-size: 22rpx;
+  line-height: 1.7;
+  word-break: break-all;
+}
+.ops-tip-em { display: block; margin-top: 6rpx; color: var(--orange-deep); }
+.ops-code-inline {
+  font-family: var(--font-mono, monospace);
+  font-size: 22rpx;
+  background: var(--cream2);
+  padding: 2rpx 8rpx;
+  border-radius: 8rpx;
+}
+.ops-openid {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 24rpx;
+  background: var(--cream);
+  border-radius: 16rpx;
+  padding: 18rpx 20rpx;
+}
+.ops-openid-tip {
+  margin-top: 10rpx;
+  font-size: 20rpx;
+  color: var(--ink3);
+  line-height: 1.6;
+}
+.ops-openid-k { font-size: 22rpx; color: var(--ink3); flex: none; }
+.ops-openid-v {
+  flex: 1;
+  min-width: 0;
+  font-size: 22rpx;
+  word-break: break-all;
+}
+.ops-copy {
+  flex: none;
+  font-size: 24rpx;
+  color: var(--orange-deep);
+  font-weight: 700;
+  padding: 6rpx 12rpx;
+}
+.ops-copy.sm { display: inline-block; margin-top: 8rpx; padding: 0; }
+
+/* 未锁定提醒 */
+.ops-warn {
+  margin-top: 16rpx;
+  background: var(--orange-soft);
+  border-radius: 20rpx;
+  padding: 18rpx 22rpx;
+  font-size: 22rpx;
+  color: var(--ink2);
+  line-height: 1.6;
+}
+.ops-warn-o { display: block; word-break: break-all; color: var(--orange-deep); margin-top: 6rpx; }
+
+/* 链路自检 */
+.ops-check-btn {
+  margin-top: 24rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--ink3);
+  text-decoration: underline;
+  padding: 10rpx 0;
+}
+.ops-check {
+  margin-top: 20rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 16rpx;
+  background: var(--cream2);
+}
+.ops-check-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 8rpx 0;
+}
+.ops-check-k { font-size: 22rpx; color: var(--ink2); flex: 1; min-width: 0; }
+.ops-check-v {
+  flex: none;
+  font-size: 22rpx;
+  color: var(--ink3);
+  font-family: var(--font-mono, monospace);
+}
+.ops-check-v.bad { color: var(--red); font-weight: 700; }
+.ops-check-vd {
+  margin-top: 14rpx;
+  padding-top: 14rpx;
+  border-top: 2rpx solid var(--line);
+  font-size: 22rpx;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+
+/* 会话列表 */
+.ops-sess {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 22rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.ops-sess-l { flex: 1; min-width: 0; }
+.ops-sess-t { display: flex; align-items: center; gap: 10rpx; }
+.ops-sess-who { font-size: 28rpx; font-weight: 700; }
+.ops-sess-src { font-size: 21rpx; color: var(--ink3); }
+.ops-sess-dot {
+  min-width: 32rpx;
+  height: 32rpx;
+  line-height: 32rpx;
+  text-align: center;
+  border-radius: 16rpx;
+  background: var(--red);
+  color: #fff;
+  font-size: 20rpx;
+  padding: 0 8rpx;
+  box-sizing: border-box;
+}
+.ops-sess-m {
+  font-size: 24rpx;
+  color: var(--ink2);
+  margin-top: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ops-sess-r { flex: none; font-size: 21rpx; color: var(--ink3); }
+
+/* 消息流 */
+/* 头部改成两行：第一行是返回（操作），第二行才是对话对象（信息）—— 层级要分清楚 */
+.ops-chat-head {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20rpx;
+  border-bottom: 2rpx solid var(--line);
+}
+.ops-chat-top { padding-bottom: 16rpx; }
+.ops-chat-back { display: inline-block; font-size: 27rpx; color: var(--orange-deep); font-weight: 700; }
+.ops-chat-title { font-size: 30rpx; font-weight: 700; }
+.ops-chat-id { display: flex; align-items: center; gap: 14rpx; flex: 1; min-width: 0; }
+.ops-chat-nm { display: flex; flex-direction: column; min-width: 0; }
+.ops-chat-sub { font-size: 20rpx; color: var(--ink3); font-family: var(--font-mono, monospace); }
+
+/* 头像：有图用 image，没图用昵称首字兜底（不要让列表出现空白方块） */
+.ops-av {
+  flex: none;
+  width: 76rpx;
+  height: 76rpx;
+  border-radius: 20rpx;
+  background: var(--cream2);
+}
+.ops-av.sm { width: 56rpx; height: 56rpx; border-radius: 16rpx; }
+.ops-av.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--orange-deep);
+}
+.ops-sess-id { font-size: 20rpx; color: var(--ink3); margin-top: 6rpx; }
+
+/* ⚠️ scroll-view 必须有确定高度才能 scroll-y，max-height 不生效 */
+.ops-msgs { height: 56vh; box-sizing: border-box; padding: 20rpx 0; }
+.ops-msg { display: flex; flex-direction: column; margin-bottom: 20rpx; }
+.ops-msg.in { align-items: flex-start; }
+.ops-msg.out { align-items: flex-end; }
+.ops-bubble {
+  max-width: 76%;
+  background: var(--cream2);
+  border-radius: 20rpx;
+  padding: 18rpx 22rpx;
+  font-size: 28rpx;
+  line-height: 1.5;
+  word-break: break-all;
+}
+.ops-msg.out .ops-bubble { background: var(--orange); color: #fff; }
+.ops-msg-t { font-size: 20rpx; color: var(--ink3); margin-top: 8rpx; }
+
+/* 发送框 */
+.ops-send { display: flex; align-items: center; gap: 16rpx; }
+.ops-send-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--cream);
+  border-radius: 36rpx;
+  padding: 0 28rpx;
+  height: 72rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+.ops-send-btn { border-radius: 36rpx; }
+.ops-send-btn-press { opacity: 0.85; }
+
+.ops-empty { text-align: center; font-size: 24rpx; color: var(--ink3); padding: 48rpx 0; }
+
+/* 素材行 */
+.ops-code {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.ops-code-h { font-size: 28rpx; font-weight: 700; width: 80rpx; flex: none; }
+.ops-code-s { flex: 1; min-width: 0; font-size: 24rpx; color: var(--ink2); }
+.ops-pick { border-radius: 32rpx; }
+.ops-pick.hot { background: var(--orange); color: #fff; }
+.ops-pick-press { opacity: 0.8; transform: scale(0.985); }
+
+/* ---- 内容审核区块（PRD《内容安全与风控》附 B：沿用本页现有样式，不新开设计） ---- */
+.ops-ms {
+  display: flex;
+  gap: 8rpx;
+  background: var(--cream2);
+  border-radius: 20rpx;
+  padding: 8rpx;
+  margin-bottom: 20rpx;
+}
+.ops-ms-item {
+  flex: 1;
+  text-align: center;
+  font-size: 25rpx;
+  color: var(--ink2);
+  padding: 14rpx 0;
+  border-radius: 16rpx;
+}
+.ops-ms-item.on {
+  background: var(--card);
+  color: var(--orange-deep);
+  font-weight: 700;
+}
+.ops-ms-press { opacity: 0.7; }
+
+.ops-mod {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16rpx;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid var(--line);
+}
+.ops-mod-th {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 16rpx;
+  background: var(--cream2);
+  flex: none;
+}
+.ops-mod-b { flex: 1; min-width: 0; }
+.ops-mod-t { font-size: 27rpx; font-weight: 600; color: var(--ink); }
+.ops-mod-s { font-size: 23rpx; color: var(--ink2); margin-top: 4rpx; }
+.ops-mod-acts { width: 100%; display: flex; gap: 12rpx; margin-top: 12rpx; }
+.ops-mod-btn {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--cream2);
+  border-radius: 16rpx;
+  padding: 16rpx 0;
+}
+.ops-mod-btn.danger { background: var(--red); color: #fff; }
+.ops-mod-btn.ghost { background: transparent; color: var(--ink2); box-shadow: inset 0 0 0 2rpx var(--line); }
+/* view 不支持 :active，按压反馈一律 hover-class */
+.ops-mod-btn-press { opacity: 0.8; }
+.ops-selftest {
+  margin-top: 16rpx;
+  background: var(--cream2);
+  border-radius: 16rpx;
+  padding: 18rpx 22rpx;
+}
+.ops-selftest-l {
+  font-size: 23rpx;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+/* ===== 数据看板（大盘 / 用户 / 触点） ===== */
+/* 今日实时 KPI 卡 */
+.ops-kpi { background: var(--cream2); border-radius: 18rpx; padding: 22rpx 24rpx; }
+.ops-kpi-t { font-size: 26rpx; font-weight: 700; color: var(--ink); }
+.ops-kpi-live { font-size: 22rpx; font-weight: 400; color: var(--orange-deep); margin-left: 12rpx; }
+.ops-kpi-g { display: flex; margin-top: 16rpx; }
+.ops-kpi-i { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.ops-kpi-n { font-size: 40rpx; font-weight: 800; color: var(--ink); line-height: 1.1; }
+.ops-kpi-l { font-size: 22rpx; color: var(--ink2); margin-top: 4rpx; }
+.ops-kpi-s { font-size: 22rpx; color: var(--ink2); margin-top: 14rpx; }
+
+/* 按天行 + DAU 横条 */
+.ops-stat-row { padding: 10rpx 0; border-bottom: 2rpx solid var(--line); }
+.ops-stat-row:last-child { border-bottom: none; }
+.ops-stat-row.live .ops-c1 { color: var(--orange-deep); font-weight: 700; }
+.ops-dbar { height: 10rpx; background: var(--cream2); border-radius: 5rpx; margin-top: 8rpx; overflow: hidden; }
+.ops-dbar-in { height: 100%; background: var(--orange); border-radius: 5rpx; }
+
+/* 用户明细 */
+.ops-user { padding: 16rpx 0; border-bottom: 2rpx solid var(--line); }
+.ops-user:last-child { border-bottom: none; }
+.ops-user-main { display: flex; align-items: center; gap: 16rpx; }
+.ops-user-b { flex: 1; min-width: 0; }
+.ops-user-t { font-size: 27rpx; font-weight: 600; color: var(--ink); }
+.ops-user-tail { font-size: 21rpx; font-weight: 400; color: var(--ink2); margin-left: 8rpx; }
+.ops-user-s { font-size: 22rpx; color: var(--ink2); margin-top: 4rpx; }
+.ops-user-nums { display: flex; flex-direction: column; align-items: flex-end; gap: 4rpx; }
+.ops-user-nums text { font-size: 21rpx; color: var(--ink2); }
+
+/* 展开的逐次打开记录 */
+.ops-visits { margin-top: 12rpx; background: var(--cream2); border-radius: 14rpx; padding: 14rpx 18rpx; }
+.ops-visits-h { font-size: 22rpx; font-weight: 700; color: var(--ink); margin-bottom: 8rpx; }
+.ops-visits-row { display: flex; align-items: center; gap: 14rpx; padding: 6rpx 0; }
+.ops-visits-t { font-size: 23rpx; color: var(--ink); min-width: 220rpx; }
+.ops-visits-sc { font-size: 22rpx; color: var(--ink2); flex: 1; }
+.ops-visits-n { font-size: 22rpx; color: var(--orange-deep); font-weight: 700; }
+.ops-visits-tip { font-size: 20rpx; color: var(--ink2); margin-top: 8rpx; }

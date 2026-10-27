@@ -1,0 +1,148 @@
+/* 相册网格（从 pages/album/album.wxss 平移，1pt = 2rpx）
+   ⚠️ 根节点不写 display：外部用 hidden 隐藏，根节点自带 display 会盖掉 [hidden]{display:none} */
+/* ⚠️ 左右内边距必须留在这里：原来挂在页面的 .alb-page 上（padding: 0 32rpx），
+   抽成组件后那个容器没了 → 网格会直接贴屏幕左边缘、右侧空一大条 */
+.ag-wrap { display: block; padding: 0 32rpx; box-sizing: border-box; }
+
+/* 月份标题：吸顶 top 由页面传（时光页三层吸顶：沉浸式导航 + 分段 + 月份）
+   ⚠️ sticky 只能挂普通 view，别挪到有横向滚动的容器里（iOS 上会被合成层吃掉） */
+.alb-mon {
+  font-size: 30rpx;
+  font-weight: 800;
+  color: var(--ink);
+  padding: 26rpx 4rpx 16rpx;
+  position: sticky;
+  background: var(--cream);
+  z-index: 9;
+}
+.alb-mon-n { font-size: 22rpx; color: var(--ink3); font-weight: 400; margin-left: 12rpx; }
+
+/* 3 列网格：间距 6pt
+   ⚠️ width 与 padding-bottom 必须成对写在这里（只给 pb 会横向溢出） */
+.alb-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.alb-cell {
+  position: relative;
+  width: calc((100% - 24rpx) / 3);
+  height: 0;
+  padding-bottom: calc((100% - 24rpx) / 3);
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #f1e7dc;
+}
+.alb-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 私密小锁：图片右下角 16pt，白色半透明底 + 投影，克制不破坏网格观感 */
+.alb-lk {
+  position: absolute;
+  right: 10rpx;
+  bottom: 10rpx;
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 2rpx 8rpx rgba(60, 45, 30, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.alb-lk-ic { width: 20rpx; height: 20rpx; display: block; }
+
+/* 骨架 */
+.alb-grid.sk { margin-top: 16rpx; }
+.sk-cell { background: #EFE6DB; }
+.sk-anim { animation: alb-pulse 1.2s ease-in-out infinite; }
+@keyframes alb-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* 收尾 */
+.alb-more {
+  text-align: center;
+  font-size: 24rpx;
+  color: var(--ink3);
+  padding: 28rpx 0;
+}
+.alb-end { padding: 52rpx 20rpx 8rpx; text-align: center; }
+.alb-end-ln {
+  width: 88rpx;
+  height: 4rpx;
+  border-radius: 4rpx;
+  background: #E6DCCF;
+  margin: 0 auto 28rpx;
+}
+.alb-end-d { font-size: 24rpx; color: var(--ink2); font-weight: 600; }
+.alb-end-s { font-size: 22rpx; color: var(--ink3); margin-top: 10rpx; }
+
+/* 底部留白交给使用方页面（时光页 .tl-page 已有 padding-bottom），这里不再叠加一层 */
+/* 传照片 FAB：底部**居中**，与「足迹」分段的「＋ 记一条」完全同款（尺寸/字号/位置一致），
+   这样切分段时按钮位置不跳。原来在右下角（照搬 album 页），在 tab 承载页里视觉是偏的 */
+.alb-fab {
+  position: fixed;
+  left: 50%;
+  bottom: calc(36rpx + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 20;
+  height: 92rpx;
+  padding: 0 48rpx;
+  border-radius: 999rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  box-shadow: 0 12rpx 28rpx rgba(255, 122, 47, 0.32);
+}
+.alb-fab-plus { font-size: 34rpx; font-weight: 700; line-height: 1; }
+/* view 不支持 :active，按压反馈必须靠 hover-class
+   ⚠️ transform 必须带上 translateX(-50%)：hover-class 里的 transform 会整体覆盖，
+      只写 scale 会让按钮在按压瞬间跳到左边 */
+.alb-fab-press {
+  background: var(--orange-deep);
+  transform: translateX(-50%) scale(0.97);
+}
+
+/* 空态 */
+.alb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 96rpx 40rpx 0;
+}
+.alb-empty-ie {
+  width: 392rpx;
+  height: 304rpx;
+  margin-bottom: 32rpx;
+}
+.alb-empty-t { font-size: 34rpx; font-weight: 800; color: var(--ink); }
+.alb-empty-d {
+  font-size: 26rpx;
+  color: var(--ink2);
+  line-height: 1.7;
+  margin-top: 12rpx;
+}
+.alb-empty-cta {
+  margin-top: 44rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  padding: 26rpx 64rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 16rpx 36rpx rgba(255, 122, 47, 0.32);
+}
+.alb-empty-cta-press { background: var(--orange-deep); transform: scale(0.97); }

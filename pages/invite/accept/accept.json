@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "邀请你一起记录",
+  "usingComponents": {
+    "pet-avatar": "/components/pet-avatar/index",
+    "agreement-gate": "/components/agreement-gate/index"
+  }
+}

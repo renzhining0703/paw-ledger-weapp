@@ -1,0 +1,7 @@
+<view class="es">
+  <image class="es-illus" src="/assets/illus-png/illus-{{type}}.png" mode="aspectFit"></image>
+  <view class="es-title" wx:if="{{title}}">{{title}}</view>
+  <view class="es-desc" wx:if="{{desc}}">{{desc}}</view>
+  <button class="btn-primary es-btn" wx:if="{{btnText}}" bindtap="onTap">{{btnText}}</button>
+  <slot></slot>
+</view>

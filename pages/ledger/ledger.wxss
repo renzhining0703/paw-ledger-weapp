@@ -1,0 +1,86 @@
+/* 宠物 chips */
+.lg-chips { white-space: nowrap; margin-bottom: 20rpx; }
+.lg-chips-in { display: inline-flex; gap: 16rpx; padding: 4rpx 0; }
+/* 带头像的 chip：左收窄 + 头像与文字留 10rpx 间隙（chip 高 56rpx，头像 40rpx 是不撑高的上限） */
+.lg-chips .chip.has-ava { padding-left: 8rpx; padding-right: 20rpx; gap: 10rpx; }
+
+/* 月份切换 */
+.lg-month { display: flex; align-items: center; justify-content: center; gap: 48rpx; padding: 8rpx 0 20rpx; }
+.lg-arrow { font-size: 44rpx; color: var(--ink); width: 64rpx; height: 64rpx; display: flex; align-items: center; justify-content: center; }
+.lg-arrow.dis { color: var(--ink3); opacity: 0.35; }
+.lg-month-label { font-size: 34rpx; font-weight: 800; min-width: 220rpx; text-align: center; }
+
+/* 总支出卡 */
+.lg-hero { margin-bottom: 24rpx; }
+.lg-total { font-size: 64rpx; font-weight: 800; font-variant-numeric: tabular-nums; }
+.lg-sub { font-size: 24rpx; color: var(--ink2); margin-top: 8rpx; }
+.mom-down { color: var(--teal); }
+.mom-up { color: var(--red); }
+.lg-empty-hint { font-size: 26rpx; color: var(--ink2); margin-top: 12rpx; }
+.lg-empty-btn { margin-top: 28rpx; width: 320rpx; }
+
+/* 占比条 */
+.lg-bar { display: flex; height: 20rpx; border-radius: 999rpx; overflow: hidden; margin-top: 28rpx; background: var(--s-daily-bg); }
+.lg-bar-seg { height: 100%; }
+.lg-legend { display: flex; flex-wrap: wrap; gap: 12rpx 0; margin-top: 20rpx; }
+.lg-legend-item {
+  width: 33.33%;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: var(--ink2);
+  padding: 6rpx 0;
+  border-radius: 12rpx;
+}
+.lg-legend-on { color: var(--ink); font-weight: 700; }
+.lg-dot { width: 16rpx; height: 16rpx; border-radius: 50%; flex-shrink: 0; }
+.lg-pct { margin-left: auto; color: var(--ink3); padding-right: 12rpx; }
+
+/* 按日分组流水 */
+.lg-day { margin-bottom: 24rpx; }
+.lg-day-head { display: flex; align-items: baseline; padding: 0 8rpx 12rpx; }
+.lg-day-label { font-size: 26rpx; font-weight: 700; }
+.lg-day-total { margin-left: auto; font-size: 22rpx; color: var(--ink3); }
+.lg-day-card { padding: 8rpx 28rpx; }
+.lg-item { display: flex; align-items: center; gap: 20rpx; padding: 22rpx 0; border-bottom: 1rpx solid var(--line); }
+.lg-item:last-child { border-bottom: none; }
+.lg-item-ic {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  flex-shrink: 0;
+}
+.lg-item-name { font-size: 28rpx; font-weight: 600; }
+.lg-item-pet {
+  font-size: 20rpx;
+  color: var(--orange-deep);
+  background: var(--orange-soft);
+  border-radius: 999rpx;
+  padding: 2rpx 12rpx;
+  margin-left: 8rpx;
+}
+.lg-pending {
+  font-size: 20rpx;
+  color: var(--ink3);
+  background: #F2ECE4;
+  border-radius: 999rpx;
+  padding: 2rpx 12rpx;
+  margin-left: 8rpx;
+}
+.lg-item-note { font-size: 22rpx; color: var(--ink3); margin-top: 2rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lg-item-amount { font-size: 30rpx; font-weight: 700; }
+.lg-add {
+  text-align: center;
+  color: var(--orange-deep);
+  font-size: 28rpx;
+  font-weight: 700;
+  background: #F6EFE6;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin: 8rpx 0 24rpx;
+}

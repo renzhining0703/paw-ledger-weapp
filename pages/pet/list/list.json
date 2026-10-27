@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "宠物管理",
+  "usingComponents": {
+    "empty-state": "../../../components/empty-state/index",
+    "pet-avatar": "../../../components/pet-avatar/index",
+    "skeleton": "../../../components/skeleton/index",
+    "invite-card": "../../../components/invite-card/index"
+  }
+}

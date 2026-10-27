@@ -1,0 +1,38 @@
+<!-- 居中对话框
+     ⚠️ 遮罩是 fixed 且显式写四边（WXSS 禁用 inset 简写，老基础库不认）
+     ⚠️ catchtouchmove="noop" 必须加：否则在弹层上滑动会滚动背后的页面 -->
+<block wx:if="{{render}}">
+  <view class="ud-mask {{closing ? 'ud-mask-out' : ''}}" catchtap="onMaskTap" catchtouchmove="noop"></view>
+  <view class="ud-wrap" catchtouchmove="noop">
+    <view class="ud-card {{closing ? 'ud-card-out' : ''}}" catchtap="noop">
+      <view class="ud-tt" wx:if="{{title}}">{{title}}</view>
+      <view class="ud-bd" wx:if="{{content}}">{{content}}</view>
+      <view class="ud-bd ud-bd-slot" wx:else><slot></slot></view>
+      <!-- 正文下方链接（协议弹层用）：点开不关弹层，返回后还能接着点同意 -->
+      <view class="ud-links" wx:if="{{links.length}}">
+        <text
+          class="ud-link"
+          wx:for="{{links}}"
+          wx:key="text"
+          data-url="{{item.url}}"
+          catchtap="onLink"
+        >{{item.text}}</text>
+      </view>
+      <view class="ud-btns">
+        <view
+          wx:if="{{!single && cancelText}}"
+          class="ud-btn ud-btn-cancel"
+          hover-class="ud-btn-press"
+          hover-stay-time="60"
+          catchtap="onCancel"
+        >{{cancelText}}</view>
+        <view
+          class="ud-btn {{(single || !cancelText) ? 'ud-btn-one' : ''}} {{danger ? 'ud-btn-danger' : 'ud-btn-main'}}"
+          hover-class="ud-btn-press"
+          hover-stay-time="60"
+          catchtap="onConfirm"
+        >{{confirmText}}</view>
+      </view>
+    </view>
+  </view>
+</block>

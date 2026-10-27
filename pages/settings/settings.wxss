@@ -1,0 +1,88 @@
+/* 设置页（design: 设置页-settings / clrc / clrcd）
+   尺寸取自设计稿 375pt 基准，×2 → rpx */
+
+.set-page { padding-bottom: 40rpx; }
+
+/* 分组标题 */
+.set-grp-t {
+  font-size: 24rpx;
+  color: var(--ink3);
+  font-weight: 700;
+  padding: 0 12rpx;
+  letter-spacing: 0.6rpx;
+  margin: 32rpx 0 14rpx;
+}
+.set-page > .set-grp-t:first-child { margin-top: 8rpx; }
+
+/* 分组卡片 */
+.set-grp {
+  background: var(--card);
+  border-radius: 36rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 28rpx rgba(150, 120, 90, 0.07);
+}
+
+/* 行 */
+.set-row {
+  display: flex;
+  align-items: center;
+  min-height: 104rpx;
+  padding: 22rpx 32rpx;
+  box-sizing: border-box;
+}
+.set-row + .set-row { border-top: 1rpx solid var(--line); }
+/* view 不支持 :active，按压只能靠 hover-class */
+.set-row-press { background: #FDF7F0; }
+
+/* 左侧图标：emoji 与 svg 都要占同样宽度，主文字才左对齐成一条线 */
+.set-ic-emoji {
+  display: inline-block;
+  width: 48rpx;
+  flex: 0 0 auto;
+  font-size: 32rpx;
+  line-height: 1.2;
+}
+.set-ic {
+  width: 48rpx;
+  height: 36rpx;
+  flex: 0 0 auto;
+}
+
+.set-tbox { flex: 1; min-width: 0; margin-left: 16rpx; }
+.set-t { font-size: 28rpx; color: var(--ink); line-height: 1.35; }
+/* 无副行时（清理缓存 / 关于组四行）不需要额外样式，类名留着是为了 wxml 可读 */
+.set-sub { font-size: 22rpx; color: var(--ink3); margin-top: 6rpx; }
+.set-err { font-size: 22rpx; color: var(--red); margin-top: 6rpx; }
+
+.set-v { font-size: 26rpx; color: var(--ink3); flex: 0 0 auto; margin-left: 12rpx; }
+.set-v.ok { color: var(--teal); font-weight: 700; }
+.set-v.bad { color: var(--red); font-weight: 700; }
+
+.set-ar { width: 30rpx; height: 30rpx; flex: 0 0 auto; margin-left: 10rpx; }
+
+.set-cap {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ink3);
+  padding: 28rpx 0 4rpx;
+}
+
+/* ---------- 同步诊断面板（从「我的」页迁入，样式同步搬） ---------- */
+.set-diag { background: var(--cream); border-radius: 20rpx; padding: 20rpx 24rpx; }
+.set-diag-kv { display: flex; align-items: center; padding: 8rpx 0; }
+.set-diag-k { font-size: 24rpx; color: var(--ink3); width: 120rpx; }
+.set-diag-v { font-size: 26rpx; font-weight: 600; flex: 1; word-break: break-all; }
+.set-diag-warn { color: var(--red); font-weight: 400; }
+.set-diag-title { font-size: 26rpx; font-weight: 700; margin: 32rpx 0 12rpx; }
+.set-diag-list { border-top: 1rpx solid var(--line); }
+.set-diag-row { display: flex; align-items: center; padding: 16rpx 4rpx; border-bottom: 1rpx solid var(--line); }
+.set-diag-col { font-size: 26rpx; font-weight: 600; }
+.set-diag-state { margin-left: auto; font-size: 24rpx; }
+.set-diag-state.ok { color: var(--teal); }
+.set-diag-state.bad { color: var(--red); }
+.set-diag-empty { text-align: center; color: var(--ink3); font-size: 24rpx; padding: 32rpx 0; }
+.set-diag-err { font-size: 24rpx; color: var(--ink2); background: var(--cream); border-radius: 16rpx; padding: 16rpx 20rpx; word-break: break-all; }
+.set-diag-tip { font-size: 26rpx; line-height: 1.6; color: var(--orange-deep); }
+.set-diag-btn { margin-top: 32rpx; }
+.set-diag-dead { flex: 1; min-width: 0; }
+.set-diag-dead-sub { font-size: 22rpx; color: var(--ink3); margin-top: 4rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

@@ -1,0 +1,31 @@
+<view class="sk">
+  <block wx:if="{{type === 'card'}}">
+    <view class="sk-card" wx:for="{{items}}" wx:key="*this">
+      <view class="sk-ic sk-anim"></view>
+      <view class="flex-1">
+        <view class="sk-line w60 sk-anim"></view>
+        <view class="sk-line w90 sk-anim"></view>
+        <view class="sk-line w40 sk-anim"></view>
+      </view>
+    </view>
+  </block>
+  <block wx:elif="{{type === 'line'}}">
+    <view class="sk-line-row" wx:for="{{items}}" wx:key="*this">
+      <view class="sk-ic sk-anim"></view>
+      <view class="flex-1">
+        <view class="sk-line w50 sk-anim"></view>
+        <view class="sk-line w30 sk-anim"></view>
+      </view>
+      <view class="sk-line w20 sk-anim"></view>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="sk-tl" wx:for="{{items}}" wx:key="*this">
+      <view class="sk-dot sk-anim"></view>
+      <view class="flex-1 sk-card-sm">
+        <view class="sk-line w40 sk-anim"></view>
+        <view class="sk-line w80 sk-anim"></view>
+      </view>
+    </view>
+  </block>
+</view>

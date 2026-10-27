@@ -1,0 +1,30 @@
+<!-- 用户协议 / 隐私政策
+     ⚠️ blocks 的类型契约见 utils/agreements.js 顶部注释，改数据前先看
+     ⚠️ 正文用 <text> 而不是 <view>：只有 text 支持 user-select（长按选中复制），
+        配合 wxss 的 display:block 做块级排版；插值必须与标签同行，否则渲染出空白行
+     ⚠️ 小程序里不能用 web-view 渲染（个人主体无权限），所以正文只能是这种结构化渲染 -->
+<view class="page-pad ag-page">
+  <block wx:if="{{doc}}">
+    <view class="ag-head">
+      <view class="ag-title">{{doc.title}}</view>
+      <view class="ag-meta">{{doc.meta}}</view>
+    </view>
+
+    <view class="card ag-card">
+      <block wx:for="{{doc.blocks}}" wx:key="c">
+        <view wx:if="{{item.t === 'h'}}" class="ag-h">{{item.c}}</view>
+        <text wx:elif="{{item.t === 'li2'}}" class="ag-li2" user-select="{{true}}">{{item.c}}</text>
+        <text wx:elif="{{item.t === 'li'}}" class="ag-li" user-select="{{true}}">{{item.c}}</text>
+        <view wx:elif="{{item.t === 'note'}}" class="ag-note">{{item.c}}</view>
+        <text wx:else class="ag-p {{item.b ? 'ag-strong' : ''}}" user-select="{{true}}">{{item.c}}</text>
+      </block>
+    </view>
+    <view class="ag-tip">长按正文可选中复制</view>
+  </block>
+
+  <!-- 兜底：type 传错或数据缺失时不白屏 -->
+  <view wx:else class="ag-err">
+    <view class="ag-err-t">协议内容加载失败</view>
+    <view class="ag-err-b" bindtap="goBack" hover-class="ag-err-bp">返回</view>
+  </view>
+</view>

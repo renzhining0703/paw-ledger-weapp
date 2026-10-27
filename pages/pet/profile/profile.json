@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "档案详情",
+  "usingComponents": {
+    "pet-avatar": "/components/pet-avatar/index",
+    "invite-card": "/components/invite-card/index"
+  }
+}

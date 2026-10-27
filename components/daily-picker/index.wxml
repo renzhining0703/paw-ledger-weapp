@@ -1,0 +1,54 @@
+<!--
+  全部日常类型弹层（设计稿 v1.5 view-alldaily / alldaily_ed / alldailymax，1pt = 2rpx）
+  ⚠️ 不用 bottom-sheet 的 title 槽：头部右侧要放「✎ 编辑常用」（带自绘铅笔图标），
+     基座头部只支持纯文本 —— 头部整体自己渲染，只借基座的遮罩/动画/拖拽条
+-->
+<bottom-sheet show="{{show}}" bind:close="onClose">
+  <!-- 头部：标题 + 副标题（编辑模式变成「已选 N / 3」）+ 右侧动作 -->
+  <view class="dp-head">
+    <view class="dp-head-l">
+      <view class="dp-title">{{editing ? '编辑常用' : '记一条日常'}}</view>
+      <view class="dp-sub" wx:if="{{editing}}">已选 {{selCount}} / 3</view>
+      <view class="dp-sub" wx:elif="{{petName}}">记给 {{petName}}</view>
+    </view>
+    <view class="dp-edit" wx:if="{{!editing}}" catchtap="onEdit" hover-class="dp-edit-press">
+      <image class="dp-edit-ic" src="/assets/icons-svg/ic-pen-orange.svg" mode="aspectFit"></image>
+      <text>编辑常用</text>
+    </view>
+    <view class="dp-edit" wx:else catchtap="onCancelEdit" hover-class="dp-edit-press">取消</view>
+  </view>
+
+  <!-- 7 类型宫格：4 列，图标在上文字在下（flex 换行实现，别用 display:grid） -->
+  <view class="dp-grid">
+    <view
+      class="dp-cell {{item.on ? 'on' : ''}} {{item.dis ? 'dis' : ''}}"
+      wx:for="{{items}}"
+      wx:key="key"
+      data-k="{{item.key}}"
+      bindtap="onCellTap"
+      hover-class="{{editing ? '' : 'dp-cell-press'}}"
+    >
+      <view class="dp-ic">
+        <text class="dp-emoji">{{item.emoji}}</text>
+        <!-- 编辑模式：格子右上复选框（选中 = 橙底白勾） -->
+        <view class="dp-ck {{item.on ? 'on' : ''}}" wx:if="{{editing}}">
+          <image class="dp-ck-img" wx:if="{{item.on}}" src="/assets/icons-svg/ic-check-w.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+      <view class="dp-name">{{item.name}}</view>
+    </view>
+  </view>
+
+  <!-- 普通模式底部小字：按 PRD 行为口径（点类型=打开备注弹层），
+       设计稿原句「点一下就记上了，不用再确认」与 PRD 冲突，已改 -->
+  <view class="dp-note" wx:if="{{!editing}}">备注可不填，选好就记</view>
+
+  <!-- 编辑模式：选满提示（点第 4 个时出现，1.8s 自动收）+ 完成按钮 -->
+  <block wx:if="{{editing}}">
+    <view class="dp-tip" wx:if="{{tip}}">最多 3 个，先取消一个</view>
+    <view
+      class="btn-primary dp-finish {{selCount === 3 ? '' : 'disabled'}} {{saving ? 'disabled' : ''}}"
+      bindtap="onFinish"
+    >{{saving ? '保存中…' : '完成'}}</view>
+  </block>
+</bottom-sheet>

@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "记账",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "record-sheet": "../../components/record-sheet/index",
+    "pet-avatar": "../../components/pet-avatar/index",
+    "skeleton": "../../components/skeleton/index"
+  }
+}

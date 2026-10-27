@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "bottom-sheet": "../bottom-sheet/index"
+  },
+  "styleIsolation": "apply-shared"
+}

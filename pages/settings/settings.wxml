@@ -1,0 +1,130 @@
+<!-- 设置页（design: 设置页-settings / clrc / clrcd）
+     行结构照设计稿：左侧线性图标 + 主文字（可带副行） + 右侧文字 + 右侧箭头
+     ⚠️ view 不支持 :active，按压反馈一律 hover-class -->
+<view class="page-pad set-page">
+  <view class="set-grp-t">数据</view>
+  <view class="set-grp">
+    <!-- 同步状态：点一下重试同步，长按弹诊断面板（交互从「我的」页原样迁入） -->
+    <view class="set-row" bindtap="onSyncRetry" bindlongpress="onSyncDiag" hover-class="set-row-press" hover-stay-time="60">
+      <text class="set-ic-emoji">🔄</text>
+      <view class="set-tbox">
+        <view class="set-t">同步状态</view>
+        <view class="set-sub" wx:if="{{lastSyncText}}">{{lastSyncText}}</view>
+        <view class="set-err" wx:if="{{syncErrText}}">{{syncErrText}}</view>
+      </view>
+      <text class="set-v {{syncOk ? 'ok' : 'bad'}}">{{syncText}}</text>
+    </view>
+
+    <view class="set-row" bindtap="onClearTap" hover-class="set-row-press" hover-stay-time="60">
+      <image class="set-ic" src="/assets/icons-svg/ic-trash.svg" mode="aspectFit"></image>
+      <view class="set-tbox">
+        <view class="set-t set-t-only">清理缓存</view>
+      </view>
+      <text class="set-v">{{cacheText}}</text>
+      <image class="set-ar" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <view class="set-grp-t">关于</view>
+  <view class="set-grp">
+    <view class="set-row" data-type="user" bindtap="goAgreement" hover-class="set-row-press" hover-stay-time="60">
+      <image class="set-ic" src="/assets/icons-svg/ic-doc.svg" mode="aspectFit"></image>
+      <view class="set-tbox">
+        <view class="set-t set-t-only">用户协议</view>
+      </view>
+      <image class="set-ar" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+    </view>
+
+    <view class="set-row" data-type="privacy" bindtap="goAgreement" hover-class="set-row-press" hover-stay-time="60">
+      <image class="set-ic" src="/assets/icons-svg/ic-shield.svg" mode="aspectFit"></image>
+      <view class="set-tbox">
+        <view class="set-t set-t-only">隐私政策</view>
+      </view>
+      <image class="set-ar" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+    </view>
+
+    <view class="set-row" bindtap="goFeedback" hover-class="set-row-press" hover-stay-time="60">
+      <image class="set-ic" src="/assets/icons-svg/ic-help.svg" mode="aspectFit"></image>
+      <view class="set-tbox">
+        <view class="set-t set-t-only">帮助与反馈</view>
+      </view>
+      <image class="set-ar" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+    </view>
+
+    <view class="set-row" bindtap="goAbout" hover-class="set-row-press" hover-stay-time="60">
+      <image class="set-ic" src="/assets/icons-svg/ic-info.svg" mode="aspectFit"></image>
+      <view class="set-tbox">
+        <view class="set-t set-t-only">关于我们</view>
+      </view>
+      <text class="set-v">v{{version}}</text>
+      <image class="set-ar" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+    </view>
+  </view>
+
+  <view class="set-cap">换手机不会丢数据 · 记录都同步在云端</view>
+
+  <!-- 二次确认（有 0 条待同步时） -->
+  <ui-dialog
+    show="{{showClearConfirm}}"
+    title="清理缓存？"
+    content="{{clearConfirmText}}"
+    cancel-text="取消"
+    confirm-text="清理"
+    mask-closable="{{false}}"
+    bind:confirm="onClearConfirm"
+    bind:cancel="onClearCancel"
+  />
+
+  <!-- 有待同步记录时拦截，单按钮（照设计稿 设置页-clrcd拦截） -->
+  <ui-dialog
+    show="{{showClearBlocked}}"
+    title="先同步完再清理"
+    content="{{blockedText}}"
+    single="{{true}}"
+    confirm-text="我知道了"
+    mask-closable="{{false}}"
+    bind:confirm="onBlockedOk"
+  />
+
+  <!-- 同步诊断面板（长按同步状态行 / 同步失败自动弹） -->
+  <bottom-sheet show="{{showDiag}}" title="同步诊断" subtitle="哪个集合连不上，一眼看明白" bind:close="closeDiag">
+    <view class="set-diag">
+      <view class="set-diag-kv">
+        <text class="set-diag-k">云环境</text>
+        <text class="set-diag-v">{{diagEnv}}</text>
+      </view>
+      <view class="set-diag-kv">
+        <text class="set-diag-k">待同步</text>
+        <text class="set-diag-v">{{diagPending}} 条<text wx:if="{{diagDead > 0}}" class="set-diag-warn">（已放弃 {{diagDead}} 条）</text></text>
+      </view>
+    </view>
+
+    <view class="set-diag-title">集合连通性</view>
+    <view class="set-diag-list">
+      <view class="set-diag-row" wx:for="{{diagRows}}" wx:key="col">
+        <text class="set-diag-col">{{item.col}}</text>
+        <text class="set-diag-state {{item.ok ? 'ok' : 'bad'}}">{{item.ok ? '✓ 正常' : '✗ ' + item.text}}</text>
+      </view>
+      <view class="set-diag-empty" wx:if="{{!diagRows.length}}">检查中…</view>
+    </view>
+
+    <view class="set-diag-title" wx:if="{{diagDeadRows.length}}">没能同步的记录（{{diagDeadRows.length}}）</view>
+    <view class="set-diag-list" wx:if="{{diagDeadRows.length}}">
+      <view class="set-diag-row" wx:for="{{diagDeadRows}}" wx:key="idx">
+        <view class="set-diag-dead">
+          <view class="set-diag-col">{{item.title}}</view>
+          <view class="set-diag-dead-sub" wx:if="{{item.sub}}">{{item.sub}}</view>
+        </view>
+        <text class="set-diag-state bad">{{item.err}}</text>
+      </view>
+    </view>
+
+    <view class="set-diag-title">最近一次失败</view>
+    <view class="set-diag-err">{{diagErr}}</view>
+
+    <view class="set-diag-title">怎么处理</view>
+    <view class="set-diag-tip">{{diagTip}}</view>
+
+    <view class="btn-soft set-diag-btn" wx:if="{{diagDead > 0}}" bindtap="onRetryDead" hover-class="set-row-press">已修好，重试这 {{diagDead}} 条</view>
+  </bottom-sheet>
+</view>

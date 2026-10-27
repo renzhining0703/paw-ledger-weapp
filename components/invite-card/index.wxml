@@ -1,0 +1,2 @@
+<!-- 邀请分享卡离屏画布（750×600，5:4，微信转发卡片图） -->
+<canvas type="2d" id="inviteCanvas" class="ic-canvas"></canvas>

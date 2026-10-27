@@ -1,0 +1,5 @@
+<view class="pa" style="width: {{size}}rpx; height: {{size}}rpx; border-radius: {{radiusStyle}}; background: {{bgStyle}}; border: {{borderStyle}};">
+  <!-- binderror：src 有值但加载失败（如云文件权限/网络）时回落 emoji，不显示空白圈 -->
+  <image wx:if="{{useSrc && !broken}}" class="pa-img" style="border-radius: {{radiusStyle}};" src="{{useSrc}}" mode="aspectFill" binderror="onErr"></image>
+  <text wx:else class="pa-emoji" style="font-size: {{emojiSize}}rpx;">{{emojiText}}</text>
+</view>

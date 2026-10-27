@@ -1,0 +1,15 @@
+{
+  "triggers": [
+    {
+      "name": "scan-pending-posts",
+      "type": "timer",
+      "config": "0 */30 * * * * *"
+    }
+  ],
+  "permissions": {
+    "openapi": [
+      "security.msgSecCheck",
+      "security.imgSecCheck"
+    ]
+  }
+}

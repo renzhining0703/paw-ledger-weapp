@@ -1,0 +1,26 @@
+/* 帮助与反馈（design: 帮助与反馈-feedback） */
+
+.fb-page { padding-bottom: calc(40rpx + env(safe-area-inset-bottom)); }
+
+.fb-card { padding: 8rpx 32rpx; }
+
+/* FAQ 条目：问题加粗、答案灰字，条目之间一条分隔线（不要间距，否则像 5 张卡） */
+.fb-faq { padding: 26rpx 0; }
+.fb-faq + .fb-faq { border-top: 1rpx solid var(--line); }
+
+.fb-q { font-size: 27rpx; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.fb-a { font-size: 25rpx; color: var(--ink2); line-height: 1.66; margin-top: 12rpx; }
+
+.fb-btn { margin-top: 40rpx; }
+.fb-btn::after { border: none; }
+.fb-btn-ic { margin-right: 10rpx; }
+/* ⚠️ 原生 button 的按压态要靠 hover-class 传到内部元素，不能只写 button:active */
+.fb-btn-press { opacity: 0.88; }
+
+.fb-tip {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 24rpx;
+  line-height: 1.6;
+}

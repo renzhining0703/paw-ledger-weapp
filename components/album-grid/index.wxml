@@ -1,0 +1,62 @@
+<!--
+  相册网格（从 pages/album/album 平移，v1.4a）
+  ⚠️ 根节点不要写 display:flex —— 外部用 hidden 隐藏本组件，
+     根节点自带 display 会覆盖 [hidden]{display:none} 导致藏不住
+-->
+<view class="ag-wrap">
+  <!-- 加载中：网格骨架（不用全屏 loading） -->
+  <view class="alb-grid sk" wx:if="{{loading}}">
+    <view class="alb-cell sk-cell sk-anim" wx:for="{{[1,2,3,4,5,6,7,8,9]}}" wx:key="*this"></view>
+  </view>
+
+  <view class="inline-error" style="margin: 24rpx 0;" wx:elif="{{error}}" bindtap="onRetry">加载失败，点此重试 ↻</view>
+
+  <!-- 空态：插画 + 一句话 + 立刻可用的按钮（多数用户第一次进来看到的就是它） -->
+  <view class="alb-empty" wx:elif="{{!total}}">
+    <image class="alb-empty-ie" src="/assets/illus-png/illus-no-photo.png" mode="aspectFit" />
+    <view class="alb-empty-t">还没有照片，去记录这一刻</view>
+    <view class="alb-empty-d">发一条图文，照片会自动收进这里</view>
+    <view class="alb-empty-d">按时间排好，像翻一本影集</view>
+    <view class="alb-empty-cta" bindtap="onAddPhoto" hover-class="alb-empty-cta-press">＋ 传照片</view>
+  </view>
+
+  <block wx:else>
+    <!-- 按月分组 + 3 列网格 -->
+    <view wx:for="{{groups}}" wx:key="key" wx:for-item="g">
+      <view class="alb-mon" style="top: {{stickyTop}}px;">{{g.month}}<text class="alb-mon-n">{{g.count}} 张</text></view>
+      <view class="alb-grid">
+        <view class="alb-cell" wx:for="{{g.items}}" wx:key="tid" data-i="{{item.idx}}" bindtap="onPreview">
+          <image class="alb-img" src="{{item.thumb}}" mode="aspectFill" lazy-load binderror="onImgErr" />
+          <view class="alb-lk" wx:if="{{item.priv}}">
+            <image class="alb-lk-ic" src="/assets/icons-png/icon-lock.png" mode="aspectFit" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="alb-more" wx:if="{{hasMore}}">上滑看更早的照片…</view>
+
+    <!-- 收尾：滑到最早一张给个情绪收口 -->
+    <view class="alb-end" wx:if="{{!hasMore}}">
+      <view class="alb-end-ln"></view>
+      <view class="alb-end-d">{{earliestText}}</view>
+      <view class="alb-end-s">{{endText}}</view>
+    </view>
+  </block>
+
+  <!-- 传照片 FAB（有内容时才出现；空态走中间的 CTA） -->
+  <view class="alb-fab" wx:if="{{!loading && !error && total}}" bindtap="onAddPhoto" hover-class="alb-fab-press">
+    <text class="alb-fab-plus">＋</text>
+    <text>传照片</text>
+  </view>
+
+  <post-sheet
+    show="{{showPost}}"
+    pet-id="{{pet._id}}"
+    pet-name="{{postPetName}}"
+    max="{{postMax}}"
+    via="{{postVia}}"
+    bind:close="onPostClose"
+    bind:saved="onPostSaved"
+  ></post-sheet>
+</view>

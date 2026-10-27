@@ -1,0 +1,19 @@
+<view class="about">
+  <image class="about-logo" src="/assets/logo/它的时光-Logo-方案A-512.png" mode="aspectFit"></image>
+  <view class="about-name">它的时光</view>
+  <view class="about-slogan">疫苗驱虫提醒 · 成长足迹 · 养宠花销</view>
+
+  <view class="card about-card">
+    <view class="about-desc">一款还看得过去的养宠记录工具。初衷是拯救各位的金鱼记性，当然，也包括我。</view>
+    <view class="about-desc">功能虽不那么花哨，但该有的也还是都有的。</view>
+    <view class="about-desc">bug 不敢说完全没有，你提我改，跑是不可能跑的。</view>
+    <view class="about-feat">
+      <view class="about-feat-row"><text class="about-feat-ic">💉</text><view><view class="about-feat-t">疫苗驱虫提醒</view><view class="about-feat-d">记一次，到期前一天微信提醒你</view></view></view>
+      <view class="about-feat-row"><text class="about-feat-ic">📈</text><view><view class="about-feat-t">成长足迹</view><view class="about-feat-d">体重、生日、到家日串成一条线</view></view></view>
+      <view class="about-feat-row"><text class="about-feat-ic">💰</text><view><view class="about-feat-t">养宠花销</view><view class="about-feat-d">一个月到底花在哪些地方</view></view></view>
+    </view>
+  </view>
+
+  <!-- ⚠️ 版本号必须用 {{version}}：原来这里硬编码 'v1.0.0'，config.VERSION 改了页面也不变 -->
+  <view class="about-foot">v{{version}} · 数据存在云端，换手机也不丢</view>
+</view>

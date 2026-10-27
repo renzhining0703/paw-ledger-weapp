@@ -1,0 +1,59 @@
+<view class="page-pad safe-bottom">
+  <!-- 档案卡：头像 + 名字 + 共享角标 + 成员管理入口 -->
+  <view class="card pf-head" wx:if="{{pet}}">
+    <pet-avatar src="{{pet.avatar}}" species="{{pet.species}}" size="{{100}}" radius="{{32}}" tone="soft" />
+    <view class="pf-head-info">
+      <view class="pf-name-row">
+        <text class="pf-name">{{pet.name}}</text>
+        <text class="pf-share {{isFull ? 'pf-share--full' : ''}}" wx:if="{{isShared}}">共享 {{memberCount}}/{{maxMembers}}</text>
+      </view>
+      <view class="pf-sub">{{info}}</view>
+    </view>
+    <view class="pf-members-btn" hover-class="pf-press" catchtap="onMembers">成员管理</view>
+  </view>
+
+  <!-- 信息卡：owner 点整卡进编辑档案；成员只读 -->
+  <view class="card pf-fields" wx:if="{{pet}}" hover-class="{{isOwner ? 'pf-fields-press' : 'none'}}" bindtap="onEdit">
+    <view class="pf-row">
+      <text class="pf-label">生日</text>
+      <text class="pf-val t-num">{{petView.birthday}}</text>
+    </view>
+    <view class="pf-row">
+      <text class="pf-label">到家日</text>
+      <text class="pf-val t-num">{{petView.adoptDay}}</text>
+    </view>
+    <view class="pf-row">
+      <text class="pf-label">是否绝育</text>
+      <text class="pf-val">{{petView.neutered}}</text>
+    </view>
+    <view class="pf-row">
+      <text class="pf-label">当前体重</text>
+      <view class="pf-val-row">
+        <text class="pf-val t-num">{{petView.weight}}</text>
+        <!-- 胶囊文案必须与 text 标签同行：text 内的换行缩进会被渲染成空白行 -->
+        <text class="pf-val-tag" wx:if="{{petView.weightFallback}}">= 初始</text>
+      </view>
+    </view>
+    <view class="pf-row">
+      <text class="pf-label">初始体重</text>
+      <text class="pf-val t-num">{{petView.initWeight}}</text>
+    </view>
+    <view class="pf-edit-hint" wx:if="{{isOwner}}">编辑档案 ›</view>
+  </view>
+
+  <!-- 成员只读提示（仅 member 视角展示） -->
+  <view class="pf-tip" wx:if="{{pet && !isOwner}}">
+    <text class="pf-tip-ic">ⓘ</text>
+    <text>档案字段仅创建者可修改，你打开此页时字段只读</text>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="pf-foot" wx:if="{{pet}}">
+    <button class="btn-primary" open-type="share" hover-class="none">邀请家人一起记</button>
+    <view class="pf-foot-hint">创建后邀请的家人和你记的是同一份档案</view>
+    <view class="pf-delete" wx:if="{{isOwner}}" hover-class="pf-press" catchtap="onDelete">删除这只宠物</view>
+  </view>
+</view>
+
+<!-- 邀请分享卡离屏画布（转发时生成 5:4 卡面图） -->
+<invite-card id="inviteCard" />

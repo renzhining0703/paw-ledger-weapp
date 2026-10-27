@@ -1,0 +1,112 @@
+/* 全部日常类型弹层（设计稿 .dg-* 系列，1pt = 2rpx） */
+
+/* 头部：自渲染（不用 bottom-sheet 的 title 槽，右侧动作要带自绘图标） */
+.dp-head {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 8rpx 8rpx 0;
+}
+.dp-head-l { flex: 1; min-width: 0; }
+.dp-title { font-size: 34rpx; font-weight: 800; color: var(--ink); }
+.dp-sub { font-size: 24rpx; color: var(--ink3); margin-top: 6rpx; }
+
+.dp-edit {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 24rpx;
+  font-weight: 700;
+  color: var(--orange-deep);
+  flex: 0 0 auto;
+  padding: 8rpx;
+}
+.dp-edit-ic { width: 22rpx; height: 22rpx; display: block; }
+.dp-edit-press { opacity: 0.6; }
+
+/* 7 类型宫格：4 列（flex 换行 + 宽度 calc，不用 display:grid）
+   ⚠️ 单元格宽度必须和 gap 一起算（与相册网格同一条踩坑纪律） */
+.dp-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 28rpx;
+  padding: 0 4rpx;
+  row-gap: 32rpx;
+  column-gap: 8rpx;
+}
+.dp-cell {
+  width: calc((100% - 24rpx) / 4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14rpx;
+}
+/* 图标块：100rpx 白底圆角 + emoji 居中（设计稿 .dg-i） */
+.dp-ic {
+  position: relative;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 34rpx;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6rpx 20rpx rgba(150, 120, 90, 0.07);
+}
+.dp-emoji { font-size: 48rpx; line-height: 1; }
+.dp-name { font-size: 23rpx; color: var(--ink2); font-weight: 600; }
+
+/* 选中：橙描边 + 名字变橙加粗（普通模式不显示勾，只有编辑模式显示） */
+.dp-cell.on .dp-ic {
+  border: 3.6rpx solid var(--orange);
+  box-shadow: 0 8rpx 24rpx rgba(255, 122, 47, 0.2);
+  box-sizing: border-box;
+}
+.dp-cell.on .dp-name { color: var(--orange-deep); font-weight: 700; }
+
+/* 编辑模式选满后的置灰 */
+.dp-cell.dis { opacity: 0.38; }
+
+/* 按压反馈（view 无 :active，一律 hover-class）；编辑模式点格子是勾选，不给按压透明 */
+.dp-cell-press { opacity: 0.7; }
+
+/* 编辑模式复选框：图标块右上角（设计稿 .dg-ck） */
+.dp-ck {
+  position: absolute;
+  right: -6rpx;
+  top: -6rpx;
+  width: 38rpx;
+  height: 38rpx;
+  border-radius: 50%;
+  background: #fff;
+  border: 2.8rpx solid #DDD2C6;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dp-ck.on { background: var(--orange); border-color: var(--orange); }
+.dp-ck-img { width: 22rpx; height: 22rpx; display: block; }
+
+/* 普通模式底部小字 */
+.dp-note {
+  text-align: center;
+  font-size: 23rpx;
+  color: var(--ink3);
+  padding: 28rpx 0 12rpx;
+}
+
+/* 编辑模式提示条（点第 4 个时出现） */
+.dp-tip {
+  margin: 20rpx 0 2rpx;
+  padding: 16rpx 24rpx;
+  border-radius: 24rpx;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 23rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* 完成按钮：不满 3 个置灰不可点 */
+.dp-finish { margin-top: 28rpx; }

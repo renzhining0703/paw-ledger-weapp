@@ -1,0 +1,23 @@
+<!-- 帮助与反馈（design: 帮助与反馈-feedback）
+     FAQ 用 view 而不是 text 承载答案：答案较长要换行，text 内插值跨行会多出空白行 -->
+<view class="page-pad fb-page">
+  <view class="card fb-card">
+    <view class="fb-faq" wx:for="{{faqs}}" wx:key="q">
+      <view class="fb-q">{{item.q}}</view>
+      <view class="fb-a">{{item.a}}</view>
+    </view>
+  </view>
+
+  <!-- 客服按钮：原生 button，样式沿用全局 .btn-primary（单行文字居中，不涉及 flex 撑列） -->
+  <button
+    class="btn-primary fb-btn"
+    open-type="contact"
+    session-from="{{csFrom}}"
+    bindcontact="onContact"
+    hover-class="fb-btn-press"
+  >
+    <text class="fb-btn-ic">💬</text><text>联系客服</text>
+  </button>
+
+  <view class="fb-tip">没找到答案？联系客服，宠物信息会一起带过去</view>
+</view>

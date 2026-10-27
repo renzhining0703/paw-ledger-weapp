@@ -1,0 +1,104 @@
+.rs { padding-bottom: 16rpx; }
+.rs-head { margin-bottom: 20rpx; }
+.rs-title { font-size: 38rpx; font-weight: 800; }
+.rs-sub { font-size: 24rpx; color: var(--ink2); margin-top: 6rpx; }
+
+/* 分段选择 */
+.rs-seg {
+  display: flex;
+  background: var(--cream);
+  border-radius: 24rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
+.rs-seg-item {
+  flex: 1;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26rpx;
+  color: var(--ink2);
+  border-radius: 20rpx;
+}
+.rs-seg-on { background: #fff; color: var(--ink); font-weight: 700; box-shadow: 0 4rpx 12rpx rgba(150, 120, 90, 0.1); }
+
+/* 行式字段 */
+.rs-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: var(--cream);
+  border-radius: 28rpx;
+  padding: 26rpx 28rpx;
+  margin-bottom: 20rpx;
+}
+.rs-label { font-size: 26rpx; color: var(--ink); flex-shrink: 0; }
+.rs-req { color: var(--red); }
+.rs-opt { font-size: 22rpx; color: var(--ink3); margin-left: 8rpx; }
+.rs-value { margin-left: auto; font-size: 30rpx; font-weight: 600; }
+.rs-today {
+  font-size: 22rpx;
+  color: var(--orange-deep);
+  background: var(--orange-soft);
+  border-radius: 999rpx;
+  padding: 4rpx 14rpx;
+  flex-shrink: 0;
+}
+
+/* 输入域 */
+.rs-field { margin-bottom: 24rpx; }
+.rs-input {
+  background: var(--cream);
+  border-radius: 28rpx;
+  padding: 26rpx 28rpx;
+  font-size: 30rpx;
+  margin-top: 12rpx;
+}
+.rs-textarea {
+  background: var(--cream);
+  border-radius: 28rpx;
+  padding: 24rpx 28rpx;
+  font-size: 28rpx;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 12rpx;
+  min-height: 88rpx;
+}
+.rs-chips { display: flex; flex-wrap: wrap; gap: 16rpx; margin-top: 16rpx; }
+
+/* 大数字输入 */
+.rs-bignum {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: var(--cream);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  margin-top: 12rpx;
+}
+.rs-yen { font-size: 44rpx; font-weight: 700; color: var(--ink2); }
+.rs-bignum-input { flex: 1; font-size: 60rpx; font-weight: 800; font-variant-numeric: tabular-nums; }
+.rs-unit { font-size: 28rpx; color: var(--ink2); }
+
+/* 分类宫格 */
+.rs-cats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12rpx; margin-top: 16rpx; }
+.rs-cat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: var(--ink2);
+  padding: 16rpx 0;
+  border-radius: 20rpx;
+  border: 2rpx solid transparent;
+}
+.rs-cat-on { border-color: var(--orange); color: var(--orange-deep); background: var(--orange-soft); font-weight: 700; }
+.rs-cat-dot { width: 20rpx; height: 20rpx; border-radius: 50%; }
+
+.rs-save { margin-top: 12rpx; }
+.rs-foot-hint { text-align: center; font-size: 22rpx; color: var(--ink3); margin-top: 16rpx; }
+/* 续记说明：放在保存按钮上方，先让人知道「这是新增不是覆盖」再点保存 */
+.rs-renew-hint { font-size: 22rpx; color: var(--ink3); text-align: center; margin: 8rpx 0 16rpx; }
+.rs-del { margin-top: 8rpx; }

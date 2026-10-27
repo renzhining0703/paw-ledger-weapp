@@ -1,0 +1,165 @@
+/* post-sheet：记一条图文（对齐设计稿 view-sheetm，1pt = 2rpx） */
+.ps-body { padding-bottom: 8rpx; }
+
+.ps-restored {
+  font-size: 22rpx;
+  color: var(--orange-deep);
+  background: var(--orange-soft);
+  border-radius: 12rpx;
+  padding: 10rpx 16rpx;
+  margin-bottom: 12rpx;
+}
+
+/* 小标题行 */
+.ps-lb {
+  font-size: 24rpx;
+  color: var(--ink2);
+  font-weight: 600;
+  padding: 14rpx 4rpx 12rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+.ps-opt { font-size: 22rpx; color: var(--ink3); font-weight: 400; }
+
+/* 文案输入 */
+.ps-box {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 24rpx 26rpx 16rpx;
+  box-shadow: 0 6rpx 20rpx rgba(150, 120, 90, 0.06);
+}
+.ps-ta {
+  width: 100%;
+  min-height: 84rpx;
+  font-size: 28rpx;
+  color: var(--ink);
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+.ps-ph { color: var(--ink3); font-size: 28rpx; }
+.ps-cnt { text-align: right; font-size: 22rpx; color: var(--ink3); margin-top: 8rpx; }
+
+/* 九宫格选图 */
+.ps-picks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+.ps-pick {
+  position: relative;
+  width: calc((100% - 32rpx) / 3);
+  height: 0;
+  padding-bottom: calc((100% - 32rpx) / 3);
+  border-radius: 24rpx;
+  overflow: hidden;
+  background: #f1e7dc;
+}
+.ps-pick-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ps-pick.add {
+  padding-bottom: calc((100% - 32rpx) / 3);
+  border: 3rpx dashed #ddd2c6;
+  background: #fcfaf7;
+  box-sizing: border-box;
+}
+.ps-add-plus {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin-top: -34rpx;
+  text-align: center;
+  font-size: 40rpx;
+  color: #c9beb1;
+  line-height: 1;
+}
+.ps-add-t {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin-top: 4rpx;
+  text-align: center;
+  font-size: 21rpx;
+  color: var(--ink3);
+}
+.ps-del {
+  position: absolute;
+  right: 8rpx;
+  top: 8rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(44, 39, 35, 0.55);
+  color: #fff;
+  font-size: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* 日期行 */
+.ps-row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 22rpx 28rpx;
+  margin-top: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(150, 120, 90, 0.06);
+}
+.ps-row-lb { width: 156rpx; font-size: 26rpx; color: var(--ink2); flex: 0 0 auto; }
+.ps-row-val { flex: 1; font-size: 28rpx; color: var(--ink); font-weight: 600; }
+.ps-row-tag {
+  font-size: 22rpx;
+  color: var(--orange-deep);
+  background: var(--orange-soft);
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 可见范围 */
+.ps-vis {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 22rpx 4rpx 4rpx;
+}
+.ps-vis-lb { font-size: 23rpx; color: var(--ink3); }
+.ps-vis-opts { margin-left: auto; display: flex; gap: 12rpx; }
+.ps-v {
+  font-size: 23rpx;
+  font-weight: 600;
+  color: var(--ink2);
+  background: #fff;
+  border-radius: 999rpx;
+  padding: 10rpx 20rpx;
+}
+.ps-v.on {
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  box-shadow: inset 0 0 0 2rpx var(--orange);
+}
+
+/* 发布 */
+.ps-save {
+  margin-top: 28rpx;
+  width: 100%;
+}
+.ps-note {
+  font-size: 21rpx;
+  color: var(--ink3);
+  text-align: center;
+  padding: 16rpx 0 4rpx;
+  line-height: 1.5;
+}

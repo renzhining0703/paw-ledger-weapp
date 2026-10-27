@@ -1,0 +1,170 @@
+<view class="tl-page">
+  <!-- 沉浸式导航：标题位换成「当前宠物切换」（设计稿 v1.4a）
+       ⚠️ 本页是 tabBar 页面，不设返回按钮：
+           ① tab 页只能 switchTab 进入，页面栈恒为 1，没有「上一页」可返回；
+           ② 底部有 tabBar，用户不存在被困住的可能。返回按钮在这里是纯噪音
+       右侧「生成分享长图」图标只在「足迹」分段显示（「光影」分段按设计稿不显示） -->
+  <view class="tl-nav" style="padding-top: {{ui.statusBarHeight}}px;">
+    <view class="tl-nav-row" style="height: {{ui.navBarHeight}}px; margin-right: {{shareRight}}px;">
+      <view class="tl-share-ic {{isEmpty ? 'dis' : ''}}" wx:if="{{seg === 'timeline'}}" bindtap="onShare" hover-class="tl-share-ic-press">
+        <image class="tl-share-img" src="/assets/icons-png/icon-share.png" mode="aspectFit" />
+      </view>
+    </view>
+    <!-- 宠物切换器：绝对定位在导航行正中（相对 .tl-nav 全宽，不受右侧避让胶囊的 margin 影响） -->
+    <view
+      wx:if="{{pet}}"
+      class="tl-petsw {{multiPet ? '' : 'single'}}"
+      style="top: {{petswTop}}px;"
+      bindtap="openSwitcher"
+      hover-class="tl-petsw-press"
+    >
+      <view class="tl-petsw-ava">
+        <pet-avatar size="{{44}}" radius="{{0}}" tone="white" species="{{pet.species}}" src="{{pet.avatar}}" small-src="{{pet.avatarSmall}}" />
+      </view>
+      <text class="tl-petsw-nm">{{pet.name || '未命名'}}</text>
+      <text class="tl-petsw-ar" wx:if="{{multiPet}}">⌄</text>
+    </view>
+  </view>
+
+  <!-- 分段控件：足迹 / 光影（选中项橙色下划线，与下面 chips 的胶囊底视觉区分） -->
+  <view class="tl-seg" style="top: {{segStickyTop}}px;">
+    <view class="tl-seg-i {{seg === 'timeline' ? 'on' : ''}}" data-k="timeline" bindtap="onSeg" hover-class="tl-seg-press">足迹</view>
+    <view class="tl-seg-i {{seg === 'album' ? 'on' : ''}}" data-k="album" bindtap="onSeg" hover-class="tl-seg-press">光影</view>
+  </view>
+
+  <!-- ===== 分段一：足迹（时间线） ===== -->
+  <block wx:if="{{seg === 'timeline'}}">
+    <!-- 筛选 chips：外层 view 负责吸顶（iOS 上 sticky 不要给 scroll-view），内层横向滚动 -->
+    <view class="tl-chips {{chipsFadeIn ? 'fade' : ''}}" style="top: {{chipsStickyTop}}px;">
+      <scroll-view class="tl-chips-sw" scroll-x enhanced show-scrollbar="{{false}}" bindscroll="onChipsScroll">
+        <view class="tl-chips-in">
+          <view
+            class="chip {{filter === item.key ? 'on' : ''}}"
+            wx:for="{{filters}}"
+            wx:key="key"
+            data-k="{{item.key}}"
+            bindtap="onFilter"
+            hover-class="chip-press"
+          >{{item.name}}</view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 有没发完的草稿：不静默丢弃，给一条可点的入口（弱网续传的落地形式） -->
+    <view class="tl-draft" wx:if="{{draftCount}}" bindtap="onResumeDraft" hover-class="tl-draft-press">
+      有 1 条图文没发出去，点这里继续 ›
+    </view>
+
+    <skeleton wx:if="{{loading}}" type="timeline" rows="4" />
+    <view class="inline-error" style="margin: 24rpx 32rpx;" wx:elif="{{error}}" bindtap="onRetry">加载失败，点此重试 ↻</view>
+
+    <block wx:elif="{{!isEmpty}}">
+      <!-- 按月分组（sticky 标题） -->
+      <view wx:if="{{groups.length}}">
+        <view class="tl-month" wx:for="{{groups}}" wx:key="key" wx:for-item="g">
+          <view class="tl-month-head" style="top: {{monthStickyTop}}px;">{{g.month}} <text class="tl-month-count">{{g.count}} 条</text></view>
+          <view class="tl-list">
+            <timeline-item
+              wx:for="{{g.items}}"
+              wx:for-index="sIdx"
+              wx:key="_id"
+              item="{{item}}"
+              last="{{sIdx === g.items.length - 1}}"
+              bind:edit="onTimelineEdit"
+              bind:del="onItemDel"
+              bind:preview="onPreview"
+              bind:appeal="onItemAppeal"
+            ></timeline-item>
+          </view>
+        </view>
+      </view>
+
+      <!-- 筛选无结果 -->
+      <empty-state wx:if="{{filterEmpty}}" type="no-health" title="这个类型还没有记录" desc="随手记一条，足迹会更有温度" btnText="＋ 记一条" bind:action="onAddRecord"></empty-state>
+
+      <view class="tl-more" wx:if="{{hasMore}}">上滑加载更早的记录…</view>
+      <view class="tl-end" wx:if="{{!hasMore && shownCount > 0}}">— 到底啦 —</view>
+    </block>
+
+    <!-- 全空 -->
+    <empty-state wx:elif="{{!loading}}" type="no-health" title="还没有任何记录" desc="首页随手记或健康页记一笔，这里就会串成足迹" btnText="＋ 记第一条" bind:action="onAddRecord"></empty-state>
+
+    <!-- 底部悬浮「记一条」：按当前筛选打开对应弹层，筛选为「全部」时先让用户选类型 -->
+    <view class="tl-fab" wx:if="{{!loading && !error}}" bindtap="onAddRecord">
+      <text class="tl-fab-plus">＋</text>
+      <text>记一条</text>
+    </view>
+  </block>
+
+  <!-- ===== 分段二：相册 =====
+       ⚠️ 用 hidden 而不是 wx:if：组件实例不销毁 → 已加载的照片、分页进度都留着，
+          切回来不用重新拉（组件自己监听不到页面触底，分页由 onReachBottom 转发）
+       ⚠️ hidden 挂在外层普通 view 上，不直接挂自定义组件 —— 自定义组件的 hidden
+          依赖根节点样式，包一层 view 更稳 -->
+  <view hidden="{{seg !== 'album'}}">
+    <album-grid
+      id="albumGrid"
+      active="{{seg === 'album'}}"
+      sticky-top="{{albMonthStickyTop}}"
+    />
+  </view>
+
+  <!-- 长按菜单（对齐设计稿）：删除（无权限置灰说明）+ 举报 + 取消 -->
+  <view class="as-mask" wx:if="{{delItem}}" bindtap="onDelCancel"></view>
+  <view class="as-sheet" wx:if="{{delItem}}">
+    <view class="as-group">
+      <view class="as-item danger {{delBlocked ? 'dis' : ''}}" bindtap="onDelTap">
+        删除这条记录
+        <text class="as-sub">{{delBlocked ? '只能删除自己记录的内容' : delTip}}</text>
+      </view>
+      <!-- 举报（PRD《内容安全与风控》10.1）：选原因 → 写 reports 集合
+           ⚠️ 不再走客服会话：客服那边拿不到结构化原因，也没法自动下架 -->
+      <view
+        class="as-item as-report-btn"
+        bindtap="onReportTap"
+        hover-class="as-item-press"
+        wx:if="{{canReport}}"
+      >
+        举报这条内容
+        <text class="as-sub">选择合适的理由，我们会尽快处理</text>
+      </view>
+    </view>
+    <view class="as-cancel" bindtap="onDelCancel">取消</view>
+  </view>
+
+
+  <view class="safe-bottom"></view>
+  <record-sheet id="recordSheet" bind:saved="onSheetSaved"></record-sheet>
+  <daily-sheet id="dailySheet" show="{{showDaily}}" tag-key="{{dailyTag}}" pet-id="{{pet._id}}" bind:close="onDailyClose" bind:saved="onDailySaved"></daily-sheet>
+  <!-- 全部日常类型选择弹层（FAB「记一条 → 日常」入口；编辑常用与首页共用同一份云端配置） -->
+  <daily-picker
+    show="{{showDailyPicker}}"
+    pet-name="{{pet.name}}"
+    bind:close="onDailyPickerClose"
+    bind:pick="onDailyPickerPick"
+    bind:configured="onDailyConfigured"
+  ></daily-picker>
+  <post-sheet
+    id="postSheet"
+    show="{{showPost}}"
+    pet-id="{{pet._id}}"
+    pet-name="{{postPetName}}"
+    max="{{postMax}}"
+    via="{{postVia}}"
+    bind:close="onPostClose"
+    bind:saved="onPostSaved"
+  ></post-sheet>
+  <share-pop id="sharePop"></share-pop>
+
+  <!-- 切换宠物：页面级，副标题说明「两个分段都会跟着换」；去掉「＋添加宠物」（设计稿 albsw） -->
+  <pet-switcher
+    show="{{showSwitch}}"
+    pets="{{pets}}"
+    current-id="{{pet._id}}"
+    subtitle="切换后，足迹和光影都会跟着换"
+    counts="{{petCounts}}"
+    hide-add="{{true}}"
+    bind:close="onSwitchClose"
+    bind:select="onSwitchSelect"
+  ></pet-switcher>
+</view>

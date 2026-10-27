@@ -1,0 +1,43 @@
+<view class="page-pad safe-bottom pl-page">
+  <block wx:if="{{loading}}">
+    <skeleton type="line" rows="4" />
+  </block>
+  <block wx:else>
+    <view class="pl-empty" wx:if="{{!pets.length}}">
+      <empty-state type="no-pet" title="还没有毛孩子的档案" btnText="＋ 添加宠物" bind:action="onAdd"></empty-state>
+    </view>
+
+    <!-- 整行可点：按压反馈用 hover-class（view 不支持 :active），与首页名片卡保持一致 -->
+    <view class="pl-item" wx:for="{{pets}}" wx:key="_id" data-id="{{item._id}}" bindtap="onItem" bindlongpress="onItemLongPress" hover-class="pl-item-press">
+      <pet-avatar size="{{100}}" radius="{{32}}" tone="soft" species="{{item.species}}" src="{{item.avatar}}" />
+      <view class="flex-1">
+        <view class="pl-name">
+          {{item.name}}
+          <text class="pl-share" wx:if="{{item.memberCount > 1}}">共享 {{item.memberCount}} 人</text>
+        </view>
+        <view class="pl-info" wx:if="{{item.info}}">{{item.info}}</view>
+      </view>
+      <!-- 共享宠物：行内快捷邀请（open-type=share 触发转发；满员隐藏）
+           ⚠️ 原生 button 带 UA 默认尺寸，必须内联写死 width/min-width 才收得住 -->
+      <button
+        wx:if="{{item.memberCount > 1 && item.memberCount < maxMembers}}"
+        class="pl-invite"
+        style="width: auto; min-width: 0; max-width: none; flex: none;"
+        open-type="share"
+        hover-class="pl-invite-press"
+        hover-stop-propagation
+        data-id="{{item._id}}"
+        catchtap="noop"
+      >🏠 邀请</button>
+      <text class="pl-arrow">›</text>
+    </view>
+
+    <view class="pl-hint" wx:if="{{pets.length}}">点「邀请」直接发起共享，点整行查看档案</view>
+    <button class="btn-primary pl-add {{full ? 'disabled' : ''}}" disabled="{{full}}" bindtap="onAdd">＋ 添加宠物</button>
+    <view class="pl-total" wx:if="{{pets.length}}">已添加 {{pets.length}} / 20 只，共享的宠物也计入上限</view>
+    <view class="pl-hint" wx:if="{{pets.length}}">长按宠物可删除（名下记录一并删除）</view>
+  </block>
+</view>
+
+<!-- 邀请分享卡离屏画布（转发时生成 5:4 卡面图） -->
+<invite-card id="inviteCard" />

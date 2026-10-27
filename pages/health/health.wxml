@@ -1,0 +1,195 @@
+<!-- 健康记录卡片模板：全部 / 疫苗 / 驱虫 / 体检 四类共用，改样式只改这一处 -->
+<template name="hcard">
+  <view class="hcard" data-col="health" data-id="{{item._id}}" bindtap="onItemTap">
+    <view class="hcard-top">
+      <view class="hcard-ic {{item.icClass}}">{{item.icText}}</view>
+      <view class="flex-1">
+        <view class="hcard-name">{{item.nameText}} <text class="tag {{item.tagClass}}" wx:if="{{item.tagText}}">{{item.tagText}}</text><text class="hcard-cost" wx:if="{{item.costText}}">{{item.costText}}</text></view>
+        <view class="hcard-sub">{{item.subText}}</view>
+      </view>
+      <view class="hcard-badge {{item.badgeRed ? 'red' : ''}}">{{item.badge}}</view>
+    </view>
+    <view class="hcard-kv"><text>{{item.dateLabel}}</text><b>{{item.dateText}}</b></view>
+    <view class="hcard-kv"><text>{{item.subLabel}}</text><b>{{item.nextText}}</b></view>
+    <view class="hcard-kv" wx:if="{{item.noteText}}"><text>备注</text><b>{{item.noteText}}</b></view>
+    <view class="hcard-foot">
+      <view class="hcard-remind" catchtap="noop">
+        <text>到期提醒我</text>
+        <switch checked="{{item.remindOn}}" color="#FF7A2F" data-id="{{item._id}}" catchchange="onRemindToggle" />
+      </view>
+      <view class="hcard-auth" wx:if="{{item.authCount > 0}}">{{item.authText}}</view>
+      <view class="hcard-reauth" wx:else catchtap="onReAuth" data-id="{{item._id}}">授权 0 次 · 补授权</view>
+    </view>
+    <view class="ti-pending" wx:if="{{item._sync}}">⏳ 待同步</view>
+  </view>
+</template>
+
+<view class="hp-page safe-bottom">
+  <!-- ===== 固定头（fixed，不随内容滚动）：状态栏 + 导航行 + 宠物名片 + 类型 tabs =====
+       ⚠️ 本页改成自定义导航（navigationStyle: custom），导航行参数用 U.getUI()
+          量的胶囊数据算（同时光页 .tl-nav 的做法）
+       ⚠️ 头部用 fixed 而不是 sticky：页级 sticky 在本基础库/真机实测不生效（两次返工结论）
+       ⚠️ 分享图标在胶囊旁边：margin-right = 胶囊距屏右 + 胶囊宽 + 8px（health.js onLoad） -->
+  <view class="hp-top">
+    <view style="height: {{ui.statusBarHeight}}px;"></view>
+    <view class="hp-nav" style="height: {{ui.navBarHeight}}px;">
+      <view class="hp-nav-title">健康</view>
+      <view class="hp-nav-row" style="margin-right: {{shareRight}}px;">
+        <!-- 生成分享图（从各 tab 的 sec-head 挪到胶囊旁边）
+             ⚠️ 显隐只看「当前 tab 有没有记录」：四个 tab 都可能有数据，别写死只有全部/疫苗才有
+                全部→整页健康图；疫苗→疫苗长图；驱虫/体检→健康图只装这一类的记录 -->
+        <view
+          wx:if="{{shareCount}}"
+          class="hp-share-ic"
+          bindtap="onShareTap"
+          hover-class="hp-share-press"
+        >
+          <image class="hp-share-img" src="/assets/icons-png/icon-share.png" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+    <block wx:if="{{pet}}">
+      <view class="hp-head-body">
+        <!-- 简化名片（切换入口；新增入口在底部悬浮「记一条」） -->
+        <view class="hp-card">
+          <pet-avatar size="{{88}}" tone="soft" species="{{pet.species}}" src="{{petView.avatar}}" small-src="{{petView.avatarSmall}}" />
+          <view class="flex-1">
+            <view class="hp-name">{{petView.name}}</view>
+            <view class="hp-info" wx:if="{{petView.info}}">{{petView.info}}</view>
+          </view>
+          <view class="hp-switch" bindtap="onSwitcher">⇄</view>
+        </view>
+
+        <!-- ===== 类型切换（全部 / 疫苗 / 驱虫 / 体检） ===== -->
+        <view class="h-tabs">
+          <view class="h-tab {{tab === item.key ? 'on' : ''}}" wx:for="{{tabs}}" wx:key="key" data-tab="{{item.key}}" bindtap="onTab">
+            {{item.name}}<text class="h-tab-n" wx:if="{{item.count}}">{{item.count}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <!-- ===== 列表区：padding-top = 固定头实测高度（health.js measureGroups 里量） ===== -->
+  <view class="hp-list" style="padding-top: {{headH}}px;">
+    <!-- 骨架屏 -->
+    <block wx:if="{{loading}}">
+      <skeleton type="card" rows="3" />
+    </block>
+
+    <!-- 内联错误条 -->
+    <view class="inline-error" wx:elif="{{error}}" bindtap="onRetry">加载失败，点此重试 ↻</view>
+
+    <!-- 无宠物 -->
+    <empty-state wx:elif="{{!pet}}" type="no-pet" title="还没有毛孩子的档案" desc="创建档案后，疫苗驱虫到期前 1 天微信自动提醒你" btnText="＋ 添加第一只宠物" bind:action="onSwitchAdd"></empty-state>
+
+    <block wx:else>
+      <!-- ===== 全部（疫苗 + 驱虫 + 体检 合并） ===== -->
+      <block wx:if="{{tab === 'all'}}">
+        <view class="sec-head">
+          <view class="sec-title">全部 · {{allList.length}} 条</view>
+        </view>
+        <block wx:if="{{!allList.length}}">
+          <view class="grp-empty">
+            <text>还没有健康记录</text>
+            <view class="grp-empty-btn" data-kind="vaccine" bindtap="onAdd">＋ 记一条</view>
+          </view>
+          <!-- 触点 4：无记录 / 异宠（每人每周 ≤1 次，频次由 csUnknown 控制）
+               文案红线：只说「问」，绝不出现「群 / 福利 / 免费领」（PRD 附 D）
+               ⚠️ 原生 button 当可见容器（尺寸全在内联 style），视觉与布局放内部 view -->
+          <button
+            wx:if="{{csUnknown}}"
+            class="cs-btn h-ask"
+            open-type="contact"
+            session-from="{{csFromUnknown}}"
+            bindcontact="onContact"
+            data-src="health_unknown"
+            hover-class="cs-btn-press"
+            hover-stop-propagation
+            style="display:block;width:100%;min-width:0;max-width:none;margin:20rpx 0 0;padding:0;border:none;background:transparent;line-height:normal;text-align:left;"
+          >
+            <view class="ask-bar-in">
+              <view class="ab-ic"><text class="ab-ic-tx">💬</text></view>
+              <view class="ab-tx">不知道该打什么疫苗？</view>
+              <view class="ab-go">联系客服 <text class="ab-go-ar">›</text></view>
+            </view>
+          </button>
+        </block>
+        <!-- 分组展示：疫苗 / 驱虫 / 体检 各一段
+             每组一个 .grp 容器：health.js 用它测量各段位置，驱动顶部悬浮的分组条 -->
+        <view class="grp" wx:for="{{allGroups}}" wx:key="key" wx:for-item="grp">
+          <view class="grp-head">
+            <view class="grp-head-dot" style="background: {{grp.color}};"></view>
+            <view class="grp-head-t">{{grp.name}} · {{grp.list.length}} 次</view>
+          </view>
+          <template is="hcard" wx:for="{{grp.list}}" wx:for-item="item" wx:key="_id" data="{{item: item}}" />
+        </view>
+
+        <!-- 吸顶分组条：由 health.js 按滚动位置驱动（CSS sticky 在这个基础上不生效，改 JS 实现）
+             ⚠️ top = 固定头实测高度（grpStickyTop），左右 32rpx 与 .hp-list 对齐 -->
+        <view class="grp-float" wx:if="{{floatGrp}}" style="top: {{grpStickyTop}}px;">
+          <view class="grp-head-dot" style="background: {{floatGrp.color}};"></view>
+          <view class="grp-head-t">{{floatGrp.title}}</view>
+        </view>
+      </block>
+
+      <!-- ===== 疫苗 ===== -->
+      <block wx:elif="{{tab === 'vaccine'}}">
+        <view class="sec-head">
+          <view class="sec-title">疫苗 · {{vaccines.length}} 次</view>
+        </view>
+        <block wx:if="{{!vaccines.length}}">
+          <view class="grp-empty">
+            <text>还没记过疫苗</text>
+            <view class="grp-empty-btn" data-kind="vaccine" bindtap="onAdd">＋ 记一针</view>
+          </view>
+        </block>
+        <template is="hcard" wx:for="{{vaccines}}" wx:key="_id" data="{{item: item}}" />
+      </block>
+
+      <!-- ===== 驱虫（体内 / 体外二级切换） ===== -->
+      <block wx:elif="{{tab === 'deworm'}}">
+        <view class="sec-head">
+          <view class="sec-title">驱虫 · {{deworms.length}} 次</view>
+        </view>
+        <view class="h-subseg">
+          <view class="h-subseg-item {{dewormTab === 'dewormIn' ? 'on' : ''}}" data-t="dewormIn" bindtap="onDewormTab">体内驱虫</view>
+          <view class="h-subseg-item {{dewormTab === 'dewormOut' ? 'on' : ''}}" data-t="dewormOut" bindtap="onDewormTab">体外驱虫</view>
+        </view>
+        <block wx:if="{{!dewormShown.length}}">
+          <view class="grp-empty">
+            <text>还没记过{{dewormTab === 'dewormIn' ? '体内' : '体外'}}驱虫</text>
+            <view class="grp-empty-btn" data-kind="deworm" bindtap="onAdd">＋ 记一次</view>
+          </view>
+        </block>
+        <template is="hcard" wx:for="{{dewormShown}}" wx:key="_id" data="{{item: item}}" />
+      </block>
+
+      <!-- ===== 体检（独立健康类型，带下次体检日期 + 提醒） ===== -->
+      <block wx:elif="{{tab === 'checkup'}}">
+        <view class="sec-head">
+          <view class="sec-title">体检 · {{checkups.length}} 次</view>
+        </view>
+        <block wx:if="{{!checkups.length}}">
+          <view class="grp-empty">
+            <text>还没记过体检</text>
+            <view class="grp-empty-btn" data-kind="checkup" bindtap="onAdd">＋ 记一次</view>
+          </view>
+        </block>
+        <template is="hcard" wx:for="{{checkups}}" wx:key="_id" data="{{item: item}}" />
+      </block>
+    </block>
+  </view>
+
+  <!-- 底部悬浮「记一条」：按当前 tab 直接开对应弹层（未知类型默认疫苗） -->
+  <view class="hp-fab" wx:if="{{pet}}" bindtap="onFabAdd">
+    <text class="hp-fab-plus">＋</text>
+    <text>记一条</text>
+  </view>
+
+  <view class="safe-bottom"></view>
+
+  <pet-switcher show="{{showSwitcher}}" pets="{{pets}}" currentId="{{pet._id}}" bind:close="onSwitchClose" bind:select="onSwitchSelect" bind:add="onSwitchAdd"></pet-switcher>
+  <record-sheet id="recordSheet" bind:saved="onSheetSaved"></record-sheet>
+  <share-pop id="sharePop"></share-pop>
+</view>

@@ -1,0 +1,15 @@
+{
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#FDF8F2",
+  "usingComponents": {
+    "pet-switcher": "../../components/pet-switcher/index",
+    "record-sheet": "../../components/record-sheet/index",
+    "daily-sheet": "../../components/daily-sheet/index",
+    "daily-picker": "../../components/daily-picker/index",
+    "pet-avatar": "../../components/pet-avatar/index",
+    "timeline-item": "../../components/timeline-item/index",
+    "post-sheet": "../../components/post-sheet/index",
+    "agreement-gate": "../../components/agreement-gate/index"
+  }
+}

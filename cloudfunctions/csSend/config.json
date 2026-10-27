@@ -1,0 +1,9 @@
+{
+  "triggers": [
+    {
+      "name": "cs-outbox-flush",
+      "type": "timer",
+      "config": "0 * * * * * *"
+    }
+  ]
+}

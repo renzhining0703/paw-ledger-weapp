@@ -1,0 +1,187 @@
+<view class="page-pad safe-bottom">
+  <skeleton type="card" rows="3" wx:if="{{loading}}" />
+
+  <block wx:else>
+    <!-- ① 问候区（裸排在米底上，不包卡片 —— 和首页头部同一套配色语言）
+         ⚠️ 左边必须内缩 28rpx：page-pad 是 32rpx，卡片内边距也是 28rpx，
+            补上这 28 头像左边缘才等于卡片内文字的左边缘（32+28=60），
+            不补的话裸排头部和下面第一张卡会有明显的错位感
+         ⚠️ pet-avatar 没 src 且 paw=true 时是「实心浅橙底 + 🐾」，不再有虚线框
+            （虚线会让未设头像的人觉得「没弄完」） -->
+    <view class="m-hi" bindtap="openProfile" hover-class="m-hi-press" hover-stay-time="60">
+      <view class="m-ava">
+        <pet-avatar size="{{112}}" tone="soft" paw="{{!user.avatar}}" src="{{user.avatar}}" />
+        <view class="m-ava-badge">
+          <image class="m-ava-pen" src="/assets/icons-svg/ic-pen.svg" mode="aspectFit"></image>
+        </view>
+      </view>
+      <view class="flex-1">
+        <view class="m-hi-t">你好，{{user.nickname || '铲屎官'}}</view>
+        <!-- 副行永远只有一行：设了昵称就说数据，没设就给一句引导 -->
+        <view class="m-hi-s" wx:if="{{user.nickname}}">{{petCount}} 只毛孩子 · {{remindOnCount}} 条提醒守护中</view>
+        <view class="m-hi-hint" wx:else>点头像，设置昵称和头像 ›</view>
+      </view>
+    </view>
+
+    <!-- ①·5 同步异常警示条：只在真的有问题时出现
+         ⚠️ 同步状态卡本体已迁到设置页（PRD 决策），但异常是「需要用户处理」的状态，
+            藏进二级页等于没人会发现 —— 这里保留一条窄条，正常时不占位置 -->
+    <view class="m-warn" wx:if="{{!syncOk}}" bindtap="goSettings" hover-class="m-warn-press" hover-stay-time="60">
+      <text class="m-warn-ic">⚠️</text>
+      <view class="m-warn-tx">
+        <view class="m-warn-t">{{syncText}}</view>
+        <view class="m-warn-s">去设置里看看怎么处理</view>
+      </view>
+      <text class="m-warn-ar">›</text>
+    </view>
+
+    <!-- ③ 入口列表：全部收进「一张」卡。
+         ⚠️ 旧版是 4 张各自带阴影的浮卡，头部改成裸排之后，一串浮白块紧接着裸排文字，
+            两边没有结构关系，显得很跳 —— 现在分组靠 1rpx 分隔线，全页只剩这一块白色表面 -->
+    <view class="card m-group">
+      <!-- 宠物管理（v1.4a：「相册」行已删除 —— 相册并入「时光」tab，不留第二个入口） -->
+      <view class="m-item" bindtap="goPets" hover-class="m-item-press" hover-stay-time="60">
+        <text class="m-item-ic">🐾</text>
+        <text class="m-item-t">宠物管理</text>
+        <text class="m-item-r">{{petCount}} 只{{petCount >= 20 ? '（已满）' : ''}}</text>
+        <image class="m-arw" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+      </view>
+
+      <view class="m-sep"></view>
+
+      <!-- 提醒与授权：右值 + 右侧动作按钮，说明压成一行副标题
+           「N 条提醒已开启」已经写在头部那行了，这里不再重复 -->
+      <view class="m-item">
+        <text class="m-item-ic">🔔</text>
+        <view class="m-item-tx">
+          <view class="m-item-t">提醒授权</view>
+          <view class="m-item-sub">一次授权推送一条提醒</view>
+        </view>
+        <text class="m-item-val t-num {{subBalance === 0 ? 'zero' : ''}}">{{subBalance}} 次可用</text>
+        <!-- hover-class：view 不支持 :active，按压反馈必须靠 hover-class，否则点了毫无视觉变化 -->
+        <view
+          class="m-item-btn {{subBalance === 0 ? 'hot' : ''}}"
+          hover-class="m-item-btn-press"
+          hover-stay-time="80"
+          bindtap="onSubscribe"
+        >补一次授权</view>
+      </view>
+
+      <view class="m-sep"></view>
+
+      <!-- ⑥ 客服触点 · 我的页（常驻静态入口，无频次限制）
+           文案红线：只说「问」，绝不出现「群 / 进群 / 福利 / 免费领」（PRD 附 D）
+           ⚠️ 原生 button 三坑（本项目已踩）：
+              ① 别把 display:flex 写在 button 上再用内部 flex-1 撑列 —— 宽度会被 UA 样式收窄、文字一字一行；
+              ② 别用 opacity:0 的透明 button 当热区 —— 真机完全不响应点击；
+              ③ 唯一稳的结构：button 当**可见容器**（内联 style 锁尺寸），视觉与布局全放内部 view -->
+      <button
+        class="m-cs-btn"
+        open-type="contact"
+        session-from="{{csFrom}}"
+        bindcontact="onContact"
+        hover-class="m-cs-btn-press"
+        hover-stop-propagation
+        style="display:block;width:100%;min-width:0;max-width:none;margin:0;padding:0;border:none;background:transparent;line-height:normal;text-align:left;"
+      >
+        <view class="m-item m-item-flush">
+          <text class="m-item-ic">💬</text>
+          <view class="m-item-tx">
+            <text class="m-item-t">联系客服</text>
+            <view class="m-item-sub">宠物信息会一起带过去，回答更准</view>
+          </view>
+          <image class="m-arw m-arw-end" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+        </view>
+      </button>
+
+      <view class="m-sep"></view>
+
+      <!-- ⑥·5 设置：同步状态 / 清理缓存 / 协议 / 隐私 / 帮助反馈 / 关于我们 全在这一页里 -->
+      <view class="m-item" bindtap="goSettings" hover-class="m-item-press" hover-stay-time="60">
+        <!-- 设计稿：设置是线稿齿轮（不是 ⚙ emoji） -->
+        <image class="m-item-ic-img" src="/assets/icons-svg/ic-gear.svg" mode="aspectFit"></image>
+        <text class="m-item-t">设置</text>
+        <image class="m-arw m-arw-end" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+      </view>
+
+      <!-- ⑦ 客服运营（R8）：白名单成员常驻入口，不用再长按版本号 5 次
+           ⚠️ 条件必须是「csAdmin && csAdminLocked」两个都满足：
+              只判 csAdmin 不够 —— 环境变量丢失时 probe 会对所有人返回 ok=true，
+              那时候把入口常驻摆在这里等于全站暴露。
+              未锁定时入口只在长按 5 次的自检面板里出现（那边带橙色警告）。 -->
+      <block wx:if="{{csAdmin && csAdminLocked}}">
+        <view class="m-sep"></view>
+        <view class="m-item" bindtap="goOps" hover-class="m-item-press" hover-stay-time="60">
+          <text class="m-item-ic">💬</text>
+          <text class="m-item-t">客服运营</text>
+          <image class="m-arw m-arw-end" src="/assets/icons-svg/ic-arrow.svg" mode="aspectFit"></image>
+        </view>
+      </block>
+    </view>
+
+    <!-- ⑧ 推荐给养宠好友（独立运营位，放列表卡之后，视觉上和「我的」的分组合开）
+         ⚠️ 原生 button 的宽度/布局会被 UA 样式压住，宽高必须写内联 style -->
+    <button
+      class="m-share"
+      open-type="share"
+      hover-class="m-share-press"
+      hover-stop-propagation
+      style="display:block;width:100%;min-width:0;max-width:none;margin:24rpx 0 0;padding:0;border:none;background:transparent;line-height:normal;text-align:left;"
+    >
+      <view class="m-share-in">
+        <view class="m-share-ic"></view>
+        <view class="m-share-tx">
+          <view class="m-share-t">推荐给养宠好友</view>
+          <view class="m-share-s">把「它的时光」分享给同样养毛孩子的朋友</view>
+        </view>
+        <view class="m-share-btn">去分享</view>
+      </view>
+    </button>
+
+    <!-- ⑨ 版本（长按 5 次进埋点自检） -->
+    <view class="m-version" bindlongpress="onVersionTap" bindtap="onVersionTap">v{{version}}</view>
+
+    <!-- 分享封面离屏画布（750×600）：转发时由 recommend-card 出图 -->
+    <recommend-card id="recommendCard" />
+
+    <!-- 头像昵称设置弹层 -->
+    <bottom-sheet show="{{showProfileSheet}}" title="设置头像昵称" subtitle="可不填，随时可跳过" bind:close="closeProfile">
+      <button class="m-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <pet-avatar size="{{160}}" tone="white" src="{{user.avatar}}" />
+        <view class="m-avatar-change">更换头像</view>
+      </button>
+      <view class="m-field">
+        <view class="m-field-label">昵称</view>
+        <input type="nickname" class="m-field-input" placeholder="分享长图会显示这个昵称" maxlength="12" bindinput="onNickInput" value="{{user.nickname}}" />
+      </view>
+      <button class="btn-primary m-save" bindtap="saveProfile">保存</button>
+      <view class="m-profile-skip" bindtap="closeProfile">跳过</view>
+    </bottom-sheet>
+
+    <!-- 同步诊断面板已随「同步状态」整体迁到 pages/settings -->
+
+    <!-- 埋点自检面板（不对外暴露入口） -->
+    <bottom-sheet show="{{showTrackPanel}}" title="埋点自检面板" subtitle="最近 20 条待上报事件（验收用）" bind:close="closeTrackPanel">
+      <view class="m-track" wx:if="{{trackEvents.length}}">
+        <view class="m-track-row" wx:for="{{trackEvents}}" wx:key="eventId">
+          <text class="m-track-ev {{item.critical ? 'hot' : ''}}">{{item.event}}</text>
+          <text class="m-track-time">{{item.time}}</text>
+        </view>
+      </view>
+      <view class="m-track-empty" wx:else>队列为空，事件都已上报</view>
+      <!-- 客服运营后台（R8）：换投放素材 / 改话术 / 看会话 / 看触点数据
+           ⚠️ 只有白名单账号才渲染这个入口（csAdmin 侧还有一道校验兜底）
+           ⚠️ 提审前必须跑 `node scripts/strip-ops.js` 摘除本页，
+              否则它会被打包上传；过审后 `node scripts/restore-ops.js` 恢复 -->
+      <view wx:if="{{csAdmin}}" class="btn-soft m-track-ops" bindtap="goOps">客服运营后台</view>
+      <view wx:if="{{csAdminDebug}}" class="m-track-debug" bindtap="onCopyCsDebug">{{csAdminDebug}}</view>
+      <!-- 完整 openid：加第二个客服时要用。没有它，别人只能报出尾号，没法配白名单 -->
+      <view class="m-openid" wx:if="{{myOpenid}}">
+        <text class="m-openid-k">我的 openid</text>
+        <text class="m-openid-v" user-select="{{true}}">{{myOpenid}}</text>
+        <view class="m-openid-copy" catchtap="onCopyMyOpenid">复制</view>
+      </view>
+      <view class="m-track-tip" wx:if="{{myOpenid}}">把这个发给运营，填进 csAdmin 的 CS_ADMIN_OPENIDS</view>
+    </bottom-sheet>
+  </block>
+</view>

@@ -1,0 +1,249 @@
+.tl-page { padding-bottom: 200rpx; }
+/* 沉浸式导航：随内容滚动，吸顶时盖住 chips/月份头 */
+.tl-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--cream);
+}
+.tl-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding-left: 24rpx;
+}
+/* 返回按钮已去掉：本页是 tabBar 页面，页面栈恒为 1 且底部有 tabBar，
+   返回按钮既没有「上一页」可回，也不存在困住用户的风险 */
+
+/* ---- 导航栏中间的「当前宠物」切换器（设计稿 v1.4a）
+   ⚠️ 绝对定位相对 .tl-nav（全宽）居中；不能放进 .tl-nav-row —— 那一行有
+      margin-right 避让右侧胶囊，居中会整体偏左 */
+.tl-petsw {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 48rpx;
+  max-width: 300rpx;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  font-size: 31rpx;
+  font-weight: 800;
+  color: var(--ink);
+}
+/* 22px 圆形小头像：多只同种宠物时靠脸区分，比只写名字好用 */
+.tl-petsw-ava {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2rpx 6rpx rgba(150, 120, 90, 0.16);
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tl-petsw-ava > pet-avatar { display: block; }
+.tl-petsw-nm {
+  max-width: 200rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tl-petsw-ar { font-size: 22rpx; color: var(--ink2); margin-top: -6rpx; }
+
+/* 导航行右侧：生成分享图图标按钮（v1.4a：「相册 ›」已删，相册走分段）
+   ⚠️ 只有图标了，靠 margin-left:auto 顶到右缘 */
+.tl-share-ic {
+  margin-left: auto;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background: var(--orange-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tl-share-img { width: 34rpx; height: 34rpx; display: block; }
+.tl-share-ic.dis { opacity: 0.4; }
+/* view 不支持 :active，按压反馈一律 hover-class */
+.tl-petsw-press { opacity: 0.6; }
+.tl-share-ic-press { background: #FFD9BC; }
+.tl-draft-press { opacity: 0.8; }
+
+/* ---- 分段控件：时间线 / 相册（设计稿 v1.4a）
+   ⚠️ 高度锁死 96rpx = 48px：timeline.js 里的 SEG_H 常量按这个数算吸顶位置，改这里必须同步改 JS
+   ⚠️ 选中项用「橙色下划线」而不是胶囊底 —— 同页下面还有一组筛选 chips，两种指示器必须区分 */
+.tl-seg {
+  position: sticky;
+  z-index: 11;
+  height: 96rpx;
+  box-sizing: border-box;
+  display: flex;
+  padding: 0 32rpx;
+  background: #FFFDF9;
+  border-bottom: 1rpx solid var(--line);
+}
+.tl-seg-i {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: var(--ink3);
+  line-height: 96rpx;
+  position: relative;
+}
+.tl-seg-i.on { color: var(--ink); }
+.tl-seg-i.on::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  margin-left: -28rpx;
+  bottom: 0;
+  width: 56rpx;
+  height: 5rpx;
+  border-radius: 3rpx;
+  background: var(--orange);
+}
+.tl-seg-press { opacity: 0.6; }
+
+/* 草稿条：有没发出去的图文时出现，点一下继续 */
+.tl-draft {
+  margin: 0 32rpx 8rpx;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 24rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+}
+
+/* 筛选 chips：外层吸顶 + 右侧渐隐，内层横向滚动
+   ⚠️ sticky 必须挂在外层 view 上：给 scroll-view 加 position:sticky 在 iOS 上会被
+      横向滚动合成层吃掉（滑动时一起飞 / 直接失效）
+   ⚠️ chip 必须 flex-shrink:0 + white-space:nowrap，否则一行放不下时被压扁，
+      文字竖排折行（「全部」变成「全 / 部」就是这个原因） */
+.tl-chips {
+  position: sticky;
+  z-index: 10;
+  background: var(--cream);
+}
+/* 右缘渐隐：暗示右边还有内容可滑；滑到底自动消失（chipsFadeIn） */
+.tl-chips::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 56rpx;
+  background: linear-gradient(90deg, rgba(253, 248, 242, 0), #FDF8F2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.tl-chips.fade::after { opacity: 1; }
+.tl-chips-sw { width: 100%; white-space: nowrap; }
+/* 兜底：低版本基础库不认 enhanced 时，用 webkit 伪类把滚动条藏掉 */
+.tl-chips-sw::-webkit-scrollbar { width: 0; height: 0; display: none; }
+/* display:inline-block + nowrap：比 scroll-view 的 enable-flex 更稳，旧基础库也能滚 */
+.tl-chips-in { display: inline-block; padding: 20rpx 32rpx; }
+.tl-chips .chip {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  vertical-align: top;
+  margin-right: 16rpx;
+}
+.chip-press { opacity: 0.7; }
+
+/* 月份分组 */
+.tl-month { padding: 0 32rpx; }
+.tl-month-head {
+  font-size: 30rpx;
+  font-weight: 800;
+  padding: 20rpx 4rpx 16rpx;
+  position: sticky;
+  background: var(--cream);
+  z-index: 9;
+}
+.tl-month-count { font-size: 22rpx; color: var(--ink3); font-weight: 400; margin-left: 12rpx; }
+.tl-list { border-left: none; }
+
+.tl-more, .tl-end { text-align: center; font-size: 24rpx; color: var(--ink3); padding: 24rpx 0; }
+
+/* ---- 底部悬浮「记一条」 ---- */
+.tl-fab {
+  position: fixed;
+  left: 50%;
+  bottom: calc(36rpx + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 20;
+  height: 92rpx;
+  padding: 0 48rpx;
+  border-radius: 999rpx;
+  background: var(--orange);
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  box-shadow: 0 12rpx 28rpx rgba(255, 122, 47, 0.32);
+}
+.tl-fab-plus { font-size: 34rpx; font-weight: 700; line-height: 1; }
+.tl-fab:active { background: var(--orange-deep); }
+
+/* ---- 长按删除 · ActionSheet（对齐设计稿） ---- */
+.as-mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(44, 39, 35, 0.45);
+  z-index: 100;
+}
+.as-sheet {
+  position: fixed;
+  right: 16rpx;
+  bottom: 28rpx;
+  left: 16rpx;
+  z-index: 101;
+}
+.as-group {
+  background: rgba(249, 249, 249, 0.94);
+  border-radius: 28rpx;
+  overflow: hidden;
+}
+.as-item {
+  padding: 30rpx 0;
+  text-align: center;
+  font-size: 32rpx;
+  color: var(--ink);
+}
+.as-item.danger { color: #E5484D; font-weight: 600; }
+/* 无删除权限：置灰 + 说明，别让用户点了才报错（PRD v2.1 附 A 第 8 条） */
+.as-item.dis { color: #B0A79C; }
+.as-item.dis .as-sub { color: #C0B7AC; }
+.as-item-press { background: rgba(0, 0, 0, 0.04); }
+/* 举报项：原来是原生 button（要内联 style 才能收窄），改成 view 后 .as-item 的样式直接生效，
+   只需要补一条分隔线。view 不支持 :active → 按压反馈走 .as-item-press */
+.as-report-btn { border-top: 1rpx solid #EFE7DD; }
+.as-sub {
+  display: block;
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 4rpx;
+  font-weight: 400;
+}
+.as-cancel {
+  margin-top: 16rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 30rpx 0;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: var(--ink);
+}

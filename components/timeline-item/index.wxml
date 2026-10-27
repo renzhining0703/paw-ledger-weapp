@@ -1,0 +1,89 @@
+<!-- 时间线条目 v3：彩色小圆点/爪印节点 + 白卡片
+     r1 = 类型标签 + 标题 + 右侧时间；r2 = 描述小字；里程碑用米色卡 + 爪印节点
+     图文（moment）：文案在上、图片在下；私密带小锁；别人发的带署名 -->
+<view class="ti" bindtap="onTap" bindlongpress="onLongPress">
+  <!-- 左侧节点列 -->
+  <view class="ti-node">
+    <view class="ti-dot" wx:if="{{!isMilestone}}" style="background: {{dotColor}};"></view>
+    <view class="ti-paw" wx:else>
+      <view class="p-toe t1"></view>
+      <view class="p-toe t2"></view>
+      <view class="p-toe t3"></view>
+      <view class="p-toe t4"></view>
+      <view class="p-pad"></view>
+    </view>
+    <view class="ti-line" wx:if="{{!last}}"></view>
+  </view>
+
+  <!-- 内容卡片 -->
+  <view class="ti-card {{isMilestone ? 'mile' : ''}} {{isMoment ? 'moment' : ''}}">
+    <view class="ti-r1">
+      <!-- 图文标签带小相片图标（暖橙，语义上区分「人亲手写的」与「系统自动生成」） -->
+      <view class="ti-tagw tag-moment" wx:if="{{isMoment}}">
+        <image class="ti-tagw-ic" src="/assets/icons-png/icon-moment.png" mode="aspectFit" />
+        <text class="ti-tagw-tx">{{tagLabel}}</text>
+      </view>
+      <text class="tagt sm {{tagClass}}" wx:else>{{tagLabel}}</text>
+
+      <!-- 里程碑第二个角标：自动记录（中性灰底 + sparkle）；
+           「补记」已按 PRD 5.4.1.1 取消渲染，来源说明改由点击提示承载 -->
+      <text class="tagt sm tag-auto" wx:if="{{isMilestone}}">✨ 自动记录</text>
+
+      <!-- 私密小锁：跟在类型标签后面，克制不抢眼 -->
+      <view class="ti-lk" wx:if="{{isPrivate}}">
+        <image class="ti-lk-ic" src="/assets/icons-png/icon-lock.png" mode="aspectFit" />
+      </view>
+
+      <text class="ti-title" wx:if="{{titleText}}">{{titleText}}</text>
+      <text class="ti-pending" wx:if="{{item._sync}}">⏳</text>
+      <text class="ti-time t-num">{{dispDate}}</text>
+    </view>
+
+    <!-- 内容被下架：灰条 + 申诉入口（红线第 7 条：宠物患处/绝育照容易被误判，必须有出口） -->
+    <view class="ti-blocked" wx:if="{{auditBlocked}}">
+      <text class="ti-blocked-tx">这条内容未通过审核</text>
+      <text class="ti-blocked-ap {{appealStatus === 'open' ? 'dis' : ''}}" catchtap="onAppeal">
+        {{appealStatus === 'open' ? '申诉中' : '申诉'}}
+      </text>
+    </view>
+
+    <!-- 图文的文案独立成段（首页紧凑版放进标题行，不渲染这里） -->
+    <view class="ti-mtext" wx:if="{{isMoment && descText}}">{{descText}}</view>
+    <view class="ti-r2" wx:elif="{{descText}}">{{descText}}</view>
+
+    <!-- 图片行：时间线 1/2/3 张（超 3 张叠 +N）；首页 56×56 小方图 -->
+    <view class="ti-thumbs" wx:if="{{thumbList.length}}">
+      <view
+        class="ti-th {{compact ? 'mini' : ''}}"
+        wx:for="{{thumbList}}"
+        wx:key="thumb"
+        style="{{compact ? '' : item.style}}"
+        data-i="{{index}}"
+        catchtap="onTapImage"
+      >
+        <image wx:if="{{!item.broken}}" class="ti-th-img" src="{{item.thumb}}" mode="aspectFill" lazy-load data-i="{{index}}" binderror="onImgErr" />
+        <view wx:else class="ti-th-bad">图片加载失败</view>
+        <view class="ti-pn" wx:if="{{item.more}}">+{{item.more}}</view>
+      </view>
+    </view>
+
+    <!-- 卡片底部：私密说明 / 署名（首页紧凑版都不显示） -->
+    <view class="ti-mfoot" wx:if="{{isMoment && !compact && (isPrivate || authorDisp)}}">
+      <block wx:if="{{isPrivate}}">
+        <view class="ti-lk sm">
+          <image class="ti-lk-ic" src="/assets/icons-png/icon-lock.png" mode="aspectFit" />
+        </view>
+        <text>仅自己可见</text>
+      </block>
+      <block wx:elif="{{authorDisp}}">
+        <view class="ti-au">{{authorInitial}}</view>
+        <text>{{authorDisp}} 记</text>
+      </block>
+    </view>
+
+    <!-- PRD 5.7：非图文记录的署名（保持原有行为） -->
+    <view class="ti-author" wx:if="{{!isMoment && authorName}}">
+      <text>{{authorName}} 记</text>
+    </view>
+  </view>
+</view>

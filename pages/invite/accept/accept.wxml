@@ -1,0 +1,78 @@
+<!-- 邀请落地页（对齐设计稿：邀请页-01~06） -->
+<view class="accept">
+  <!-- 加载中 -->
+  <view class="accept-loading" wx:if="{{status === 'loading'}}">
+    <view class="accept-spinner"></view>
+    <text class="t-sub">正在打开邀请…</text>
+  </view>
+
+  <!-- 正常态 -->
+  <block wx:elif="{{status === 'ready'}}">
+    <!-- 宠物卡：圆头像 + 昵称/品种年龄 + 青色胶囊徽章 -->
+    <view class="card accept-pet">
+      <pet-avatar src="{{pet.avatar}}" species="{{pet.species}}" size="112" radius="56" />
+      <view class="accept-pet-info">
+        <view class="accept-pet-name">{{pet.name}}</view>
+        <view class="accept-pet-meta">{{petMeta}}</view>
+      </view>
+      <view class="accept-badge">● 共享 {{memberCount}} 人</view>
+    </view>
+
+    <!-- 邀请语（大字，宠物名橙色） -->
+    <view class="accept-invite">
+      <text>{{inviterName}} 邀请你一起记录 </text><text class="accept-invite-pet">{{pet.name}}</text>
+    </view>
+    <view class="accept-sub">加入后你们看到的是同一份档案，谁记的大家都能看到。</view>
+
+    <!-- 权限说明卡 -->
+    <view class="accept-perm">
+      <view class="accept-perm-title">加入后</view>
+      <view class="accept-perm-item">
+        <text class="accept-perm-ok">✓</text>
+        <text class="accept-perm-text">你可以记录 <text class="accept-perm-hl">疫苗 / 驱虫 / 体重 / 花销 / 日常</text>，也可以修改和删除自己记的内容</text>
+      </view>
+      <view class="accept-perm-item">
+        <text class="accept-perm-no">×</text>
+        <text class="accept-perm-text">你不能删除这只宠物，也不能修改它的档案（生日 / 到家日）</text>
+      </view>
+    </view>
+
+    <!-- 成员预览条 -->
+    <view class="accept-mates">
+      <view class="accept-mates-avatars">
+        <block wx:for="{{mates}}" wx:key="index">
+          <image wx:if="{{item.avatar}}" class="accept-mate-ava" src="{{item.avatar}}" mode="aspectFill" />
+          <view wx:else class="accept-mate-ava accept-mate-ava--empty">🐾</view>
+        </block>
+        <view class="accept-mate-add">＋</view>
+      </view>
+      <view class="accept-mates-text">
+        <block wx:if="{{mateNames}}">{{mateNames}} 正在记录，你将是<text class="accept-hl">第 {{willBeNo}} 位成员</text></block>
+        <block wx:else>加入后，你将是<text class="accept-hl">第 {{willBeNo}} 位成员</text></block>
+      </view>
+    </view>
+
+    <!-- 沉底操作区 -->
+    <view class="accept-foot">
+      <button class="btn-primary accept-join" hover-class="none" loading="{{joining}}" bindtap="onJoin">加入</button>
+      <view class="accept-skip" bindtap="onSkip">暂不加入</view>
+      <view class="accept-hint">邀请 7 天内有效 · 加入后可在成员管理里退出</view>
+    </view>
+  </block>
+
+  <!-- 异常态（统一模板：浅橙圆 + emoji + 标题 + 两行描述 + 按钮） -->
+  <view class="accept-err" wx:else>
+    <view class="accept-err-circle"><text class="accept-err-emoji">{{errEmoji}}</text></view>
+    <view class="accept-err-title">{{errTitle}}</view>
+    <view class="accept-err-desc">
+      <text>{{errDesc1}}</text>
+      <text wx:if="{{errDesc2}}">{{errDesc2}}</text>
+    </view>
+    <button class="accept-err-btn" hover-class="none" bindtap="onErrBtn">{{errBtn}}</button>
+    <view class="accept-err-hint" wx:if="{{status === 'already'}}">点「去看看」直接进入 {{petName}} 的首页</view>
+  </view>
+
+  <!-- 首次启动协议门禁：分享邀请的落地页可能成为冷启动第一屏，必须同样挂一份
+       （只挂首页会漏掉「从邀请链接直接进来」的用户） -->
+  <agreement-gate />
+</view>

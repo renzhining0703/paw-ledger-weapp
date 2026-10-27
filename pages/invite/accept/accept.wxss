@@ -1,0 +1,174 @@
+/* 邀请落地页（对齐设计稿：邀请页-01~06） */
+.accept {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+.accept-loading {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 32rpx;
+}
+.accept-spinner {
+  width: 56rpx; height: 56rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--orange-soft);
+  border-top-color: var(--orange);
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- 宠物卡 ---- */
+.accept-pet {
+  display: flex; align-items: center; gap: 24rpx;
+}
+.accept-pet-info { flex: 1; min-width: 0; }
+.accept-pet-name { font-size: 36rpx; font-weight: 800; color: var(--ink); }
+.accept-pet-meta { font-size: 24rpx; color: var(--ink2); margin-top: 8rpx; }
+.accept-badge {
+  flex-shrink: 0;
+  font-size: 22rpx; font-weight: 700; color: #1E9A80;
+  background: #E7F7F2;
+  border-radius: 999rpx; padding: 10rpx 20rpx;
+  white-space: nowrap;
+}
+
+/* ---- 邀请语 ---- */
+.accept-invite {
+  margin-top: 36rpx;
+  padding: 0 8rpx;
+  font-size: 40rpx; font-weight: 800; line-height: 1.5; color: var(--ink);
+}
+.accept-invite-pet { color: var(--orange); }
+.accept-sub {
+  margin-top: 12rpx;
+  padding: 0 8rpx;
+  font-size: 26rpx; color: var(--ink2); line-height: 1.6;
+}
+
+/* ---- 权限说明卡 ---- */
+.accept-perm {
+  margin-top: 28rpx;
+  background: var(--cream2);
+  border-radius: 24rpx;
+  padding: 28rpx;
+}
+.accept-perm-title {
+  font-size: 24rpx; color: var(--ink2); margin-bottom: 18rpx;
+}
+.accept-perm-item {
+  display: flex; gap: 16rpx; align-items: flex-start;
+}
+.accept-perm-item + .accept-perm-item { margin-top: 16rpx; }
+.accept-perm-ok {
+  flex-shrink: 0;
+  width: 36rpx; height: 36rpx; line-height: 36rpx;
+  border-radius: 50%;
+  background: #E7F7F2; color: #1E9A80;
+  font-size: 22rpx; font-weight: 700; text-align: center;
+  margin-top: 2rpx;
+}
+.accept-perm-no {
+  flex-shrink: 0;
+  width: 36rpx; height: 36rpx; line-height: 36rpx;
+  border-radius: 50%;
+  background: #F1EFE8; color: var(--ink3);
+  font-size: 22rpx; font-weight: 700; text-align: center;
+  margin-top: 2rpx;
+}
+.accept-perm-text {
+  flex: 1;
+  font-size: 26rpx; color: var(--ink); line-height: 1.6;
+}
+.accept-perm-hl { color: var(--ink); font-weight: 700; }
+
+/* ---- 成员预览条 ---- */
+.accept-mates {
+  margin-top: 24rpx;
+  display: flex; align-items: center; gap: 20rpx;
+}
+.accept-mates-avatars {
+  display: flex; align-items: center; flex-shrink: 0;
+}
+.accept-mate-ava {
+  width: 64rpx; height: 64rpx;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  border: 4rpx solid var(--cream);
+  box-sizing: border-box;
+  font-size: 28rpx; text-align: center; line-height: 56rpx;
+}
+.accept-mate-ava--empty { color: var(--ink3); }
+.accept-mates-avatars .accept-mate-ava + .accept-mate-ava { margin-left: -16rpx; }
+.accept-mate-add {
+  width: 64rpx; height: 64rpx;
+  border-radius: 50%;
+  border: 3rpx dashed var(--orange);
+  color: var(--orange);
+  font-size: 30rpx; text-align: center; line-height: 58rpx;
+  box-sizing: border-box;
+  margin-left: -16rpx;
+  background: #FFF;
+}
+.accept-mates-text {
+  flex: 1;
+  font-size: 26rpx; color: var(--ink2); line-height: 1.6;
+}
+.accept-hl { color: var(--ink); font-weight: 700; }
+
+/* ---- 沉底操作区 ---- */
+.accept-foot {
+  margin-top: auto;
+  padding-top: 48rpx;
+}
+.accept-join { width: 100%; }
+.accept-skip {
+  text-align: center; font-size: 28rpx; color: var(--ink);
+  margin-top: 24rpx; padding: 12rpx;
+}
+.accept-hint {
+  text-align: center; font-size: 22rpx; color: var(--ink3);
+  margin-top: 20rpx;
+}
+
+/* ---- 异常态（统一模板） ---- */
+.accept-err {
+  flex: 1;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  padding-top: 22vh;
+}
+.accept-err-circle {
+  width: 200rpx; height: 200rpx;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  display: flex; align-items: center; justify-content: center;
+}
+.accept-err-emoji { font-size: 88rpx; line-height: 1; }
+.accept-err-title {
+  margin-top: 48rpx;
+  font-size: 36rpx; font-weight: 800; color: var(--ink);
+}
+.accept-err-desc {
+  margin-top: 24rpx;
+  display: flex; flex-direction: column; gap: 8rpx;
+  font-size: 26rpx; color: var(--ink2); line-height: 1.7;
+}
+.accept-err-btn {
+  margin-top: 56rpx;
+  width: 440rpx; height: 96rpx;
+  background: var(--orange); color: #fff;
+  font-size: 32rpx; font-weight: 700;
+  border-radius: 24rpx;
+  border: none; padding: 0;
+  line-height: 96rpx;
+}
+.accept-err-btn::after { border: none; }
+.accept-err-btn:active { background: var(--orange-deep); }
+.accept-err-hint {
+  margin-top: 24rpx;
+  font-size: 22rpx; color: var(--ink3);
+}

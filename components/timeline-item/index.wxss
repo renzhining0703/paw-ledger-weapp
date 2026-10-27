@@ -1,0 +1,291 @@
+/* 时间线条目 v2（对齐 10-22 新设计稿）：节点 + 白卡片，里程碑米色卡 */
+.ti {
+  display: flex;
+  align-items: stretch;
+}
+
+/* ---- 左侧节点列 ---- */
+.ti-node {
+  width: 44rpx;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 类型色小圆点（带米底描边，压在竖线上） */
+.ti-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  border: 5rpx solid #FDF8F2;
+  box-sizing: content-box;
+  margin-top: 30rpx;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+/* 里程碑爪印（纯 CSS，主橙） */
+.ti-paw {
+  width: 40rpx;
+  height: 36rpx;
+  position: relative;
+  flex-shrink: 0;
+  margin-top: 22rpx;
+  z-index: 2;
+}
+.p-pad {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22rpx;
+  height: 17rpx;
+  background: #F2A65A;
+  border-radius: 10rpx 10rpx 14rpx 14rpx;
+}
+.p-toe {
+  position: absolute;
+  width: 8rpx;
+  height: 11rpx;
+  background: #F2A65A;
+  border-radius: 50%;
+}
+.t1 { left: 2rpx;  top: 7rpx; }
+.t2 { left: 12rpx; top: 0; }
+.t3 { right: 12rpx; top: 0; }
+.t4 { right: 2rpx; top: 7rpx; }
+
+/* 贯穿竖线：从节点下方连到下一项 */
+.ti-line {
+  flex: 1;
+  width: 4rpx;
+  min-height: 20rpx;
+  margin-top: 8rpx;
+  background: #F3EBE2;
+  border-radius: 4rpx;
+}
+
+/* ---- 内容卡片 ---- */
+.ti-card {
+  flex: 1;
+  min-width: 0;
+  margin: 0 0 22rpx 16rpx;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 20rpx 26rpx;
+  box-shadow: 0 4rpx 20rpx rgba(150, 120, 90, 0.07);
+}
+.ti-card.mile {
+  background: #FFFCF5;
+  box-shadow: inset 0 0 0 3rpx #F5E3CC;
+}
+
+/* ---------- 图文卡片（PRD v2.1 / 设计稿 view-tl-moment） ---------- */
+.ti-card.moment {
+  padding: 22rpx 26rpx 24rpx;
+}
+
+/* 图文标签：暖橙底 + 小相片图标 */
+.ti-tagw {
+  display: inline-flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+  line-height: 1.3;
+}
+.ti-tagw-ic { width: 18rpx; height: 18rpx; display: block; }
+.ti-tagw-tx { font-size: 20rpx; font-weight: 700; }
+
+/* 私密小锁（卡片 14pt / 相册网格 16pt，见页面 wxss） */
+.ti-lk {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: #F4EEE7;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.ti-lk-ic { width: 18rpx; height: 18rpx; display: block; }
+
+/* 图文正文：13.5pt，行高 1.62 */
+.ti-mtext {
+  font-size: 27rpx;
+  color: var(--ink);
+  line-height: 1.62;
+  margin-top: 14rpx;
+  word-break: break-all;
+}
+
+/* 图片行 */
+.ti-thumbs {
+  display: flex;
+  gap: 10rpx;
+  margin-top: 18rpx;
+  align-items: flex-start;
+}
+.ti-th {
+  position: relative;
+  width: 100%;
+  height: 0;
+  border-radius: 18rpx;
+  overflow: hidden;
+  background: #F1E7DC;
+  flex: 0 0 auto;
+}
+.ti-th-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* 加载失败占位：<image> 的 error 是静默的，不给占位就变成一张空白卡 */
+.ti-th-bad {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  color: #B6ACA2;
+  background: #F1E7DC;
+}
+/* 「+N」角标：叠在第 3 张右下角 */
+.ti-pn {
+  position: absolute;
+  right: 6rpx;
+  bottom: 6rpx;
+  height: 28rpx;
+  padding: 0 8rpx;
+  background: rgba(44, 39, 35, 0.58);
+  color: #fff;
+  font-size: 18rpx;
+  font-weight: 700;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+/* 首页紧凑版：56×56 小方图（不撑高、不改宽） */
+.ti-th.mini {
+  width: 112rpx;
+  height: 112rpx;
+  padding-bottom: 0;
+  border-radius: 20rpx;
+}
+
+/* 卡片底部：私密说明 / 署名 */
+.ti-mfoot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8rpx;
+  margin-top: 18rpx;
+  font-size: 22rpx;
+  color: var(--ink3);
+}
+.ti-au {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 18rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.ti-r1 {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  min-width: 0;
+}
+/* 小号类型标签 */
+.ti-card .tagt {
+  font-size: 20rpx;
+  font-weight: 700;
+  padding: 4rpx 14rpx;
+  border-radius: 12rpx;
+  line-height: 1.3;
+  flex-shrink: 0;
+}
+.ti-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 27rpx;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ti-time {
+  flex-shrink: 0;
+  /* 里程碑卡没有标题行占位（.ti-title 不渲染），日期会贴在角标后面；
+     margin-left:auto 保证任何卡片上日期都推到最右 */
+  margin-left: auto;
+  font-size: 22rpx;
+  color: #B6ACA2;
+  font-weight: 600;
+}
+.ti-pending {
+  flex-shrink: 0;
+  font-size: 20rpx;
+}
+.ti-r2 {
+  font-size: 24rpx;
+  color: var(--ink2);
+  line-height: 1.55;
+  margin-top: 8rpx;
+  word-break: break-all;
+}
+/* PRD 5.7：成员署名，次级灰小字，右下角 */
+.ti-author {
+  margin-top: 8rpx;
+  text-align: right;
+  font-size: 20rpx;
+  color: var(--ink3);
+}
+
+/* 内容被下架灰条（PRD《内容安全与风控》附 B）：灰底一行 + 右侧申诉
+   用灰不用红：这是「待复核」不是「你违规了」，语气别吓人 */
+.ti-blocked {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-top: 10rpx;
+  padding: 12rpx 16rpx;
+  background: var(--s-daily-bg);
+  border-radius: 12rpx;
+}
+.ti-blocked-tx {
+  flex: 1;
+  min-width: 0;
+  font-size: 22rpx;
+  color: var(--ink2);
+  font-weight: 400;
+}
+.ti-blocked-ap {
+  flex: 0 0 auto;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: var(--orange-deep);
+  padding: 4rpx 8rpx;
+}
+.ti-blocked-ap.dis {
+  color: var(--ink3);
+  font-weight: 400;
+}

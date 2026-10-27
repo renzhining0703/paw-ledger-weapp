@@ -1,0 +1,117 @@
+/* 居中对话框（尺寸取自设计稿 .dialog，375pt 基准 → ×2 = rpx） */
+
+.ud-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(44, 39, 35, 0.45);
+  z-index: 900;
+  animation: ud-fade 0.18s ease both;
+}
+.ud-mask-out { animation: ud-fade-out 0.18s ease both; }
+
+.ud-wrap {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 901;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /* 设计稿卡片中心在屏高 38%（略偏上），这里用顶部留白贴近；纯居中会显得太靠下 */
+  padding-top: 24vh;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.ud-card {
+  width: 540rpx;
+  background: #fff;
+  border-radius: 32rpx;
+  overflow: hidden;
+  box-shadow: 0 24rpx 60rpx rgba(60, 45, 30, 0.22);
+  pointer-events: auto;
+  animation: ud-in 0.2s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.ud-card-out { animation: ud-out 0.16s ease both; }
+
+.ud-tt {
+  font-size: 32rpx;
+  font-weight: 800;
+  color: var(--ink);
+  text-align: center;
+  padding: 44rpx 40rpx 20rpx;
+  line-height: 1.4;
+}
+
+.ud-bd {
+  font-size: 26rpx;
+  color: var(--ink2);
+  text-align: center;
+  line-height: 1.6;
+  padding: 0 44rpx 40rpx;
+  word-break: break-word;
+  /* content 里的 \n 要真的换行（协议弹层的 3 条要点就是用 \n 分行的） */
+  white-space: pre-line;
+}
+/* slot 正文自己带 padding 时需要贴边（协议弹层里正文较长） */
+.ud-bd-slot { padding: 0 44rpx 36rpx; white-space: normal; }
+
+/* 正文下方链接行：与正文同段留白，点开不关弹层 */
+.ud-links {
+  margin: -24rpx 44rpx 36rpx;
+  text-align: center;
+}
+.ud-link {
+  font-size: 26rpx;
+  color: var(--orange-deep);
+  font-weight: 700;
+}
+.ud-link + .ud-link { margin-left: 12rpx; }
+
+.ud-btns {
+  display: flex;
+  border-top: 1rpx solid var(--line);
+}
+
+.ud-btn {
+  flex: 1;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  line-height: normal;
+  box-sizing: border-box;
+}
+.ud-btn-cancel {
+  color: var(--ink2);
+  border-right: 1rpx solid var(--line);
+}
+.ud-btn-main { color: var(--orange-deep); font-weight: 700; }
+.ud-btn-danger { color: var(--red); font-weight: 700; }
+/* 单按钮：占满整行、常规墨色（拦截提示不是危险操作，别用红/橙喊人） */
+.ud-btn-one { border-right: none; color: var(--ink); font-weight: 700; }
+
+.ud-btn-press { background: #FBF5EE; }
+
+@keyframes ud-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ud-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes ud-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes ud-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.96); }
+}

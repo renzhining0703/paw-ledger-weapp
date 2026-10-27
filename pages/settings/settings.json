@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "设置",
+  "usingComponents": {
+    "ui-dialog": "/components/ui-dialog/index",
+    "bottom-sheet": "/components/bottom-sheet/index"
+  }
+}

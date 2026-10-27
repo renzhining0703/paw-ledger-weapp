@@ -1,0 +1,13 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "健康",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "pet-switcher": "../../components/pet-switcher/index",
+    "pet-avatar": "../../components/pet-avatar/index",
+    "record-sheet": "../../components/record-sheet/index",
+    "share-pop": "../../components/share-pop/index",
+    "empty-state": "../../components/empty-state/index",
+    "skeleton": "../../components/skeleton/index"
+  }
+}

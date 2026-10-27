@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "我的",
+  "usingComponents": {
+    "bottom-sheet": "../../components/bottom-sheet/index",
+    "pet-avatar": "../../components/pet-avatar/index",
+    "recommend-card": "../../components/recommend-card/index",
+    "skeleton": "../../components/skeleton/index"
+  }
+}

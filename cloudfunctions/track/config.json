@@ -1,0 +1,9 @@
+{
+  "triggers": [
+    {
+      "name": "monthly-clean-events",
+      "type": "timer",
+      "config": "0 0 5 2 * * *"
+    }
+  ]
+}

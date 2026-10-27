@@ -1,0 +1,13 @@
+.about { display: flex; flex-direction: column; align-items: center; padding: 80rpx 32rpx 0; }
+.about-logo { width: 160rpx; height: 160rpx; border-radius: 44rpx; box-shadow: 0 20rpx 48rpx rgba(220, 140, 70, 0.24); }
+.about-name { font-size: 40rpx; font-weight: 800; margin-top: 24rpx; letter-spacing: 4rpx; }
+.about-slogan { font-size: 24rpx; color: var(--ink2); margin-top: 12rpx; }
+.about-card { width: 100%; margin-top: 48rpx; }
+.about-desc { font-size: 26rpx; color: var(--ink2); line-height: 1.8; }
+.about-desc + .about-desc { margin-top: 16rpx; }
+.about-feat { margin-top: 28rpx; border-top: 1rpx solid var(--line); padding-top: 24rpx; display: flex; flex-direction: column; gap: 24rpx; }
+.about-feat-row { display: flex; gap: 20rpx; align-items: flex-start; }
+.about-feat-ic { font-size: 34rpx; }
+.about-feat-t { font-size: 28rpx; font-weight: 700; }
+.about-feat-d { font-size: 24rpx; color: var(--ink2); margin-top: 4rpx; }
+.about-foot { font-size: 22rpx; color: var(--ink3); margin-top: 48rpx; }

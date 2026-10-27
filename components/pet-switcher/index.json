@@ -1,0 +1,8 @@
+{
+  "component": true,
+  "usingComponents": {
+    "bottom-sheet": "../bottom-sheet/index",
+    "pet-avatar": "../pet-avatar/index"
+  },
+  "styleIsolation": "apply-shared"
+}

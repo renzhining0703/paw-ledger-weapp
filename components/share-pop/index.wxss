@@ -1,0 +1,77 @@
+.sp { display: flex; flex-direction: column; align-items: center; }
+.sp-loading { display: flex; flex-direction: column; align-items: center; padding: 60rpx 0; width: 100%; }
+.sp-sk {
+  width: 420rpx;
+  height: 560rpx;
+  border-radius: 32rpx;
+  background: linear-gradient(90deg, #F2ECE4 25%, #FAF5EE 45%, #F2ECE4 65%);
+  background-size: 200% 100%;
+  animation: sp-shimmer 1.2s infinite;
+}
+@keyframes sp-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.sp-loading-t { font-size: 26rpx; color: var(--ink2); margin-top: 24rpx; }
+.sp-error { padding: 80rpx 0; text-align: center; }
+.sp-error-t { font-size: 28rpx; color: var(--ink2); }
+.sp-error-s { font-size: 21rpx; color: var(--ink3, #B6ACA2); margin-top: 16rpx; max-width: 560rpx; word-break: break-all; text-align: center; }
+.sp-retry { margin-top: 32rpx; width: 320rpx; }
+.sp-img { width: 100%; border-radius: 24rpx; }
+.sp-btns { display: flex; gap: 24rpx; margin-top: 32rpx; width: 100%; }
+.sp-btn {
+  flex: 1;
+  height: 96rpx;
+  border-radius: 48rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+}
+.sp-btn::after { border: none; }
+.sp-btn-ghost { background: var(--cream); color: var(--ink); }
+.sp-btn-main { background: var(--orange); color: #fff; }
+.sp-note { font-size: 22rpx; color: var(--ink3); margin: 20rpx 0 8rpx; }
+.sp-canvas {
+  position: fixed;
+  left: -9999rpx;
+  top: 0;
+  width: 750px;
+  height: 1400px;
+}
+
+/* 客服触点 3（长图成功页）：克制的服务入口条，视觉规格与首页触点一致 */
+.cs-btn::after { border: none; }
+.sp-ask { margin-top: 20rpx; }
+.ask-bar-in {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: var(--cream2);
+  border: 2rpx solid var(--line);
+  border-radius: 24rpx;
+  padding: 18rpx 24rpx;
+  box-sizing: border-box;
+}
+.ab-ic {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 16rpx;
+  background: var(--orange-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+.ab-ic-tx { font-size: 24rpx; line-height: 1; }
+.ab-tx { flex: 1; min-width: 0; font-size: 25rpx; color: var(--ink2); line-height: 1.35; }
+.ab-go {
+  display: flex;
+  align-items: center;
+  gap: 2rpx;
+  font-size: 23rpx;
+  color: var(--ink2);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+.ab-go-ar { font-size: 22rpx; }
+.cs-btn-press .ask-bar-in { opacity: 0.85; }

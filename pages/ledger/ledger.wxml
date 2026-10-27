@@ -1,0 +1,84 @@
+<view class="page-pad safe-bottom">
+  <!-- 骨架屏 -->
+  <block wx:if="{{loading}}">
+    <view class="lg-hero card"><skeleton type="line" rows="2" /></view>
+    <skeleton type="line" rows="6" />
+  </block>
+
+  <view class="inline-error" wx:elif="{{error}}" bindtap="onRetry">加载失败，点此重试 ↻</view>
+
+  <block wx:else>
+    <!-- ① 宠物切换 chips -->
+    <scroll-view scroll-x class="lg-chips" enhanced show-scrollbar="{{false}}">
+      <view class="lg-chips-in">
+        <view class="chip {{scopeIndex === index ? 'on' : ''}} {{item._id !== 'all' ? 'has-ava' : ''}}" wx:for="{{petChips}}" wx:key="_id" data-i="{{index}}" bindtap="onScope">
+          <pet-avatar wx:if="{{item._id !== 'all'}}" size="{{40}}" tone="{{scopeIndex === index ? 'white' : 'soft'}}" species="{{item.species}}" src="{{item.avatar}}" small-src="{{item.avatarSmall}}" />
+          <text>{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- ② 月份切换 -->
+    <view class="lg-month">
+      <view class="lg-arrow {{canPrev ? '' : 'dis'}}" bindtap="onPrevMonth">‹</view>
+      <view class="lg-month-label">{{ymLabel}}</view>
+      <view class="lg-arrow {{canNext ? '' : 'dis'}}" bindtap="onNextMonth">›</view>
+    </view>
+
+    <!-- ③ 本月总支出 -->
+    <view class="card lg-hero">
+      <block wx:if="{{!isEmpty}}">
+        <view class="lg-total">¥{{totalText}}</view>
+        <view class="lg-sub">
+          <text wx:if="{{momDown}}" class="mom-down">较上月 ↓ {{momText}}</text>
+          <text wx:elif="{{momUp}}" class="mom-up">较上月 ↑ {{momText}}</text>
+          <text wx:elif="{{momText}}">与上月持平</text>
+          <text> </text>
+          <text>日均 ¥{{avgText}}</text>
+        </view>
+
+        <!-- ④ 分类占比 -->
+        <view class="lg-bar" wx:if="{{bars.length}}">
+          <view class="lg-bar-seg" wx:for="{{bars}}" wx:key="key" style="width: {{item.w}}%; background: {{item.color}};"></view>
+        </view>
+        <view class="lg-legend" wx:if="{{bars.length}}">
+          <view class="lg-legend-item {{legendKey === item.key ? 'lg-legend-on' : ''}}" wx:for="{{bars}}" wx:key="key" data-k="{{item.key}}" bindtap="onLegend">
+            <text class="lg-dot" style="background: {{item.color}};"></text>
+            <text>{{item.name}} ¥{{item.fenText}}</text>
+            <text class="lg-pct">{{item.pct}}%</text>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="lg-total">¥0.00</view>
+        <view class="lg-empty-hint">本月还没有花销记录</view>
+        <view class="btn-soft lg-empty-btn" bindtap="onAdd">＋ 记一笔</view>
+      </block>
+    </view>
+
+    <!-- ⑤ 流水列表 -->
+    <block wx:if="{{!isEmpty}}">
+      <view class="lg-day" wx:for="{{groups}}" wx:key="date" wx:for-item="g">
+        <view class="lg-day-head">
+          <text class="lg-day-label">{{g.label}}</text>
+          <text class="lg-day-total">支出 ¥{{g.totalText}}</text>
+        </view>
+        <view class="card lg-day-card">
+          <view class="lg-item" wx:for="{{g.items}}" wx:key="_id" data-id="{{item._id}}" data-date="{{g.date}}" bindtap="onItemTap">
+            <view class="lg-item-ic" style="background: {{item.catColor}}22; color: {{item.catColor}};">●</view>
+            <view class="flex-1">
+              <view class="lg-item-name">{{item.catName}} <text class="lg-item-pet" wx:if="{{scopeIndex === 0 && item.petName}}">{{item.petName}}</text><text class="lg-pending" wx:if="{{item._sync}}">⏳ 待同步</text></view>
+              <view class="lg-item-note" wx:if="{{item.note}}">{{item.note}}</view>
+            </view>
+            <view class="lg-item-amount t-num">¥{{item.amountText}}</view>
+          </view>
+        </view>
+      </view>
+      <view class="lg-add" bindtap="onAdd">＋ 记一笔</view>
+    </block>
+
+    <view class="safe-bottom"></view>
+
+    <record-sheet id="recordSheet" bind:saved="onSheetSaved"></record-sheet>
+  </block>
+</view>

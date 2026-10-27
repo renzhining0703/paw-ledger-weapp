@@ -1,0 +1,106 @@
+<view class="page-pad safe-bottom">
+  <!-- 头像（无图回落物种 emoji；新建未选物种显示 🐾）
+       avatarDirty 角标：裁剪确认只是放进表单，点「保存」才上传落库 —— 没这个提示用户会以为换好了 -->
+  <view class="pe-avatar-card" bindtap="onChooseAvatar">
+    <view class="pe-avatar-wrap">
+      <pet-avatar src="{{avatar}}" species="{{species}}" paw="{{avatarPaw}}" size="{{152}}" tone="soft" />
+      <view class="pe-avatar-dirty" wx:if="{{avatarDirty}}">未保存</view>
+    </view>
+    <view class="pe-avatar-btn">更换头像</view>
+  </view>
+
+  <!-- 昵称 -->
+  <view class="pe-field">
+    <view class="pe-label">昵称 <text class="pe-req">*</text></view>
+    <input class="pe-input" value="{{name}}" placeholder="给TA取个名字（≤12 字）" maxlength="12" bindinput="onName" />
+  </view>
+
+  <!-- 物种九选 -->
+  <view class="pe-field">
+    <view class="pe-label">物种 <text class="pe-req">*</text></view>
+    <view class="pe-species">
+      <view class="pe-sp {{species === item.key ? 'pe-sp-on' : ''}}" wx:for="{{speciesList}}" wx:key="key" data-k="{{item.key}}" bindtap="onSpecies">
+        <text class="pe-sp-e">{{item.emoji}}</text>
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体重单位 -->
+  <view class="pe-field">
+    <view class="pe-label">体重单位</view>
+    <view class="pe-seg">
+      <view class="pe-seg-item {{unit === 'kg' ? 'pe-seg-on' : ''}}" data-u="kg" bindtap="onUnit">kg</view>
+      <view class="pe-seg-item {{unit === 'g' ? 'pe-seg-on' : ''}}" data-u="g" bindtap="onUnit">g</view>
+    </view>
+  </view>
+
+  <!-- 品种 -->
+  <view class="pe-field">
+    <view class="pe-label">品种</view>
+    <input class="pe-input" value="{{breed}}" placeholder="选一个或自己填" bindinput="onBreed" />
+  </view>
+
+  <!-- 性别 -->
+  <view class="pe-field">
+    <view class="pe-label">性别</view>
+    <view class="pe-seg">
+      <view class="pe-seg-item {{gender === '公' ? 'pe-seg-on' : ''}}" data-g="公" bindtap="onGender">公</view>
+      <view class="pe-seg-item {{gender === '母' ? 'pe-seg-on' : ''}}" data-g="母" bindtap="onGender">母</view>
+      <view class="pe-seg-item {{gender === '未知' ? 'pe-seg-on' : ''}}" data-g="未知" bindtap="onGender">未知</view>
+    </view>
+  </view>
+
+  <!-- 是否绝育：选项来自 config.NEUTER_OPTIONS（新增/调整只改 config，页面不写死） -->
+  <view class="pe-field">
+    <view class="pe-label">是否绝育</view>
+    <view class="pe-seg">
+      <view class="pe-seg-item {{neutered === item ? 'pe-seg-on' : ''}}" wx:for="{{neuterOptions}}" wx:key="*this" data-n="{{item}}" bindtap="onNeutered">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 生日 / 到家日（独立可选，各自生成里程碑） -->
+  <picker mode="date" value="{{birthday}}" start="{{minDate}}" end="{{today}}" bindchange="onBirthday">
+    <view class="pe-row">
+      <view class="pe-label">生日</view>
+      <view class="pe-value">{{birthday || '选了会生成生日里程碑'}}</view>
+    </view>
+  </picker>
+  <picker mode="date" value="{{adoptDay}}" start="{{minDate}}" end="{{today}}" bindchange="onAdoptDay">
+    <view class="pe-row">
+      <view class="pe-label">到家日</view>
+      <view class="pe-value">{{adoptDay || '选了会生成到家周年'}}</view>
+    </view>
+  </picker>
+
+  <!-- 初始体重：档案基准值，一次性录入，**不产生体重流水**
+       （日常称重统一走首页「记体重」；时间线「第一次上秤」由本字段派生，日期取到家日/建档日） -->
+  <view class="pe-field">
+    <view class="pe-label">初始体重</view>
+    <input class="pe-input" type="digit" value="{{weight}}" placeholder="{{unit}} · 一位小数（0.1–100）" bindinput="onWeight" />
+    <view class="pe-hint">{{editing ? '改这里是修正基准值，不会新增体重记录' : '建档时的基准值，之后称重去首页「记体重」'}}</view>
+  </view>
+
+  <!-- 血统 -->
+  <view class="pe-field">
+    <view class="pe-label">血统</view>
+    <input class="pe-input" value="{{pedigree}}" placeholder="选填（≤20 字）" maxlength="20" bindinput="onPedigree" />
+  </view>
+
+  <!-- PRD 5.4：member 只读提示 -->
+  <view class="pe-readonly" wx:if="{{editing && !isOwnerView}}">
+    这是别人创建的宠物，档案仅创建者可修改
+  </view>
+
+  <!-- PRD 5.1：档案页邀请入口（owner 可见，直接触发分享） -->
+  <button class="pe-invite" wx:if="{{editing && isOwnerView}}" open-type="share" hover-class="none">邀请家人一起记</button>
+
+  <button class="btn-primary pe-save" loading="{{saving}}" wx:if="{{isOwnerView}}" bindtap="onSave">保存</button>
+  <view class="pe-note" wx:if="{{isOwnerView}}">带 * 的必填，其余以后随时能补</view>
+  <button class="btn-text-danger" wx:if="{{editing && isOwnerView}}" bindtap="onDelete">删除这只宠物</button>
+  <!-- 头像裁剪层 -->
+  <avatar-cropper show="{{showCropper}}" src="{{cropSrc}}" bind:confirm="onCropConfirm" bind:close="onCropCancel"></avatar-cropper>
+</view>
+
+<!-- 邀请分享卡离屏画布（转发时生成 5:4 卡面图） -->
+<invite-card id="inviteCard" />

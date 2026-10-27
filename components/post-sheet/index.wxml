@@ -1,0 +1,58 @@
+<!-- 记一条图文（PRD v2.1 R1）：文案（≤200 可空）+ 九宫格选图 + 日期 + 可见范围 -->
+<bottom-sheet show="{{show}}" title="记一条图文" subtitle="{{subTitle}}" bind:close="onClose">
+  <view class="ps-body">
+    <view class="ps-restored" wx:if="{{restored}}">已恢复上次没发完的草稿</view>
+
+    <!-- 文案 -->
+    <view class="ps-lb">说点什么<text class="ps-opt">选填，纯图也能发</text></view>
+    <view class="ps-box">
+      <textarea
+        class="ps-ta"
+        value="{{content}}"
+        maxlength="200"
+        placeholder="这一刻发生了什么？"
+        placeholder-class="ps-ph"
+        auto-height
+        show-confirm-bar="{{false}}"
+        cursor-spacing="40"
+        bindinput="onInput"
+        bindblur="onBlur"
+      />
+      <view class="ps-cnt t-num">{{count}} / 200</view>
+    </view>
+
+    <!-- 照片 -->
+    <view class="ps-lb">照片<text class="ps-opt">最多 {{max}} 张 · 点右上角 × 可删可换</text></view>
+    <view class="ps-picks">
+      <view class="ps-pick" wx:for="{{picks}}" wx:key="path">
+        <image class="ps-pick-img" src="{{item.path}}" mode="aspectFill" data-i="{{index}}" bindtap="onPreview" />
+        <view class="ps-del" data-i="{{index}}" catchtap="onRemove">✕</view>
+      </view>
+      <view class="ps-pick add" wx:if="{{picks.length < max}}" bindtap="onAdd">
+        <view class="ps-add-plus">＋</view>
+        <view class="ps-add-t">{{picks.length ? '再加一张' : '选择照片'}}</view>
+      </view>
+    </view>
+
+    <!-- 日期（可改，用于补记昨天） -->
+    <picker mode="date" value="{{date}}" end="{{today}}" bindchange="onDateChange">
+      <view class="ps-row">
+        <view class="ps-row-lb">日期</view>
+        <view class="ps-row-val t-num">{{date}}</view>
+        <view class="ps-row-tag" wx:if="{{date === today}}">今天</view>
+      </view>
+    </picker>
+
+    <!-- 可见范围：默认共享可见，做得轻量不抢眼（别做成大选择器） -->
+    <view class="ps-vis">
+      <view class="ps-vis-lb">可见范围</view>
+      <view class="ps-vis-opts">
+        <view class="ps-v {{visibility === 'all' ? 'on' : ''}}" data-v="all" bindtap="onVis">共享可见</view>
+        <view class="ps-v {{visibility === 'private' ? 'on' : ''}}" data-v="private" bindtap="onVis">仅自己可见</view>
+      </view>
+    </view>
+
+    <button class="btn-primary ps-save {{saving ? 'disabled' : ''}}" bindtap="onPublish">{{savingText}}</button>
+    <view class="ps-note">{{visibility === 'private' ? '只有你自己能看到，也不会出现在分享图里' : '发布后自动收进「光影」，共享成员都能看到'}}</view>
+  </view>
+</bottom-sheet>

@@ -1,0 +1,107 @@
+.pe-avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 40rpx 0 28rpx;
+  margin-bottom: 28rpx;
+}
+/* 头像 + 「未保存」角标的容器（角标挂在头像右上角） */
+.pe-avatar-wrap { position: relative; }
+.pe-avatar-dirty {
+  position: absolute;
+  top: -8rpx;
+  right: -20rpx;
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #fff;
+  background: var(--orange);
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 4rpx 10rpx rgba(242, 96, 10, 0.28);
+  line-height: 1.4;
+}
+.pe-avatar-btn { font-size: 26rpx; color: var(--orange-deep); font-weight: 700; margin-top: 16rpx; }
+
+.pe-field { margin-bottom: 28rpx; }
+.pe-label { font-size: 26rpx; color: var(--ink2); margin-bottom: 12rpx; }
+.pe-req { color: var(--red); }
+.pe-input {
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 26rpx 28rpx;
+  font-size: 30rpx;
+}
+.pe-species { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16rpx; }
+.pe-sp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  background: var(--cream2);
+  border-radius: 24rpx;
+  padding: 20rpx 0;
+  font-size: 24rpx;
+  color: var(--ink2);
+  font-weight: 600;
+}
+/* 选中态：浅橙底 + 内描边（对齐设计稿，不占布局空间） */
+.pe-sp-on { background: var(--orange-soft); color: var(--orange-deep); box-shadow: inset 0 0 0 3rpx var(--orange); }
+/* 物种 emoji（对齐设计稿：22px，独占一行） */
+.pe-sp-e { font-size: 44rpx; line-height: 1.1; }
+
+.pe-seg { display: flex; background: #fff; border-radius: 24rpx; padding: 6rpx; }
+.pe-seg-item {
+  flex: 1;
+  height: 68rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18rpx;
+  font-size: 26rpx;
+  color: var(--ink2);
+}
+.pe-seg-on { background: var(--orange-soft); color: var(--orange-deep); font-weight: 700; }
+
+.pe-row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 28rpx;
+  padding: 26rpx 28rpx;
+  margin-bottom: 24rpx;
+}
+.pe-row .pe-label { margin-bottom: 0; }
+.pe-value { margin-left: auto; font-size: 26rpx; color: var(--ink3); }
+
+.pe-save { margin-top: 16rpx; }
+.pe-note { text-align: center; font-size: 22rpx; color: var(--ink3); margin-top: 16rpx; }
+/* PRD 5.4：member 只读提示条 */
+.pe-readonly {
+  margin-top: 24rpx;
+  padding: 24rpx;
+  background: var(--orange-soft);
+  color: var(--orange-deep);
+  font-size: 26rpx;
+  border-radius: 20rpx;
+  text-align: center;
+}
+/* PRD 5.1：档案页邀请入口（button open-type=share，清除默认按钮样式） */
+.pe-invite {
+  margin-top: 24rpx;
+  background: #E7F7F2;
+  color: #1E9A80;
+  font-size: 28rpx;
+  border-radius: 20rpx;
+  text-align: center;
+  line-height: 88rpx;
+  height: 88rpx;
+  padding: 0;
+  border: none;
+}
+.pe-invite::after { border: none; }
+.pe-invite:active { opacity: 0.6; }
+
+/* 初始体重：单行输入（不再有录入日期选择器，日常称重走首页） */
+.pe-hint { font-size: 22rpx; color: var(--ink3); margin-top: 10rpx; }

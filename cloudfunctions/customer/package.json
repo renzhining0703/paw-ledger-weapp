@@ -1,0 +1,10 @@
+{
+  "name": "customer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "axios": "^1.7.7",
+    "form-data": "^4.0.0"
+  }
+}

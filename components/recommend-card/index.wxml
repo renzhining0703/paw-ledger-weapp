@@ -1,0 +1,2 @@
+<!-- 推荐好友分享封面离屏画布（750×600，5:4，微信转发卡片图） -->
+<canvas type="2d" id="recommendCanvas" class="rc-canvas"></canvas>
